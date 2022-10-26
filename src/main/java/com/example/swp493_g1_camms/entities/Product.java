@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -18,38 +19,25 @@ import java.util.Set;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "productCode")
+    private long Id;
+    @Column(name = "product_code")
     private String productCode;
-
     @Column(name = "name")
     private String name;
-
     @Column(name = "description")
     private String description;
-
     @Column(name = "image")
     private String image;
-
     @Column(name = "unitprice")
-    private Double unitprice;
-
-    @Column(name = "outDate")
-    private LocalDateTime outDate;
-
+    private double unitprice;
+    @Column(name = "out_date")
+    private Date out_date;
     @Column(name = "quantity")
-    private Integer quantity;
-
+    private int quantity;
     @Column(name = "unit_measure")
-    private String unitMeasure;
-
+    private String unit_measure;
     @Column(name = "deleted_at")
-    private Boolean deletedAt;
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Consignment> consignments;
-
+    private boolean deleted_at;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
@@ -60,5 +48,6 @@ public class Product {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "manufacturer_id", referencedColumnName = "id")
-    private Manufacturer manufacturer;
+    private Manufacturer manufacturor;
+
 }

@@ -14,21 +14,16 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class SubCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String name;
-
+    private long id;
+    @Column(name = "description")
     private String description;
-
-    private Boolean deletedAt;
-
-    @OneToMany(mappedBy = "subCategory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Product> products;
-
+    @Column(name = "name")
+    private String name;
+    @Column(name = "deleted_at")
+    private boolean deleted_at;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;

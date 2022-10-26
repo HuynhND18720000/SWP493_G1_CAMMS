@@ -1,32 +1,25 @@
 package com.example.swp493_g1_camms.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
 
 //annotation
 @Entity
-@Table(name = "Category")
-@Data
+@Table(name = "category")
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Category {
-     //define annotation for all field
      @Id
      @GeneratedValue(strategy = GenerationType.IDENTITY)
-     private Long id;
-
+     private long id;
+     @Column(name = "name")
      private String name;
-
+     @Column(name = "description")
      private String description;
-     private Boolean deletedAt;
-
-     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-     private Set<Product> products;
-
-     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-     private Set<SubCategory> subCategories;
+     @Column(name = "deleted_at")
+     private boolean deleted_at;
 }
