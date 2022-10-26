@@ -59,7 +59,7 @@ public class Product {
     @JoinColumn(name = "subCategory_id", referencedColumnName = "id")
     private SubCategory subCategory;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "manufacturer_id", referencedColumnName = "id")
     private Manufacturer manufacturer;
 
