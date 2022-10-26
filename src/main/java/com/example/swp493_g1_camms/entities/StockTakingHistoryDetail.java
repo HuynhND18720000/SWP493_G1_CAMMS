@@ -34,6 +34,4 @@ public class StockTakingHistoryDetail {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "stock_taking_history_id", referencedColumnName = "id")
     private StockTakingHistory stockTakingHistory;
-
-
 }
