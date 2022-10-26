@@ -17,13 +17,17 @@ import java.util.Set;
 public class SubCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    @Column(name = "description")
-    private String description;
-    @Column(name = "name")
+    private Long id;
+
     private String name;
-    @Column(name = "deleted_at")
-    private boolean deleted_at;
+
+    private String description;
+
+    private Boolean deletedAt;
+
+    @OneToMany(mappedBy = "subCategory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Product> products;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;

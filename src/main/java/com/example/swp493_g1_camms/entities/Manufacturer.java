@@ -18,15 +18,36 @@ import java.util.Set;
 public class Manufacturer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
+
     @Column(name = "name")
     private String name;
+
     @Column(name = "address")
     private String address;
+
     @Column(name = "phone")
     private String phone;
+
     @Column(name = "email")
     private String email;
+
     @Column(name = "deleted_at")
-    private boolean deleted_at;
+    private Boolean deletedAt;
+
+    @OneToMany(mappedBy = "manufacturer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Product> products;
+
+    @OneToMany(mappedBy = "manufacturer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Order> orders;
+
+    @OneToMany(mappedBy = "manufacturer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<ReturnToManufacturer> returnToManufacturers;
+
+    public Manufacturer(Long id, String name, String email, String phone) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+    }
 }

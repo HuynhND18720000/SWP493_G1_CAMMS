@@ -15,11 +15,16 @@ import java.util.Set;
 public class Category {
      @Id
      @GeneratedValue(strategy = GenerationType.IDENTITY)
-     private long id;
-     @Column(name = "name")
+     private Long id;
+
      private String name;
-     @Column(name = "description")
+
      private String description;
-     @Column(name = "deleted_at")
-     private boolean deleted_at;
+     private Boolean deletedAt;
+
+     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+     private Set<Product> products;
+
+     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+     private Set<SubCategory> subCategories;
 }
