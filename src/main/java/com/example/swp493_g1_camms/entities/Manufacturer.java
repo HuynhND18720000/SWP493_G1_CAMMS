@@ -18,6 +18,7 @@ import java.util.Set;
 public class Manufacturer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "name")
@@ -44,10 +45,4 @@ public class Manufacturer {
     @OneToMany(mappedBy = "manufacturer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<ReturnToManufacturer> returnToManufacturers;
 
-    public Manufacturer(Long id, String name, String email, String phone) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.phone = phone;
-    }
 }
