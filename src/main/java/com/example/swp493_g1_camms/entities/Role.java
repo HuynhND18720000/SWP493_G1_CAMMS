@@ -20,9 +20,9 @@ public class Role {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role_name")
-    private ERole roleName;
+    private ERole name;
 
-    public Role(ERole roleName) {
-        this.roleName = roleName;
+    public Role(ERole name) {
+        this.name = name;
     }
 }

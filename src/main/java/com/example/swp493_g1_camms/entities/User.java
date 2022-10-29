@@ -12,11 +12,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "user")
+@Table(name = "user",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = "username"),
+            @UniqueConstraint(columnNames = "email")
+    }
+)
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +32,7 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "fullName")
+    @Column(name = "full_name")
     private String fullName;
 
     @Column(name = "isActive")
@@ -64,4 +68,14 @@ public class User {
             joinColumns = @JoinColumn(name ="user_id"),
             inverseJoinColumns = @JoinColumn(name ="role_id"))
     private Set<Role> roles = new HashSet<>();
+
+    public User(){}
+
+    public User(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
+
+
 }
