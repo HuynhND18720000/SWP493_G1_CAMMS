@@ -148,5 +148,22 @@ public class CategoryServiceImpl implements ICategoryService {
         responseVo.setMessage("Cập nhập thành công");
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
-
+    @Override
+    public ResponseEntity<?> getAllCategoryNotPaging() {
+        List<Category> listCategory = categoryRepository.getAllCategory();
+        ResponseVo responseVo = new ResponseVo();
+        Map<String, Object> map = new HashMap<>();
+        if (listCategory.isEmpty()) {
+            map.put("category", listCategory);
+            map.put("totalRecord", 0);
+            responseVo.setMessage("Không tìm thấy List Category");
+            responseVo.setData(map);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }
+        List<SubCategory> listSubCategory = new ArrayList<>();
+        listSubCategory = subCategoryRepository.findAll();
+        map.put("category", ListCategoryResponse.createDataListCategory(listCategory, listSubCategory));
+        responseVo.setData(map);
+        return new ResponseEntity<>(responseVo, HttpStatus.OK);
+    }
 }

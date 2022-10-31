@@ -14,4 +14,6 @@ public interface ICategoryService {
 
     ResponseEntity<?> updateCategory(CategoryDTO categoryDTO);
 
+    ResponseEntity<?> getAllCategoryNotPaging();
+
 }

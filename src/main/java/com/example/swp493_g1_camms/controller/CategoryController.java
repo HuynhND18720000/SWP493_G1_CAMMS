@@ -47,6 +47,10 @@ public class CategoryController {
 
         return categoryService.updateCategory(categoryDTO);
     }
+    @GetMapping("/notPaging")
+    public ResponseEntity<?> listCategoryNotPaging() {
+        return categoryService.getAllCategoryNotPaging();
+    }
 
 }
 
