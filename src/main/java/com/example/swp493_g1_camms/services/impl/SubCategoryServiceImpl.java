@@ -2,7 +2,7 @@ package com.example.swp493_g1_camms.services.impl;
 
 import com.example.swp493_g1_camms.entities.Category;
 import com.example.swp493_g1_camms.entities.SubCategory;
-import com.example.swp493_g1_camms.payload.response.ResponseVO;
+import com.example.swp493_g1_camms.payload.response.ResponseVo;
 import com.example.swp493_g1_camms.payload.request.SubCategoryDTO;
 import com.example.swp493_g1_camms.payload.response.SubCategoryResponse;
 import com.example.swp493_g1_camms.repository.ICategoryRepository;
@@ -33,7 +33,7 @@ public class SubCategoryServiceImpl implements ISubCategoryService {
 
     @Override
     public ResponseEntity<?> getSubCategoryByCateId(Long categoryId) {
-        ResponseVO responseVo = new ResponseVO();
+        ResponseVo responseVo = new ResponseVo();
         if (!ObjectUtils.isEmpty(categoryId)) {
             List<SubCategory> listSubCategory = subCategoryRepository.getSubCategoryByCateId(categoryId);
             Map<String, Object> map = new HashMap<>();
@@ -51,7 +51,7 @@ public class SubCategoryServiceImpl implements ISubCategoryService {
 
     @Override
     public ResponseEntity<?> addSubCategory(SubCategoryDTO subCategoryDTO) {
-        ResponseVO responseVo = new ResponseVO();
+        ResponseVo responseVo = new ResponseVo();
         SubCategory subCate = subCategoryRepository.findSubCategoryByName(subCategoryDTO.getName().trim());
         if(subCate != null) {
             responseVo.setMessage("Danh mục con đã tồn tại !!");
@@ -72,7 +72,7 @@ public class SubCategoryServiceImpl implements ISubCategoryService {
 
     @Override
     public ResponseEntity<?> updateSubCategory(SubCategoryDTO subCategoryDTO) {
-        ResponseVO responseVo = new ResponseVO();
+        ResponseVo responseVo = new ResponseVo();
         Category c = categoryRepository.findCategoryByName(subCategoryDTO.getName().trim());
         if(c != null) {
             responseVo.setMessage("Danh mục con không được trùng với cha");

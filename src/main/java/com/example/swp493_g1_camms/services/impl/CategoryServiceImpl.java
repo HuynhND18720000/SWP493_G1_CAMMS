@@ -6,7 +6,7 @@ import com.example.swp493_g1_camms.payload.request.CategoryDTO;
 import com.example.swp493_g1_camms.payload.response.CategoryDetailResponse;
 import com.example.swp493_g1_camms.payload.response.ListCategoryResponse;
 import com.example.swp493_g1_camms.payload.response.ListSubCategoryResponse;
-import com.example.swp493_g1_camms.payload.response.ResponseVO;
+import com.example.swp493_g1_camms.payload.response.ResponseVo;
 import com.example.swp493_g1_camms.repository.ICategoryRepository;
 import com.example.swp493_g1_camms.repository.ISubCategoryRepository;
 import com.example.swp493_g1_camms.services.interfaceService.ICategoryService;
@@ -57,7 +57,7 @@ public class CategoryServiceImpl implements ICategoryService {
         dataSearch.put("categoryName", categoryName);
         dataSearch.put("categoryDescription", categoryDescription);
 
-        ResponseVO responseVo = new ResponseVO();
+        ResponseVo responseVo = new ResponseVo();
         Map<String, Object> map = new HashMap<>();
         if (categoryPage.isEmpty()) {
             map.put("totalRecord", 0);
@@ -81,7 +81,7 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public ResponseEntity<?> findSubCategoryByCategoryId(Long categoryId, Integer pageIndex, Integer pageSize) {
-        ResponseVO responseVo = new ResponseVO();
+        ResponseVo responseVo = new ResponseVo();
         if (!ObjectUtils.isEmpty(categoryId)) {
             Category category = categoryRepository.findCategoryById(categoryId);
             Map<String, Object> map = new HashMap<>();
@@ -111,7 +111,7 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public ResponseEntity<?> addCategory(CategoryDTO categoryDTO) {
-        ResponseVO responseVo = new ResponseVO();
+        ResponseVo responseVo = new ResponseVo();
         Category c = categoryRepository.findCategoryByName(categoryDTO.getName().trim());
         if(c != null) {
             responseVo.setMessage("Danh mục đã bị tồn tại");
@@ -131,7 +131,7 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public ResponseEntity<?> updateCategory(CategoryDTO categoryDTO) {
-        ResponseVO responseVo = new ResponseVO();
+        ResponseVo responseVo = new ResponseVo();
         Category c = categoryRepository.findCategoryByIdAndName(categoryDTO.getId(), categoryDTO.getName());
         if(c != null) {
             responseVo.setMessage("Danh mục đã bị tồn tại !!");
