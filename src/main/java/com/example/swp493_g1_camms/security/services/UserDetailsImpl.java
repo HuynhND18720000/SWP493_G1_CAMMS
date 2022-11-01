@@ -2,6 +2,7 @@ package com.example.swp493_g1_camms.security.services;
 
 import com.example.swp493_g1_camms.entities.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Data
 public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = 1L;
     private Long id;
@@ -19,6 +21,7 @@ public class UserDetailsImpl implements UserDetails {
     @JsonIgnore
     private String password;
 
+    private boolean isActive;
     private Collection<? extends GrantedAuthority> authorities;
 
     public static UserDetails build(User user) {
@@ -31,6 +34,7 @@ public class UserDetailsImpl implements UserDetails {
                 user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),
+                user.getIsActive(),
                 authorities);
     }
 
@@ -62,11 +66,12 @@ public class UserDetailsImpl implements UserDetails {
         this.authorities = authorities;
     }
 
-    public UserDetailsImpl(Long id, String username, String email, String password, Collection<? extends GrantedAuthority> authorities) {
+    public UserDetailsImpl(Long id, String username, String email, String password,Boolean isActive, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
+        this.isActive = isActive;
         this.authorities = authorities;
     }
     @Override
@@ -82,6 +87,14 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public String getUsername() {
         return username;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     @Override
