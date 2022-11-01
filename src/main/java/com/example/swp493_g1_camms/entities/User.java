@@ -35,7 +35,7 @@ public class User {
     @Column(name = "full_name")
     private String fullName;
 
-    @Column(name = "isActive")
+    @Column(name = "is_active")
     private Boolean isActive;
 
     @Column(name = "email")

@@ -20,16 +20,16 @@ public class UserProfileImpl implements IUserService {
     UserRepository userRepository;
     @Override
     public ResponseEntity<?> getUserProfile() {
-        Optional<User> user = userRepository.findByUsername(authenticationFacade.getAuthentication().getName());
-        boolean currentUserIsActive = CurrentUserIsActive.currentUserIsActive();
-        ResponseVo responseVo = new ResponseVo();
-        if(!currentUserIsActive){
-            return new ResponseEntity<>("dang nhap da het han",HttpStatus.BAD_REQUEST);
-        }
-        if(user.isPresent()){
-
-            return new ResponseEntity<>("Lay thong tin nguoi dung thanh cong", HttpStatus.OK);
-        }
-
+//        Optional<User> user = userRepository.findByUsername(authenticationFacade.getAuthentication().getName());
+//        boolean currentUserIsActive = CurrentUserIsActive.currentUserIsActive();
+//        ResponseVo responseVo = new ResponseVo();
+//        if(!currentUserIsActive){
+//            return new ResponseEntity<>("dang nhap da het han",HttpStatus.BAD_REQUEST);
+//        }
+//        if(user.isPresent()){
+//
+//            return new ResponseEntity<>("Lay thong tin nguoi dung thanh cong", HttpStatus.OK);
+//        }
+    return null;
     }
 }
