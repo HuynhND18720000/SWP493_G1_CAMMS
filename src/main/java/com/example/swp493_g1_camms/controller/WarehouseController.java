@@ -31,4 +31,5 @@ public class WarehouseController {
     public ResponseEntity<?> editWarehouse(@RequestBody WarehouseDTO warehouseDTO){
         return IWarehouseService.editWarehouse(warehouseDTO);
     }
+
 }
