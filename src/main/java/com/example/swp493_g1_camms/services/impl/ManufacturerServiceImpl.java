@@ -32,7 +32,7 @@ public class ManufacturerServiceImpl implements IManufacturerService {
         if (manufacturerPage.isEmpty()) {
             map.put("category", manufacturerPage.getContent());
             map.put("totalRecord", 0);
-            responseVo.setMessage("Không tìm thấy danh sách khách hàng!");
+            responseVo.setMessage("Không tìm thấy danh sách nhà sản xuất!");
             responseVo.setData(map);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
@@ -56,7 +56,7 @@ public class ManufacturerServiceImpl implements IManufacturerService {
         manufacturer.setDeletedAt(false);
         IManufacturerRepository.save(manufacturer);
         ResponseVo responseVo = new ResponseVo();
-        responseVo.setMessage("Tạo khách hàng thành công !!");
+        responseVo.setMessage("Tạo nhà sản xuất thành công !!");
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
 
@@ -69,7 +69,7 @@ public class ManufacturerServiceImpl implements IManufacturerService {
         manufacturer1.setPhone(manufacturerDTO.getPhone());
         IManufacturerRepository.save(manufacturer1);
         ResponseVo responseVo = new ResponseVo();
-        responseVo.setMessage("Sửa thông tin khách hàng thành công !!");
+        responseVo.setMessage("Sửa thông tin nhà sản xuất thành công !!");
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
 
@@ -80,7 +80,7 @@ public class ManufacturerServiceImpl implements IManufacturerService {
         Map<String, Object> map = new HashMap<>();
         map.put("manufacturer", manufacturer);
         responseVo.setData(map);
-        responseVo.setMessage("Lấy dữ liệu khách hàng thành công");
+        responseVo.setMessage("Lấy dữ liệu nhà nhà sản xuất thành công");
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
 
@@ -94,7 +94,7 @@ public class ManufacturerServiceImpl implements IManufacturerService {
         if (manufacturerPage.isEmpty()) {
             map.put("category", manufacturerPage.getContent());
             map.put("totalRecord", 0);
-            responseVo.setMessage("Không tìm thấy danh sách khách hàng!");
+            responseVo.setMessage("Không tìm thấy danh sách nhà sản xuất!");
             responseVo.setData(map);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
