@@ -11,28 +11,28 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ListWarehouseResponse {
-//    private Long id;
-//    private String name;
-//    private String address;
-//
-//
-//    public static List<ListWarehouseResponse> createSuccessData(List<Warehouse> warehouses) {
-//        List<ListWarehouseResponse> listWarehouseResponses = new ArrayList<>();
-//        for(Warehouse warehouse : warehouses){
-//            ListWarehouseResponse listWarehouseResponse = new ListWarehouseResponse();
-//            listWarehouseResponse.id = warehouse.getId();
-//            listWarehouseResponse.name = warehouse.getName();
-//            listWarehouseResponse.address = warehouse.getAddress();
-//            listWarehouseResponses.add(listWarehouseResponse);
-//        }
-//        return listWarehouseResponses;
-//    }
-//
-//    public static ListWarehouseResponse toWarehouseResponse(Warehouse warehouse) {
-//        ListWarehouseResponse warehouseResponse = new ListWarehouseResponse();
-//        warehouseResponse.setId(warehouse.getId());
-//        warehouseResponse.setName(warehouse.getName());
-//        warehouseResponse.setAddress(warehouse.getAddress());
-//        return warehouseResponse;
-//    }
+    private Long id;
+    private String name;
+    private String address;
+
+
+    public static List<ListWarehouseResponse> createSuccessData(List<Warehouse> warehouses) {
+        List<ListWarehouseResponse> listWarehouseResponses = new ArrayList<>();
+        for(Warehouse warehouse : warehouses){
+            ListWarehouseResponse listWarehouseResponse = new ListWarehouseResponse();
+            listWarehouseResponse.id = warehouse.getId();
+            listWarehouseResponse.name = warehouse.getName();
+            listWarehouseResponse.address = warehouse.getAddress();
+            listWarehouseResponses.add(listWarehouseResponse);
+        }
+        return listWarehouseResponses;
+    }
+
+    public static ListWarehouseResponse toWarehouseResponse(Warehouse warehouse) {
+        ListWarehouseResponse warehouseResponse = new ListWarehouseResponse();
+        warehouseResponse.setId(warehouse.getId());
+        warehouseResponse.setName(warehouse.getName());
+        warehouseResponse.setAddress(warehouse.getAddress());
+        return warehouseResponse;
+    }
 }
