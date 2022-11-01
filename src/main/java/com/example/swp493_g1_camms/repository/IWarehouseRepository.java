@@ -11,8 +11,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 @EnableJpaRepositories
 public interface IWarehouseRepository extends JpaRepository<Warehouse, Long> {
-    @Query("SELECT w FROM Warehouse w WHERE w.id = ?1")
-    public Warehouse findWarehouseById(Long id);
-
-    Page<Warehouse> findAllWarehouseByDeletedAt(boolean deletedAt, Pageable pageable);
+//    @Query("SELECT w FROM Warehouse w WHERE w.id = ?1")
+//    public Warehouse findWarehouseById(Long id);
+//
+//    Page<Warehouse> findAllWarehouseByDeletedAt(boolean deletedAt, Pageable pageable);
 }
