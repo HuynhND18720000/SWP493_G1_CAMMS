@@ -17,12 +17,18 @@ import java.util.Set;
 public class Warehouse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "deleted_at")
+    private Boolean deletedAt;
+
+    @Column(name = "address")
     private String address;
 
-    private Boolean deletedAt;
 
     @OneToMany(mappedBy = "warehouse", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Consignment> consignments;
@@ -33,9 +39,4 @@ public class Warehouse {
     @OneToMany(mappedBy = "warehouse", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<ReturnToManufacturer> returnToManufacturers;
 
-
-    public Warehouse(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
 }
