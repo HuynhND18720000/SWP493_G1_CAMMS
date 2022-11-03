@@ -1,5 +1,6 @@
 package com.example.swp493_g1_camms.controller;
 
+import com.example.swp493_g1_camms.payload.request.ManufacturerDTO;
 import com.example.swp493_g1_camms.payload.request.WarehouseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,5 +31,10 @@ public class WarehouseController {
     @PutMapping("/editWarehouse")
     public ResponseEntity<?> editWarehouse(@RequestBody WarehouseDTO warehouseDTO){
         return IWarehouseService.editWarehouse(warehouseDTO);
+    }
+
+    @PostMapping("/addWarehouse")
+    public ResponseEntity<?> addWarehouse(@RequestBody WarehouseDTO warehouseDTO) {
+        return IWarehouseService.addWarehouse(warehouseDTO);
     }
 }
