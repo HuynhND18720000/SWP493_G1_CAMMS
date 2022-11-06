@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -26,11 +27,6 @@ public class Consignment {
     @Column(name = "import_date")
     private LocalDateTime importDate;
 
-    @Column(name = "quantity")
-    private Integer quantity;
-
-    @Column(name = "unit_price")
-    private Double unitPrice;
 
     @Column(name = "deleted_at")
     private Boolean deletedAt;
@@ -49,22 +45,8 @@ public class Consignment {
     @JoinColumn(name = "warehouse_id", referencedColumnName = "id")
     private Warehouse warehouse;
 
-    public Consignment(Long id, LocalDateTime expirationDate,
-                       LocalDateTime importDate, Integer quantity, Double unitPrice) {
-        this.id = id;
-        this.expirationDate = expirationDate;
-        this.importDate = importDate;
-        this.quantity = quantity;
-        this.unitPrice = unitPrice;
-    }
-    public Consignment(Long id, LocalDateTime expirationDate, LocalDateTime importDate,
-                       Integer quantity, Double unitPrice, Product product) {
-        this.id = id;
-        this.expirationDate = expirationDate;
-        this.importDate = importDate;
-        this.quantity = quantity;
-        this.unitPrice = unitPrice;
-        this.product=product;
-    }
+    @OneToMany(mappedBy = "consignment")
+    private Set<ConsignmentProduct> consignmentProducts;
+
 
 }

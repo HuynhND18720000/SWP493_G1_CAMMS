@@ -63,6 +63,9 @@ public class Product {
     @JoinColumn(name = "manufacturer_id", referencedColumnName = "id")
     private Manufacturer manufacturer;
 
+    @OneToMany(mappedBy = "product")
+    private Set<ConsignmentProduct> consignmentProducts;
+
     public Product(Long id, String productCode, String name, String description,
                    String image, Double unitprice,
                    LocalDateTime outDate, Integer quantity,
