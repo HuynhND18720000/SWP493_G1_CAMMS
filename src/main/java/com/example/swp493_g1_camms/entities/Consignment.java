@@ -48,4 +48,23 @@ public class Consignment {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "warehouse_id", referencedColumnName = "id")
     private Warehouse warehouse;
+
+    public Consignment(Long id, LocalDateTime expirationDate,
+                       LocalDateTime importDate, Integer quantity, Double unitPrice) {
+        this.id = id;
+        this.expirationDate = expirationDate;
+        this.importDate = importDate;
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+    }
+    public Consignment(Long id, LocalDateTime expirationDate, LocalDateTime importDate,
+                       Integer quantity, Double unitPrice, Product product) {
+        this.id = id;
+        this.expirationDate = expirationDate;
+        this.importDate = importDate;
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+        this.product=product;
+    }
+
 }

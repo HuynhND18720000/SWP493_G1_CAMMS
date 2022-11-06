@@ -2,13 +2,11 @@ package com.example.swp493_g1_camms.controller;
 
 import com.example.swp493_g1_camms.entities.Product;
 import com.example.swp493_g1_camms.repository.ProductRepository;
+import com.example.swp493_g1_camms.services.impl.ProductServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,24 +14,30 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class ProductController {
+    private final int defaultPage = 1;
+    private final int defaultSize = 5;
     @Autowired
-    ProductRepository productRepository;
-
+    ProductServiceImpl productService;
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getAllProducts(@RequestParam(required = false) String title){
-        try {
-            List<Product> productsList = new ArrayList<>();
-            if (title == null) {
-                productRepository.findAll().forEach(productsList::add);
-            }else{
-                productRepository.findByname(title).forEach(productsList::add);
-            }
-            if(productsList.isEmpty()){
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(productsList, HttpStatus.OK);
-        }catch (Exception e){
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<?> getAllProducts(@RequestParam(required = false) Integer pageIndex,
+                                            @RequestParam(required = false) Integer pageSize){
+        pageIndex = pageIndex == null ? defaultPage : pageIndex;
+        pageSize = pageSize == null ? defaultSize : pageSize;
+        return productService.getAllProducts(pageIndex, pageSize);
     }
+
+//    @GetMapping("/products/{id}")
+//    public ResponseEntity<Product> getProductById(@PathVariable("id") long id){
+//        return  productService.getProductById(id);
+//    }
+//
+//    @PostMapping("/addProducts")
+//    public ResponseEntity<Product> createProduct(@RequestBody ProductRequest productRequest){
+//        return productService.createProduct(productRequest);
+//    }
+//
+//    @DeleteMapping("/products/{id}")
+//    public ResponseEntity<HttpStatus> deleteTutorial(@PathVariable("id") long id){
+//        return  productService.deleteTutorial(id);
+//    }
 }

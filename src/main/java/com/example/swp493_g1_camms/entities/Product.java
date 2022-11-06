@@ -63,4 +63,19 @@ public class Product {
     @JoinColumn(name = "manufacturer_id", referencedColumnName = "id")
     private Manufacturer manufacturer;
 
+    public Product(Long id, String productCode, String name, String description,
+                   String image, Double unitprice,
+                   LocalDateTime outDate, Integer quantity,
+                   String unitMeasure, Boolean deletedAt) {
+        this.id = id;
+        this.productCode = productCode;
+        this.name = name;
+        this.description = description;
+        this.image = image;
+        this.unitprice = unitprice;
+        this.outDate = outDate;
+        this.quantity = quantity;
+        this.unitMeasure = unitMeasure;
+        this.deletedAt = deletedAt;
+    }
 }

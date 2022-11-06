@@ -45,4 +45,11 @@ public class Manufacturer {
     @OneToMany(mappedBy = "manufacturer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<ReturnToManufacturer> returnToManufacturers;
 
+    public Manufacturer(Long id, String name, String address, String phone, String email) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.phone = phone;
+        this.email = email;
+    }
 }
