@@ -28,4 +28,9 @@ public class ConsignmentProduct {
 
     @Column(name = "unit_price")
     private Double unitPrice;
+
+    @Column(name = "deleted_at")
+    private Boolean deletedAt;
+
+
 }
