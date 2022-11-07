@@ -1,12 +1,17 @@
 package com.example.swp493_g1_camms.services.impl;
 
+import com.example.swp493_g1_camms.entities.Consignment;
+import com.example.swp493_g1_camms.entities.ConsignmentProduct;
 import com.example.swp493_g1_camms.entities.Manufacturer;
 import com.example.swp493_g1_camms.entities.Product;
 import com.example.swp493_g1_camms.payload.response.ListProductResponse;
+import com.example.swp493_g1_camms.payload.response.MessageResponse;
 import com.example.swp493_g1_camms.payload.response.ProductResponse;
 import com.example.swp493_g1_camms.payload.response.ResponseVo;
 import com.example.swp493_g1_camms.repository.*;
 import com.example.swp493_g1_camms.services.interfaceService.IProductService;
+import com.example.swp493_g1_camms.utils.CurrentUserIsActive;
+import com.example.swp493_g1_camms.utils.StatusUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +31,8 @@ public class ProductServiceImpl implements IProductService {
     ICategoryRepository categoryRepository;
     @Autowired
     IConsignmentRepository consignmentRepository;
+    @Autowired
+    IRelationConsignmentProductRepository iRelationConsignmentProductRepository;
     @Autowired
     ISubCategoryRepository subCategoryRepository;
     @Autowired
@@ -63,6 +70,12 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public ResponseEntity<?> findAllProduct(int pageIndex, int pageSize, String productName,
                                             String productCode, Long categoryId, Long manufactorId) {
+        boolean currentUserIsActive = CurrentUserIsActive.currentUserIsActive();
+        if(!currentUserIsActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Tài khoản của bạn đã bị tạm dừng!", StatusUtils.NOT_Allow));
+        }
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
         String productSearch = "";
         Page<Product> productPage = null;
@@ -93,7 +106,7 @@ public class ProductServiceImpl implements IProductService {
              ) {
             ProductResponse productResponse = new ProductResponse();
             productResponse.setId(p.getId());
-            productResponse.setQuantity(consignmentRepository.countQuantity(p.getId()));
+            productResponse.setQuantity(iRelationConsignmentProductRepository.countQuantity(p.getId()));
             listProductResponse.add(productResponse);
         }
         map.put("product", ListProductResponse.createProductData(productPage.getContent(),
@@ -105,6 +118,44 @@ public class ProductServiceImpl implements IProductService {
         map.put("totalPage", productPage.getTotalPages());
         responseVo.setData(map);
         return  new ResponseEntity<>(responseVo, HttpStatus.OK);
+    }
+
+    //phan xem chi tiet san pham : tim kiem san pham theo id
+    @Override
+    public ResponseEntity<?> findById(Long productId, int pageIndex, int pageSize) {
+        ResponseVo responseVo = new ResponseVo();
+        if(!ObjectUtils.isEmpty(productId)){
+
+            Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
+            Product product = productRepository.findProductById(productId);
+            Map<String, Object> map = new HashMap<>();
+            ProductResponse productResponse = new ProductResponse();
+            if(!ObjectUtils.isEmpty(product)){
+                productResponse.setQuantity(
+                        productRepository.countQuantity(product.getId()));
+                productResponse.setUnitprice(
+                        productRepository.totalPrice(product.getId()));
+                Page<ConsignmentProduct> consignmentPage = iRelationConsignmentProductRepository.getAllConsignmentByProductId(product.getId(),
+                        pageable);
+                if(consignmentPage.isEmpty()){
+                    map.put("consignment", consignmentPage.getContent());
+                    map.put("totalRecord", 0);
+                    responseVo.setMessage("Không tìm thấy danh sách lo hàng!");
+                    responseVo.setData(map);
+                }
+                map.put("product",ProductResponse.createDetailProduct(product,productResponse));
+                map.put("consignment", consignmentPage.getContent());
+                map.put("totalRecord", consignmentPage.getTotalElements());
+                map.put("currentPage", pageIndex);
+                map.put("pageSize", consignmentPage.getSize());
+                map.put("totalPage", consignmentPage.getTotalPages());
+                responseVo.setData(map);
+                return new ResponseEntity<>(responseVo,HttpStatus.OK);
+            }
+            responseVo.setMessage("Không tìm thấy Product");
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
     }
 
 

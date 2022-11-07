@@ -29,4 +29,16 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             + "AND p.manufacturer.id = CASE WHEN ?2 IS NULL THEN p.manufacturer.id ELSE ?2 END "
             + "AND p.deletedAt = false")
     Page<Product> findAllBySearch(Long categoryId, Long manufactorId, Pageable pageable);
+    //tim kiem product theo id
+    @Query("SELECT p FROM Product as p WHERE p.id = ?1 and p.deletedAt=false ")
+    Product findProductById(Long productId);
+    //get count quantity cua product
+    @Query(value = "SELECT p.quantity FROM Product as p WHERE p.id = ?1 " +
+            "AND p.deletedAt = false")
+    Integer countQuantity(Long productId);
+
+    //get price cua product
+    @Query(value = "SELECT p.unitprice FROM Product as p WHERE p.id = ?1 " +
+            "AND p.deletedAt = false")
+    Double totalPrice(Long productId);
 }

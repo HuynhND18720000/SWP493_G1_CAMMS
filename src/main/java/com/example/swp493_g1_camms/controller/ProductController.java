@@ -1,8 +1,11 @@
 package com.example.swp493_g1_camms.controller;
 
 import com.example.swp493_g1_camms.entities.Product;
+import com.example.swp493_g1_camms.payload.response.MessageResponse;
 import com.example.swp493_g1_camms.repository.ProductRepository;
 import com.example.swp493_g1_camms.services.impl.ProductServiceImpl;
+import com.example.swp493_g1_camms.utils.CurrentUserIsActive;
+import com.example.swp493_g1_camms.utils.StatusUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +21,7 @@ public class ProductController {
     private final int defaultSize = 5;
     @Autowired
     ProductServiceImpl productService;
+    //cách 1: get all products
     @GetMapping("/products")
     public ResponseEntity<?> getAllProducts(@RequestParam(required = false) Integer pageIndex,
                                             @RequestParam(required = false) Integer pageSize){
@@ -26,18 +30,38 @@ public class ProductController {
         return productService.getAllProducts(pageIndex, pageSize);
     }
 
-//    @GetMapping("/products/{id}")
-//    public ResponseEntity<Product> getProductById(@PathVariable("id") long id){
-//        return  productService.getProductById(id);
-//    }
-//
-//    @PostMapping("/addProducts")
-//    public ResponseEntity<Product> createProduct(@RequestBody ProductRequest productRequest){
-//        return productService.createProduct(productRequest);
-//    }
-//
-//    @DeleteMapping("/products/{id}")
-//    public ResponseEntity<HttpStatus> deleteTutorial(@PathVariable("id") long id){
-//        return  productService.deleteTutorial(id);
-//    }
+    //cách 2: get all product
+    @GetMapping("/getAllProducts")
+    public ResponseEntity<?> getListProducts(@RequestParam(required = false) Integer pageIndex,
+                                             @RequestParam(required = false) Integer pageSize,
+                                             @RequestParam(required = false) String productName,
+                                             @RequestParam(required = false) String productCode,
+                                             @RequestParam(required = false) Long manufactorId,
+                                             @RequestParam(required = false) Long categoryId){
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
+        pageIndex = pageIndex == null ? defaultPage : pageIndex;
+        pageSize = pageSize == null ? defaultSize : pageSize;
+        return productService.findAllProduct(pageIndex,pageSize,productName,productCode,
+                manufactorId,categoryId);
+    }
+    @GetMapping("/products/{productId}")
+    public ResponseEntity<?> productDetail(
+            @PathVariable Long productId,
+            @RequestParam(required = false) Integer pageIndex,
+            @RequestParam(required = false) Integer pageSize) {
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
+        pageIndex = pageIndex == null ? defaultPage : pageIndex;
+        pageSize = pageSize == null ? defaultSize : pageSize;
+        return productService.findById(productId, pageIndex, pageSize);
+    }
 }

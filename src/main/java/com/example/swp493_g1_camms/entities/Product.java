@@ -48,9 +48,6 @@ public class Product {
     @Column(name = "deleted_at")
     private Boolean deletedAt;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Consignment> consignments;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;

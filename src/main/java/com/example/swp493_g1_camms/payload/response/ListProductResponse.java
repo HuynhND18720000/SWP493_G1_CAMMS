@@ -75,7 +75,9 @@ public class ListProductResponse {
                     listP.setManufactorId(p.getManufacturer().getId());
                     listP.setCategoryName(p.getCategory().getName());
                     listP.setManufactorName(p.getManufacturer().getName());
+                    listP.setUnitprice(p.getUnitprice());
                     listProductResponses.add(listP);
+
                 }
             }
         }

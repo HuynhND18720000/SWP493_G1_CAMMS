@@ -13,4 +13,5 @@ public interface IProductService {
 
     ResponseEntity<?> findAllProduct(int pageIndex, int pageSize, String productName, String productCode,
                               Long categoryId, Long manufactorId);
+    ResponseEntity<?> findById(Long productId,int pageIndex, int pageSize);
 }
