@@ -26,4 +26,7 @@ public interface ISubCategoryRepository extends JpaRepository<SubCategory, Long>
     @Query("SELECT sc FROM SubCategory sc  Where sc.id <> ?1 and sc.name = ?2")
     SubCategory findSubCategoryByIdAndName(Long id, String categoryName);
 
+    @Query("SELECT sc FROM SubCategory sc Where sc.id = ?1 AND sc.deletedAt = false" )
+    SubCategory findSubCategoryById(Long subCategoryId);
+
 }

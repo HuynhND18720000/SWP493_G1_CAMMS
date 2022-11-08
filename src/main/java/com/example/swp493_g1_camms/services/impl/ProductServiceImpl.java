@@ -1,15 +1,14 @@
 package com.example.swp493_g1_camms.services.impl;
 
-import com.example.swp493_g1_camms.entities.Consignment;
-import com.example.swp493_g1_camms.entities.ConsignmentProduct;
-import com.example.swp493_g1_camms.entities.Manufacturer;
-import com.example.swp493_g1_camms.entities.Product;
+import com.example.swp493_g1_camms.entities.*;
+import com.example.swp493_g1_camms.payload.request.ProductRequest;
 import com.example.swp493_g1_camms.payload.response.ListProductResponse;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
 import com.example.swp493_g1_camms.payload.response.ProductResponse;
 import com.example.swp493_g1_camms.payload.response.ResponseVo;
 import com.example.swp493_g1_camms.repository.*;
 import com.example.swp493_g1_camms.services.interfaceService.IProductService;
+import com.example.swp493_g1_camms.utils.ConvertToEntities;
 import com.example.swp493_g1_camms.utils.CurrentUserIsActive;
 import com.example.swp493_g1_camms.utils.StatusUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +26,8 @@ import java.util.*;
 public class ProductServiceImpl implements IProductService {
     @Autowired
     ProductRepository productRepository;
+    @Autowired
+    ConvertToEntities convertToEntities;
     @Autowired
     ICategoryRepository categoryRepository;
     @Autowired
@@ -158,5 +159,89 @@ public class ProductServiceImpl implements IProductService {
         return new ResponseEntity<>(responseVo,HttpStatus.BAD_REQUEST);
     }
 
+    //add product vao bang product voi so luong mac dinh bang 0
+    //chua test
+    @Override
+    public ResponseEntity<?> addProduct(ProductRequest productRequest) {
+        ResponseVo responseVo = new ResponseVo();
+        Product productExist = productRepository.findProductByName(productRequest.getName().trim());
+        if (productExist != null) {
+            responseVo.setMessage("Tên sản phẩm đã bị trùng !!");
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
+        Product productExist2 = productRepository.findProductByProductCode(productRequest.getProductCode().trim());
+        if (productExist2 != null) {
+            responseVo.setMessage("Mã sản phẩm đã bị trùng !!");
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
+        Product product = convertToEntities.convertProduct(productRequest);
+        // cho nay tren front end chi cos 1 cai hien ra la subcategory de chon ?
+        //neu nhu tren form add product cos category hien ra
+        Category category = categoryRepository.findCategoryById(productRequest.getCategory_id());
+        if (productRequest.getSubCategory_id() != null) {
+            SubCategory subCategory = subCategoryRepository.findSubCategoryById(productRequest.getSubCategory_id());
+            product.setSubCategory(subCategory);
+        }
+        Manufacturer manufacturer = manufacturerRepository.findManufacturerById(productRequest.getManufacturor_id());
+        product.setCategory(category);
+        product.setManufacturer(manufacturer);
+        product.setQuantity(0);
+        product.setDeletedAt(false);
+        productRepository.save(product);
+        responseVo.setMessage("Tạo thành công !!");
+        return new ResponseEntity<>(responseVo, HttpStatus.OK);
+    }
 
+    @Override
+    public ResponseEntity<?> updateProduct(ProductRequest productRequest) {
+        ResponseVo responseVo = new ResponseVo();
+        Product p = productRepository.findProductByIdAndName(
+                productRequest.getId(), productRequest.getName().trim());
+        if (p != null) {
+            responseVo.setMessage("Tên sản phẩm đã bị trùng !!");
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
+        Product p2 = productRepository.findProductByIdAndProductCode(
+                        productRequest.getId(), productRequest.getProductCode().trim());
+        if (p2 != null) {
+            responseVo.setMessage("Mã sản phẩm đã bị trùng !!");
+            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+        }
+        Product productBefore = productRepository.findProductById(productRequest.getId());
+        Product product = convertToEntities.convertProduct(productRequest);
+        Category category = categoryRepository.findCategoryById(productRequest.getCategory_id());
+        if (productRequest.getSubCategory_id() != null) {
+            SubCategory subCategory = subCategoryRepository.findSubCategoryById(
+                    productRequest.getSubCategory_id());
+            product.setSubCategory(subCategory);
+        }
+        Manufacturer manufacturer = manufacturerRepository.findManufactorById(
+                productRequest.getManufacturor_id());
+        product.setCategory(category);
+        product.setManufacturer(manufacturer);
+        product.setDeletedAt(false);
+        product.setImage(productBefore.getImage());
+        product.setUnitprice(productBefore.getUnitprice());
+        productRepository.save(product);
+        responseVo.setMessage("Cập nhập thành công !!");
+        return new ResponseEntity<>(responseVo, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> deleteProductById(Long productId) {
+        Product p = productRepository.findProductById(productId);
+        ResponseVo responseVo = new ResponseVo();
+        if(p!=null){
+            p.setDeletedAt(true);
+            productRepository.save(p);
+            responseVo.setMessage("Cập nhập thành công !!");
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }
+        responseVo.setMessage("Tên sản phẩm không tồn tại !!");
+        return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+    }
+
+    //search theo tên sản phẩm
+    // phần search phải xem lại vì mới làm  1 kiểu search
+    
 }

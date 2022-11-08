@@ -1,6 +1,7 @@
 package com.example.swp493_g1_camms.controller;
 
 import com.example.swp493_g1_camms.entities.Product;
+import com.example.swp493_g1_camms.payload.request.ProductRequest;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
 import com.example.swp493_g1_camms.repository.ProductRepository;
 import com.example.swp493_g1_camms.services.impl.ProductServiceImpl;
@@ -63,5 +64,38 @@ public class ProductController {
         pageIndex = pageIndex == null ? defaultPage : pageIndex;
         pageSize = pageSize == null ? defaultSize : pageSize;
         return productService.findById(productId, pageIndex, pageSize);
+    }
+
+    @PostMapping(path = "/addProduct")
+    public ResponseEntity<?> addProduct(@RequestBody ProductRequest productRequest){
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
+        return productService.addProduct(productRequest);
+    }
+
+    @PutMapping(path = "/updateProduct")
+    public ResponseEntity<?> updateProduct(@RequestBody ProductRequest productRequest){
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
+        return productService.updateProduct(productRequest);
+    }
+
+    @DeleteMapping(path = "/deleteProduct/{productId}")
+    public ResponseEntity<?> deleteProduct(@PathVariable Long productId){
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
+        return productService.deleteProductById(productId);
     }
 }

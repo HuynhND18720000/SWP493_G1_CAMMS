@@ -18,4 +18,8 @@ public interface IManufacturerRepository extends JpaRepository<Manufacturer, Lon
     public Manufacturer findManufacturerById(Long id);
     Page<Manufacturer> findAllManufacturerByDeletedAt(boolean deletedAt, Pageable pageable);
 
+    @Query("SELECT m FROM Manufacturer m "
+            + "Where m.id = ?1 AND m.deletedAt = false" )
+    Manufacturer findManufactorById(Long manufactorId);
+
 }

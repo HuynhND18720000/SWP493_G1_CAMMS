@@ -18,10 +18,7 @@ public class ProductRequest {
     private String description;
     private String image;
     private double unitprice;
-    private Date out_date;
-    private int quantity;
     private String unit_measure;
-    private boolean deletedAt;
     private Long category_id;
     private Long subCategory_id;
     private Long manufacturor_id;

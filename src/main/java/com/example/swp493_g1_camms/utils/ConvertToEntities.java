@@ -1,8 +1,10 @@
 package com.example.swp493_g1_camms.utils;
 
 import com.example.swp493_g1_camms.entities.Category;
+import com.example.swp493_g1_camms.entities.Product;
 import com.example.swp493_g1_camms.entities.SubCategory;
 import com.example.swp493_g1_camms.payload.request.CategoryDTO;
+import com.example.swp493_g1_camms.payload.request.ProductRequest;
 import com.example.swp493_g1_camms.payload.request.SubCategoryDTO;
 import org.springframework.stereotype.Component;
 
@@ -21,5 +23,21 @@ public class ConvertToEntities {
         category.setName(CategoryDTO.getName().trim());
         category.setDescription(CategoryDTO.getDescription());
         return category;
+    }
+
+    public Product convertProduct(ProductRequest productRequest){
+        Product product = new Product();
+        //cho nay nen luu y id cua product boi vi khi add thi ko co id
+        //thi co nen de set id hay cho nay de id tu tang
+        product.setId(productRequest.getId());
+        product.setName(productRequest.getName().trim());
+        product.setProductCode(productRequest.getProductCode());
+        product.setUnitMeasure(productRequest.getUnit_measure());
+        product.setDescription(productRequest.getDescription());
+        product.setUnitprice(productRequest.getUnitprice());
+        if(productRequest.getImage() != null) {
+            product.setImage(productRequest.getImage());
+        }
+        return product;
     }
 }

@@ -41,4 +41,16 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query(value = "SELECT p.unitprice FROM Product as p WHERE p.id = ?1 " +
             "AND p.deletedAt = false")
     Double totalPrice(Long productId);
+
+    @Query("SELECT p FROM Product p Where p.name = ?1 AND p.deletedAt = false" )
+    Product findProductByName(String productName);
+
+    @Query("SELECT p FROM Product p Where p.productCode= ?1 AND p.deletedAt = false" )
+    Product findProductByProductCode(String productCode);
+
+    @Query("SELECT p FROM Product p  Where p.id <> ?1 and p.name = ?2 AND p.deletedAt = false")
+    Product findProductByIdAndName(Long id, String categoryName);
+
+    @Query("SELECT p FROM Product p  Where p.id <> ?1 and p.productCode = ?2 AND p.deletedAt = false")
+    Product findProductByIdAndProductCode(Long id, String productCode);
 }

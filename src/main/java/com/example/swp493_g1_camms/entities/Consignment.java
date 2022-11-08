@@ -27,6 +27,7 @@ public class Consignment {
     @Column(name = "import_date")
     private LocalDateTime importDate;
 
+
     @Column(name = "deleted_at")
     private Boolean deletedAt;
 
@@ -35,6 +36,7 @@ public class Consignment {
 
     @OneToMany(mappedBy = "consignment", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<StockTakingHistoryDetail> stockTakingHistoryDetails;
+
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "warehouse_id", referencedColumnName = "id")
