@@ -30,9 +30,9 @@ public class ManufacturerServiceImpl implements IManufacturerService {
         Map<String, Object> map = new HashMap<>();
         manufacturerPage = IManufacturerRepository.findAllManufacturerByDeletedAt(false, pageable);
         if (manufacturerPage.isEmpty()) {
-            map.put("category", manufacturerPage.getContent());
+            map.put("manufacturer", manufacturerPage.getContent());
             map.put("totalRecord", 0);
-            responseVo.setMessage("Không tìm thấy danh sách khách hàng!");
+            responseVo.setMessage("Không tìm thấy danh sách nhà cung cấp!");
             responseVo.setData(map);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
@@ -56,7 +56,7 @@ public class ManufacturerServiceImpl implements IManufacturerService {
         manufacturer.setDeletedAt(false);
         IManufacturerRepository.save(manufacturer);
         ResponseVo responseVo = new ResponseVo();
-        responseVo.setMessage("Tạo khách hàng thành công !!");
+        responseVo.setMessage("Tạo nhà cung cấp thành công !!");
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
 
@@ -69,7 +69,7 @@ public class ManufacturerServiceImpl implements IManufacturerService {
         manufacturer1.setPhone(manufacturerDTO.getPhone());
         IManufacturerRepository.save(manufacturer1);
         ResponseVo responseVo = new ResponseVo();
-        responseVo.setMessage("Sửa thông tin khách hàng thành công !!");
+        responseVo.setMessage("Sửa thông tin nhà cung cấp thành công !!");
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
 
@@ -80,7 +80,7 @@ public class ManufacturerServiceImpl implements IManufacturerService {
         Map<String, Object> map = new HashMap<>();
         map.put("manufacturer", manufacturer);
         responseVo.setData(map);
-        responseVo.setMessage("Lấy dữ liệu khách hàng thành công");
+        responseVo.setMessage("Lấy dữ liệu nhà cung cấp thành công");
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
 
@@ -92,9 +92,9 @@ public class ManufacturerServiceImpl implements IManufacturerService {
         Map<String, Object> map = new HashMap<>();
         manufacturerPage = IManufacturerRepository.findAllManufacturerByName(name.trim(), pageable);
         if (manufacturerPage.isEmpty()) {
-            map.put("category", manufacturerPage.getContent());
+            map.put("manufacturer", manufacturerPage.getContent());
             map.put("totalRecord", 0);
-            responseVo.setMessage("Không tìm thấy danh sách khách hàng!");
+            responseVo.setMessage("Không tìm thấy danh sách nhà cung cấp!");
             responseVo.setData(map);
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }
