@@ -54,8 +54,8 @@ public class ProductController {
                     .badRequest()
                     .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
         }
-        return productService.findAllProduct(pageIndex,pageSize,productName,productCode,
-                manufactorId,categoryId);
+        return productService.findAllProduct(pageIndex,pageSize,productName,productCode,categoryId,
+                manufactorId);
     }
     @GetMapping("/products/{productId}")
     public ResponseEntity<?> productDetail(
