@@ -132,28 +132,22 @@ public class ProductServiceImpl implements IProductService {
                         productRepository.countQuantity(product.getId()));
                 productResponse.setUnitprice(
                         productRepository.totalPrice(product.getId()));
-                Page<ConsignmentProduct> consignmentPage = iRelationConsignmentProductRepository.
-                        getAllConsignmentByProductId(product.getId(),
-                        pageable);
-                for (ConsignmentProduct cp: consignmentPage
-                     ) {
-                    System.out.println("====================");
-                    System.out.println("Consignment la: "+ cp.getConsignment().toString());
-
-                    System.out.println("====================");
-                }
-                if(consignmentPage.isEmpty()){
-                    map.put("consignment", consignmentPage.getContent());
-                    map.put("totalRecord", 0);
-                    responseVo.setMessage("Không tìm thấy danh sách lo hàng!");
-                    responseVo.setData(map);
-                }
+//                Page<ConsignmentProduct> consignmentPage = iRelationConsignmentProductRepository.
+//                        getAllConsignmentByProductId(product.getId(),
+//                        pageable);
+//
+//                if(consignmentPage.isEmpty()){
+//                    map.put("consignment", consignmentPage.getContent());
+//                    map.put("totalRecord", 0);
+//                    responseVo.setMessage("Không tìm thấy danh sách lo hàng!");
+//                    responseVo.setData(map);
+//                }
                 map.put("product",ProductResponse.createDetailProduct(product,productResponse));
-                map.put("consignment", consignmentPage.getContent());
-                map.put("totalRecord", consignmentPage.getTotalElements());
+//                map.put("consignment", consignmentPage.getContent());
+//                map.put("totalRecord", consignmentPage.getTotalElements());
                 map.put("currentPage", pageIndex);
-                map.put("pageSize", consignmentPage.getSize());
-                map.put("totalPage", consignmentPage.getTotalPages());
+//                map.put("pageSize", consignmentPage.getSize());
+//                map.put("totalPage", consignmentPage.getTotalPages());
                 responseVo.setData(map);
                 return new ResponseEntity<>(responseVo,HttpStatus.OK);
             }
