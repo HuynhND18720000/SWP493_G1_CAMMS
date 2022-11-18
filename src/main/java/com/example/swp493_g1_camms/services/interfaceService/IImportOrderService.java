@@ -5,4 +5,5 @@ import org.springframework.http.ResponseEntity;
 
 public interface IImportOrderService {
     ResponseEntity<?> createOrder(ImportOrderRequest importOrderRequest);
+    ResponseEntity<?> getProductByManufacturer(Long id);
 }

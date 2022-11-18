@@ -7,10 +7,7 @@ import com.example.swp493_g1_camms.utils.CurrentUserIsActive;
 import com.example.swp493_g1_camms.utils.StatusUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -19,7 +16,7 @@ public class ImportOrderController {
     ImportOrderImpl importOrder;
 
     @PostMapping(path = "/createOrder")
-    public ResponseEntity<?> addProduct(@RequestBody ImportOrderRequest importOrderRequest){
+    public ResponseEntity<?> createOrder(@RequestBody ImportOrderRequest importOrderRequest){
         boolean isActive = CurrentUserIsActive.currentUserIsActive();
         if(!isActive){
             return ResponseEntity
@@ -28,5 +25,14 @@ public class ImportOrderController {
         }
         return importOrder.createOrder(importOrderRequest);
     }
-
+    @GetMapping(path = "/import/getAllProductByManufacturer/{id}")
+    public ResponseEntity<?> getAllProductByManufacturerId(@PathVariable Long id){
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
+        return importOrder.getProductByManufacturer(id);
+    }
 }

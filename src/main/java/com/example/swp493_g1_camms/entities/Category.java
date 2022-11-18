@@ -1,5 +1,6 @@
 package com.example.swp493_g1_camms.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;

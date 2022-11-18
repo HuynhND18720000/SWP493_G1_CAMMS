@@ -4,7 +4,9 @@ import com.example.swp493_g1_camms.entities.*;
 import com.example.swp493_g1_camms.payload.request.ConsignmentRequest;
 import com.example.swp493_g1_camms.payload.request.ImportOrderRequest;
 import com.example.swp493_g1_camms.payload.request.ProductRequest;
+import com.example.swp493_g1_camms.payload.response.ListProductResponse;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
+import com.example.swp493_g1_camms.payload.response.ProductResponse;
 import com.example.swp493_g1_camms.payload.response.ResponseVo;
 import com.example.swp493_g1_camms.repository.*;
 import com.example.swp493_g1_camms.services.interfaceService.IImportOrderService;
@@ -15,9 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ImportOrderImpl implements IImportOrderService {
@@ -44,6 +44,8 @@ public class ImportOrderImpl implements IImportOrderService {
     IConsignmentRepository consignmentRepository;
     @Autowired
     IRelationConsignmentProductRepository relationConsignmentProductRepository;
+
+    ListProductResponse listProductResponse;
     @Override
     public ResponseEntity<?> createOrder(ImportOrderRequest importOrderRequest) {
         List<ProductRequest> productList = new ArrayList<>();
@@ -80,7 +82,6 @@ public class ImportOrderImpl implements IImportOrderService {
             consignment.setImportDate(convertDateUtils.convertDateFormat());
             consignment.setDeletedAt(false);
             consignmentRepository.save(consignment);
-
 
             //them vao consignment product
             ConsignmentRequest consignmentRequest = importOrderRequest.getConsignmentRequest();
@@ -120,5 +121,33 @@ public class ImportOrderImpl implements IImportOrderService {
                     .badRequest()
                     .body(messageResponse);
         }
+    }
+
+    @Override
+    public ResponseEntity<?> getProductByManufacturer(Long id) {
+        MessageResponse messageResponse = new MessageResponse();
+        try{
+            listProductResponse = new ListProductResponse();
+            ResponseVo responseVo = new ResponseVo();
+            List<Product> listProduct = productRepository.getAllProductByManufacturerId(id);
+            ProductResponse productResponse = new ProductResponse();
+            Map<String, Object> map = new HashMap<>();
+            if (listProduct.size() == 0) {
+                map.put("product", null);
+                map.put("totalRecord", 0);
+                responseVo.setMessage("Không tìm thấy List Manufacturer");
+                responseVo.setData(map);
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            }
+            map.put("product", listProductResponse.createSuccessData(listProduct));
+            responseVo.setData(map);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }catch(Exception e){
+            messageResponse.setMessage(e+"");
+            return ResponseEntity
+                    .badRequest()
+                    .body(messageResponse);
+        }
+
     }
 }
