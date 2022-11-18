@@ -17,9 +17,9 @@ public class ProductRequest {
     private String name;
     private String description;
     private String image;
-    private double unitprice;
+    private double unit_price;
     private String unit_measure;
     private Long category_id;
     private Long subCategory_id;
-    private Long manufacturor_id;
+    private Long manufacturer_id;
 }

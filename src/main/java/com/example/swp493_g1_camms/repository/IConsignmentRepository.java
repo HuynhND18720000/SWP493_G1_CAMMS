@@ -16,4 +16,6 @@ public interface IConsignmentRepository extends JpaRepository<Consignment,Long> 
 //    @Query(value = "SELECT SUM(c.unitPrice) FROM Consignment as c WHERE c.product.id = ?1 " +
 //            "AND c.deletedAt = false")
 //    Double totalPrice(Long productId);
+
+
 }

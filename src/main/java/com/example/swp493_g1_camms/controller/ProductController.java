@@ -26,6 +26,12 @@ public class ProductController {
     @GetMapping("/products")
     public ResponseEntity<?> getAllProducts(@RequestParam(required = false) Integer pageIndex,
                                             @RequestParam(required = false) Integer pageSize){
+        boolean currentUserIsActive = CurrentUserIsActive.currentUserIsActive();
+        if(!currentUserIsActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Tài khoản của bạn đã bị tạm dừng!", StatusUtils.NOT_Allow));
+        }
         pageIndex = pageIndex == null ? defaultPage : pageIndex;
         pageSize = pageSize == null ? defaultSize : pageSize;
         return productService.getAllProducts(pageIndex, pageSize);
@@ -39,14 +45,15 @@ public class ProductController {
                                              @RequestParam(required = false) String productCode,
                                              @RequestParam(required = false) Long manufactorId,
                                              @RequestParam(required = false) Long categoryId){
+
+        pageIndex = pageIndex == null ? defaultPage : pageIndex;
+        pageSize = pageSize == null ? defaultSize : pageSize;
         boolean isActive = CurrentUserIsActive.currentUserIsActive();
         if(!isActive){
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
         }
-        pageIndex = pageIndex == null ? defaultPage : pageIndex;
-        pageSize = pageSize == null ? defaultSize : pageSize;
         return productService.findAllProduct(pageIndex,pageSize,productName,productCode,
                 manufactorId,categoryId);
     }

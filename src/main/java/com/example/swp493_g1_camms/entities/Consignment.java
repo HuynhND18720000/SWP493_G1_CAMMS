@@ -1,5 +1,6 @@
 package com.example.swp493_g1_camms.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,9 +21,6 @@ public class Consignment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "expiration_date")
-    private LocalDateTime expirationDate;
 
     @Column(name = "import_date")
     private LocalDateTime importDate;
@@ -45,5 +43,13 @@ public class Consignment {
     @OneToMany(mappedBy = "consignment")
     private Set<ConsignmentProduct> consignmentProducts;
 
-
+    @Override
+    public String toString() {
+        return "Consignment{" +
+                "id=" + id +
+                ", importDate=" + importDate +
+                ", deletedAt=" + deletedAt +
+                ", warehouse id=" + warehouse.getId() +
+                '}';
+    }
 }

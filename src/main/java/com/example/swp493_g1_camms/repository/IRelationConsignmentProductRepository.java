@@ -16,7 +16,15 @@ public interface IRelationConsignmentProductRepository extends JpaRepository<Con
     Double totalPrice(Long productId);
 
     @Query(value = "SELECT cp FROM ConsignmentProduct as cp, Consignment c\n" +
-            "            Where cp.product.id = ?1 AND cp.consignment.id = c.id\n" +
+            "            Where cp.id.product_id = ?1 AND cp.id.consignment_id = c.id\n" +
             "            AND c.importDate is not null AND cp.quantity > 0  AND cp.deletedAt = false")
     Page<ConsignmentProduct> getAllConsignmentByProductId(Long productId, Pageable pageable);
+
+    @Query(value = "SELECT SUM(cp.quantity) FROM ConsignmentProduct as cp WHERE cp.id.product_id = ?1 " +
+            "AND cp.deletedAt = false")
+    Integer countQuantity1(Long productId);
+
+    @Query(value = "SELECT SUM(cp.unitPrice) FROM ConsignmentProduct as cp WHERE cp.id.product_id = ?1 " +
+            "AND cp.deletedAt = false")
+    Double totalPrice1(Long productId);
 }

@@ -48,9 +48,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p Where p.productCode= ?1 AND p.deletedAt = false" )
     Product findProductByProductCode(String productCode);
 
-    @Query("SELECT p FROM Product p  Where p.id <> ?1 and p.name = ?2 AND p.deletedAt = false")
-    Product findProductByIdAndName(Long id, String categoryName);
+    @Query("SELECT p FROM Product p  Where p.id=?1 and p.name = ?2 AND p.deletedAt = false")
+    Product findProductByIdAndName(Long id,String name);
 
-    @Query("SELECT p FROM Product p  Where p.id <> ?1 and p.productCode = ?2 AND p.deletedAt = false")
+    @Query("SELECT p FROM Product p  Where p.id=?1 and  p.productCode = ?2 AND p.deletedAt = false")
     Product findProductByIdAndProductCode(Long id, String productCode);
+
+    @Query("SELECT p FROM Product as p, Manufacturer as m WHERE m.id = p.manufacturer.id AND m.id = ?1")
+    List<Product> getAllProductByManufacturerId(Long manufacturerId);
 }

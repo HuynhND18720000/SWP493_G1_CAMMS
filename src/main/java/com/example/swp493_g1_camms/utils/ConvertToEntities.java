@@ -34,7 +34,7 @@ public class ConvertToEntities {
         product.setProductCode(productRequest.getProductCode());
         product.setUnitMeasure(productRequest.getUnit_measure());
         product.setDescription(productRequest.getDescription());
-        product.setUnitprice(productRequest.getUnitprice());
+        product.setUnitprice(productRequest.getUnit_price());
         if(productRequest.getImage() != null) {
             product.setImage(productRequest.getImage());
         }

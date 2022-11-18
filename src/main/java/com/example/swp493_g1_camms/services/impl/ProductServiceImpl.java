@@ -68,15 +68,11 @@ public class ProductServiceImpl implements IProductService {
         }
     }
 
+    //đã kiểm tra xong
     @Override
     public ResponseEntity<?> findAllProduct(int pageIndex, int pageSize, String productName,
                                             String productCode, Long categoryId, Long manufactorId) {
-        boolean currentUserIsActive = CurrentUserIsActive.currentUserIsActive();
-        if(!currentUserIsActive){
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Tài khoản của bạn đã bị tạm dừng!", StatusUtils.NOT_Allow));
-        }
+
         Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
         String productSearch = "";
         Page<Product> productPage = null;
@@ -136,20 +132,28 @@ public class ProductServiceImpl implements IProductService {
                         productRepository.countQuantity(product.getId()));
                 productResponse.setUnitprice(
                         productRepository.totalPrice(product.getId()));
-                Page<ConsignmentProduct> consignmentPage = iRelationConsignmentProductRepository.getAllConsignmentByProductId(product.getId(),
-                        pageable);
-                if(consignmentPage.isEmpty()){
-                    map.put("consignment", consignmentPage.getContent());
-                    map.put("totalRecord", 0);
-                    responseVo.setMessage("Không tìm thấy danh sách lo hàng!");
-                    responseVo.setData(map);
-                }
+//                Page<ConsignmentProduct> consignmentPage = iRelationConsignmentProductRepository.
+//                        getAllConsignmentByProductId(product.getId(),
+//                        pageable);
+//                for (ConsignmentProduct cp: consignmentPage
+//                     ) {
+//                    System.out.println("====================");
+//                    System.out.println("Consignment la: "+ cp.getConsignment().toString());
+//
+//                    System.out.println("====================");
+//                }
+//                if(consignmentPage.isEmpty()){
+//                    map.put("consignment", consignmentPage.getContent());
+//                    map.put("totalRecord", 0);
+//                    responseVo.setMessage("Không tìm thấy danh sách lo hàng!");
+//                    responseVo.setData(map);
+//                }
                 map.put("product",ProductResponse.createDetailProduct(product,productResponse));
-                map.put("consignment", consignmentPage.getContent());
-                map.put("totalRecord", consignmentPage.getTotalElements());
+//                map.put("consignment", consignmentPage.getContent());
+//                map.put("totalRecord", consignmentPage.getTotalElements());
                 map.put("currentPage", pageIndex);
-                map.put("pageSize", consignmentPage.getSize());
-                map.put("totalPage", consignmentPage.getTotalPages());
+//                map.put("pageSize", consignmentPage.getSize());
+//                map.put("totalPage", consignmentPage.getTotalPages());
                 responseVo.setData(map);
                 return new ResponseEntity<>(responseVo,HttpStatus.OK);
             }
@@ -182,7 +186,7 @@ public class ProductServiceImpl implements IProductService {
             SubCategory subCategory = subCategoryRepository.findSubCategoryById(productRequest.getSubCategory_id());
             product.setSubCategory(subCategory);
         }
-        Manufacturer manufacturer = manufacturerRepository.findManufacturerById(productRequest.getManufacturor_id());
+        Manufacturer manufacturer = manufacturerRepository.findManufacturerById(productRequest.getManufacturer_id());
         product.setCategory(category);
         product.setManufacturer(manufacturer);
         product.setQuantity(0);
@@ -195,14 +199,15 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public ResponseEntity<?> updateProduct(ProductRequest productRequest) {
         ResponseVo responseVo = new ResponseVo();
-        Product p = productRepository.findProductByIdAndName(
-                productRequest.getId(), productRequest.getName().trim());
+        Product p =
+                productRepository.findProductByIdAndName(productRequest.getId(),productRequest.getName().trim());
         if (p != null) {
             responseVo.setMessage("Tên sản phẩm đã bị trùng !!");
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
-        Product p2 = productRepository.findProductByIdAndProductCode(
-                        productRequest.getId(), productRequest.getProductCode().trim());
+        Product p2 =
+                productRepository.findProductByIdAndProductCode(productRequest.getId(),
+                       productRequest.getProductCode().trim());
         if (p2 != null) {
             responseVo.setMessage("Mã sản phẩm đã bị trùng !!");
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
@@ -216,12 +221,12 @@ public class ProductServiceImpl implements IProductService {
             product.setSubCategory(subCategory);
         }
         Manufacturer manufacturer = manufacturerRepository.findManufactorById(
-                productRequest.getManufacturor_id());
+                productRequest.getManufacturer_id());
         product.setCategory(category);
         product.setManufacturer(manufacturer);
         product.setDeletedAt(false);
-        product.setImage(productBefore.getImage());
-        product.setUnitprice(productBefore.getUnitprice());
+        product.setImage(productRequest.getImage());
+        product.setUnitprice(productRequest.getUnit_price());
         productRepository.save(product);
         responseVo.setMessage("Cập nhập thành công !!");
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
