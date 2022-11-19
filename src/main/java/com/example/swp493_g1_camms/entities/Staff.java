@@ -19,7 +19,7 @@ public class Staff {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "fullName")
+    @Column(name = "full_name")
     private String fullName;
 
     @Column(name = "email")
@@ -31,8 +31,12 @@ public class Staff {
     @Column(name = "image")
     private String image;
 
+    @Column(name = "role")
+    private String role;
+
     @Column(name = "dob")
     private LocalDateTime dob;
 
-
+    @Column(name = "deleted_at")
+    private Boolean deletedAt;
 }
