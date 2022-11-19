@@ -12,7 +12,9 @@ import java.io.Serializable;
 @Setter
 public class ConsignmentProductKey implements Serializable {
     @Column(name = "consignment_id")
-    public Long consignment_id;
+    public Long consignmentid;
     @Column(name = "product_id")
-    public Long product_id;
+    public Long productid;
+
+
 }

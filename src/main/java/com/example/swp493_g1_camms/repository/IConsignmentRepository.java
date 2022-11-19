@@ -6,16 +6,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface IConsignmentRepository extends JpaRepository<Consignment,Long> {
-//    @Query(value = "SELECT SUM(c.quantity) FROM Consignment as c WHERE c.product.id = ?1 " +
-//            "AND c.deletedAt = false")
-//    Integer countQuantity(Long productId);
-//    @Query("SELECT c FROM Consignment c "
-//            + "Where c.product.id = ?1 AND c.importDate is not null AND c.quantity > 0  AND c.deletedAt = false" )
-//    Page<Consignment> findAllConsignmentByProductId(Long productId, Pageable pageable);
-//    @Query(value = "SELECT SUM(c.unitPrice) FROM Consignment as c WHERE c.product.id = ?1 " +
-//            "AND c.deletedAt = false")
-//    Double totalPrice(Long productId);
+import java.time.LocalDateTime;
 
+public interface IConsignmentRepository extends JpaRepository<Consignment,Long> {
+    @Query(value = "SELECT MAX(c.consignment_code) AS lastConsignment FROM Consignment AS c")
+    Long getLastConsignmentCode();
+
+    @Query(value = "SELECT c FROM Consignment AS c where c.consignment_code = ?1")
+    Consignment getCurrentConsignmentId(Long consignment_code);
+    @Query(value = "SELECT c FROM Consignment as c where c.consignment_code = ?1")
+    Consignment getConsignmentByConsignmentCode(Long consignment_code);
 
 }

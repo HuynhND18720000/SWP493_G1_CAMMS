@@ -6,10 +6,14 @@ import com.example.swp493_g1_camms.entities.SubCategory;
 import com.example.swp493_g1_camms.payload.request.CategoryDTO;
 import com.example.swp493_g1_camms.payload.request.ProductRequest;
 import com.example.swp493_g1_camms.payload.request.SubCategoryDTO;
+import com.example.swp493_g1_camms.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ConvertToEntities {
+    @Autowired
+    ProductRepository productRepository;
     public SubCategory convertSubCategory(SubCategoryDTO subCategoryDTO) {
         SubCategory subCategory = new SubCategory();
         subCategory.setId(subCategoryDTO.getId());
@@ -40,4 +44,22 @@ public class ConvertToEntities {
         }
         return product;
     }
+
+    public Product convertProductToAddConsignmentProduct(ProductRequest productRequest){
+        Product product = new Product();
+        product.setId(productRequest.getId());
+        product.setName(productRequest.getName());
+        product.setProductCode(productRequest.getProductCode());
+        product.setQuantity(productRequest.getQuantity());
+        product.setUnitMeasure(productRequest.getUnit_measure());
+        product.setDescription(productRequest.getDescription());
+        product.setUnitprice(productRequest.getUnit_price());
+        product.setOutDate(productRequest.getOut_date());
+        product.setDeletedAt(false);
+        if(productRequest.getImage() != null) {
+            product.setImage(productRequest.getImage());
+        }
+        return product;
+    }
+
 }

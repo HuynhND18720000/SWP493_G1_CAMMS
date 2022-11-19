@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -44,7 +46,8 @@ public class ImportOrderImpl implements IImportOrderService {
     IConsignmentRepository consignmentRepository;
     @Autowired
     IRelationConsignmentProductRepository relationConsignmentProductRepository;
-
+    @Autowired
+    IOrderDetailRepository orderDetailRepository;
     ListProductResponse listProductResponse;
     @Override
     public ResponseEntity<?> createOrder(ImportOrderRequest importOrderRequest) {
@@ -79,40 +82,60 @@ public class ImportOrderImpl implements IImportOrderService {
             Warehouse warehouse = warehouseRepository.findWarehouseById(importOrderRequest.getWarehouseId());
             Consignment consignment = new Consignment();
             consignment.setWarehouse(warehouse);
-            consignment.setImportDate(convertDateUtils.convertDateFormat());
+            //LocalDateTime currentDate = convertDateUtils.convertDateFormat();
+
+            Date in = new Date();
+            LocalDateTime ldt = LocalDateTime.ofInstant(in.toInstant(), ZoneId.systemDefault());
+
+            consignment.setImportDate(ldt);
+
             consignment.setDeletedAt(false);
+            Long consignment_code = consignmentRepository.getLastConsignmentCode()+1;
+            consignment.setConsignment_code(consignment_code);
             consignmentRepository.save(consignment);
 
-            //them vao consignment product
+            // them vao consignment product
+            Long currentConsignmentCode = consignment_code;
+            Consignment consignment_id = consignmentRepository.getCurrentConsignmentId(currentConsignmentCode);
+
             ConsignmentRequest consignmentRequest = importOrderRequest.getConsignmentRequest();
-            ConsignmentProduct consignmentProduct = new ConsignmentProduct();
+
             productList = consignmentRequest.getProductRequestList();
             for (ProductRequest p: productList
                  ) {
-                Product p1 = convertToEntities.convertProduct(p);
+                Product p1 = convertToEntities.convertProductToAddConsignmentProduct(p);
                 list.add(p1);
+                System.out.println("list khi lay tu client la: "+p1);
             }
+
+
             for (Product pro: list
                  ) {
-                consignmentProduct.setConsignment(consignment);
+                ConsignmentProduct consignmentProduct = new ConsignmentProduct();
+                consignmentProduct.setConsignment(consignment_id);
                 consignmentProduct.setProduct(pro);
                 consignmentProduct.setQuantity(pro.getQuantity());
                 consignmentProduct.setUnitPrice(pro.getUnitprice());
                 consignmentProduct.setDeletedAt(false);
+                consignmentProduct.setExpirationDate(pro.getOutDate());
                 relationConsignmentProductRepository.save(consignmentProduct);
             }
 
             //them vao order detail
             OrderDetail orderDetail = new OrderDetail();
-            orderDetail.setOrder(order);
+            Order order_after_create = orderRepository.getOrderByOrderCode(order.getOrderCode());
+            orderDetail.setOrder(order_after_create);
             double totalPrice = 0;
             for (Product pro: list
             ) {
                 totalPrice += pro.getUnitprice();
             }
             orderDetail.setUnitPrice(totalPrice);
-            orderDetail.setConsignment(consignment);
-
+            Consignment consignment_add_ordeDetail = consignmentRepository.getConsignmentByConsignmentCode(
+                    consignment_code
+            );
+            orderDetail.setConsignment(consignment_add_ordeDetail);
+            orderDetailRepository.save(orderDetail);
             messageResponse.setMessage("Tao phieu nhap hang thanh cong");
             return new ResponseEntity<>(messageResponse,HttpStatus.OK);
         }catch (Exception e){

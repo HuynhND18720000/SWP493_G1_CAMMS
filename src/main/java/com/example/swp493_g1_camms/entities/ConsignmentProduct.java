@@ -17,17 +17,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ConsignmentProduct{
     @ManyToOne
-    @MapsId("consignment_id")
+    @MapsId("consignmentid")
     @JoinColumn(name = "consignment_id")
     private Consignment consignment;
 
     @ManyToOne
-    @MapsId("product_id")
+    @MapsId("productid")
     @JoinColumn(name = "product_id")
     private Product product;
 
     @EmbeddedId
-    private ConsignmentProductKey id;
+    private ConsignmentProductKey id = new ConsignmentProductKey();
 
     @Column(name = "quantity")
     private Integer quantity;
@@ -40,5 +40,6 @@ public class ConsignmentProduct{
 
     @Column(name = "expiration_date")
     private LocalDateTime expirationDate;
+
 
 }

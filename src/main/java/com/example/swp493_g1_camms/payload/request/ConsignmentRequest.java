@@ -14,9 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 public class ConsignmentRequest {
     private Long consignmentId;
-    private LocalDateTime expirationDate;
-    private LocalDateTime importDate;
-    private double unit_price;
-    private int quantity;
+    private String importDate;
     private List<ProductRequest> productRequestList;
 }
