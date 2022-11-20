@@ -1,6 +1,7 @@
 package com.example.swp493_g1_camms.services.impl;
 
 
+import com.example.swp493_g1_camms.entities.Manufacturer;
 import com.example.swp493_g1_camms.entities.Warehouse;
 import com.example.swp493_g1_camms.payload.request.WarehouseDTO;
 import com.example.swp493_g1_camms.payload.response.ListWarehouseResponse;
@@ -66,6 +67,19 @@ public class WarehouseServiceImpl implements IWarehouseService {
         IWarehouseRepository.save(warehouse);
         ResponseVo responseVo = new ResponseVo();
         responseVo.setMessage("Sửa thông tin kho thành công !!");
+        return new ResponseEntity<>(responseVo, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> addWarehouse(WarehouseDTO warehouseDTO) {
+        Warehouse warehouse = new Warehouse();
+//        manufacturer.setId(9L);
+        warehouse.setName(warehouseDTO.getName());
+        warehouse.setAddress(warehouseDTO.getAddress());
+        warehouse.setDeletedAt(false);
+        IWarehouseRepository.save(warehouse);
+        ResponseVo responseVo = new ResponseVo();
+        responseVo.setMessage("Tạo nhà kho thành công !!");
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
 
