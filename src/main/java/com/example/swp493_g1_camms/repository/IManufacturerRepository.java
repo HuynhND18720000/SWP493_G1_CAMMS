@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @EnableJpaRepositories
 public interface IManufacturerRepository extends JpaRepository<Manufacturer, Long> {
@@ -17,5 +19,8 @@ public interface IManufacturerRepository extends JpaRepository<Manufacturer, Lon
     @Query("SELECT m FROM Manufacturer m WHERE m.id = ?1")
     public Manufacturer findManufacturerById(Long id);
     Page<Manufacturer> findAllManufacturerByDeletedAt(boolean deletedAt, Pageable pageable);
+
+    @Query("SELECT m FROM Manufacturer m Where m.deletedAt = false" )
+    List<Manufacturer> findAllManufacturerNotPaging();
 
 }

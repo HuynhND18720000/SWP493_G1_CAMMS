@@ -14,4 +14,6 @@ public interface IManufacturerService {
     ResponseEntity<?> findManufacturerById(Long id);
 
     ResponseEntity<?> SearchManufacturer(Integer pageIndex, Integer pageSize, String name);
+
+    ResponseEntity<?> findAllManufacturerNotPaging();
 }
