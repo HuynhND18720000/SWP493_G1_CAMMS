@@ -130,7 +130,6 @@ public class ImportOrderImpl implements IImportOrderService {
             ) {
                 totalPrice += pro.getUnitprice();
             }
-            orderDetail.setUnitPrice(totalPrice);
             Consignment consignment_add_ordeDetail = consignmentRepository.getConsignmentByConsignmentCode(
                     consignment_code
             );
