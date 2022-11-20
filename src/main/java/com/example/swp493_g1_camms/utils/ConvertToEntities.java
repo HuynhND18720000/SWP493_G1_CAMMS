@@ -10,6 +10,9 @@ import com.example.swp493_g1_camms.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Component
 public class ConvertToEntities {
     @Autowired
@@ -54,7 +57,10 @@ public class ConvertToEntities {
         product.setUnitMeasure(productRequest.getUnit_measure());
         product.setDescription(productRequest.getDescription());
         product.setUnitprice(productRequest.getUnit_price());
-        product.setOutDate(productRequest.getOut_date());
+        String expiration_date = productRequest.getExpiration_date();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateTime = LocalDateTime.parse(expiration_date, formatter);
+        product.setOutDate(dateTime);
         product.setDeletedAt(false);
         if(productRequest.getImage() != null) {
             product.setImage(productRequest.getImage());

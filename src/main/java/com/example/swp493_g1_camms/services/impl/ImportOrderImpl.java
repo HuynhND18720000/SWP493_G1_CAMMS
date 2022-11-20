@@ -127,6 +127,7 @@ public class ImportOrderImpl implements IImportOrderService {
                 consignmentProduct.setQuantity(pro.getQuantity());
                 consignmentProduct.setUnitPrice(pro.getUnitprice());
                 consignmentProduct.setDeletedAt(false);
+
                 consignmentProduct.setExpirationDate(pro.getOutDate());
                 relationConsignmentProductRepository.save(consignmentProduct);
             }

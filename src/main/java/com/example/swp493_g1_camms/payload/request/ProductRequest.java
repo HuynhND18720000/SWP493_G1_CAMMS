@@ -25,4 +25,5 @@ public class ProductRequest {
     private Long subCategory_id;
     private Long manufacturer_id;
     private LocalDateTime out_date;
+    private String expiration_date;
 }
