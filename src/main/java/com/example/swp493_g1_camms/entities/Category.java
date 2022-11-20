@@ -24,6 +24,7 @@ public class Category {
      private Boolean deletedAt;
 
      @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+     @JsonIgnore
      private Set<Product> products;
 
      @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

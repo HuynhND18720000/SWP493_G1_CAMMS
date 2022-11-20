@@ -51,14 +51,17 @@ public class Product {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
+    @JsonIgnore
     private Category category;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "subCategory_id", referencedColumnName = "id")
+    @JsonIgnore
     private SubCategory subCategory;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "manufacturer_id", referencedColumnName = "id")
+    @JsonIgnore
     private Manufacturer manufacturer;
 
     @OneToMany(mappedBy = "product")

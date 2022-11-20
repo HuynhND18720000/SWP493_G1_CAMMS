@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.example.swp493_g1_camms.repository.IManufacturerRepository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -107,4 +108,21 @@ public class ManufacturerServiceImpl implements IManufacturerService {
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<?> findAllManufacturerNotPaging() {
+
+        ResponseVo responseVo = new ResponseVo();
+        Map<String, Object> map = new HashMap<>();
+        List<Manufacturer> manufacturers = IManufacturerRepository.findAllManufacturerNotPaging();
+        if (manufacturers.isEmpty()) {
+            map.put("totalRecord", 0);
+            responseVo.setMessage("Không tìm thấy danh sách khách hàng!");
+            responseVo.setData(map);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }
+        map.put("manufacturer", manufacturers);
+        responseVo.setData(map);
+        responseVo.setMessage("Lay du lieu thanh cong");
+        return new ResponseEntity<>(responseVo, HttpStatus.OK);
+    }
 }

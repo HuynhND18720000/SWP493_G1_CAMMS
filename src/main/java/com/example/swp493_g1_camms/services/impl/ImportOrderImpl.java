@@ -1,6 +1,7 @@
 package com.example.swp493_g1_camms.services.impl;
 
 import com.example.swp493_g1_camms.entities.*;
+import com.example.swp493_g1_camms.payload.request.ConsignmentProductDTO;
 import com.example.swp493_g1_camms.payload.request.ConsignmentRequest;
 import com.example.swp493_g1_camms.payload.request.ImportOrderRequest;
 import com.example.swp493_g1_camms.payload.request.ProductRequest;
@@ -10,15 +11,21 @@ import com.example.swp493_g1_camms.payload.response.ProductResponse;
 import com.example.swp493_g1_camms.payload.response.ResponseVo;
 import com.example.swp493_g1_camms.repository.*;
 import com.example.swp493_g1_camms.services.interfaceService.IImportOrderService;
+import com.example.swp493_g1_camms.utils.Constant;
 import com.example.swp493_g1_camms.utils.ConvertDateUtils;
 import com.example.swp493_g1_camms.utils.ConvertToEntities;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -48,6 +55,14 @@ public class ImportOrderImpl implements IImportOrderService {
     IRelationConsignmentProductRepository relationConsignmentProductRepository;
     @Autowired
     IOrderDetailRepository orderDetailRepository;
+
+    @Autowired
+    private IImportProductRepository iImportProductRepository;
+
+    @Autowired
+    private IConsignmentProductRepository iConsignmentProductRepository;
+
+
     ListProductResponse listProductResponse;
     @Override
     public ResponseEntity<?> createOrder(ImportOrderRequest importOrderRequest) {
@@ -130,7 +145,7 @@ public class ImportOrderImpl implements IImportOrderService {
             ) {
                 totalPrice += pro.getUnitprice();
             }
-            orderDetail.setUnitPrice(totalPrice);
+//            orderDetail.setUnitPrice(totalPrice);
             Consignment consignment_add_ordeDetail = consignmentRepository.getConsignmentByConsignmentCode(
                     consignment_code
             );
@@ -172,5 +187,154 @@ public class ImportOrderImpl implements IImportOrderService {
                     .body(messageResponse);
         }
 
+    }
+
+    @Override
+    public ServiceResult<Map<String, Object>> getListImportOrders(Integer pageIndex, Integer pageSize) {
+        ServiceResult<Map<String, Object>> mapServiceResult = new ServiceResult<>();
+        Map<String, Object> output = new HashMap<>();
+        Pageable pagable = PageRequest.of(pageIndex, pageSize,
+                Sort.by("id").descending());
+
+        try {
+            List<Map<String, Object>> orderList = iImportProductRepository.getListImportOrders(pagable);
+            BigInteger totalRecord = BigInteger.valueOf(0);
+            if (!orderList.isEmpty()) {
+                totalRecord = (BigInteger) orderList.get(0).get("totalRecord");
+            }
+            output.put("orderList", orderList);
+            output.put("pageIndex", pageIndex);
+            output.put("pageSize", pageSize);
+            output.put("totalRecord", totalRecord);
+            mapServiceResult.setData(output);
+            mapServiceResult.setMessage("success");
+            mapServiceResult.setStatus(HttpStatus.OK);
+        } catch (Exception e) {
+            mapServiceResult.setMessage("fail");
+            mapServiceResult.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+            return mapServiceResult;
+        }
+        return mapServiceResult;
+    }
+
+    @Override
+    public ServiceResult<Map<String, Object>> getImportOderDetail(Integer pageIndex, Integer pageSize, Long orderId) {
+        ServiceResult<Map<String, Object>> mapServiceResult = new ServiceResult<>();
+        Map<String, Object> output = new HashMap<>();
+        Pageable pagable = PageRequest.of(pageIndex, pageSize,
+                Sort.by("id").ascending());
+        try {
+            List<Map<String, Object>> listImportProducts = iImportProductRepository.getImportOrderDetail(orderId, pagable);
+            BigInteger totalRecord = BigInteger.valueOf(0);
+            if (!listImportProducts.isEmpty()) {
+                totalRecord = (BigInteger) listImportProducts.get(0).get("totalRecord");
+            }
+            output.put("listImportProduct", listImportProducts);
+            output.put("pageIndex", pageIndex);
+            output.put("pageSize", pageSize);
+            output.put("totalRecord", totalRecord);
+            mapServiceResult.setData(output);
+            mapServiceResult.setMessage("success");
+            mapServiceResult.setStatus(HttpStatus.OK);
+        } catch (Exception e) {
+            mapServiceResult.setMessage("fail");
+            mapServiceResult.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+            return mapServiceResult;
+        }
+        return mapServiceResult;
+    }
+
+    @Override
+    public ResponseEntity<?> confirmOrder(Long orderId, Long confirmBy) {
+        MessageResponse messageResponse = new MessageResponse();
+        if (confirmBy == null || confirmBy.equals("")) {
+            messageResponse.setMessage("Người xác nhận không thể bỏ trống !");
+            messageResponse.setStatus(Constant.FAIL);
+            return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+        }
+        if (orderId == null || orderId.equals("")) {
+            messageResponse.setMessage("Đơn hàng không tồn tại !");
+            messageResponse.setStatus(Constant.FAIL);
+            return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+        }
+        Status status = new Status();
+        status.setId(Constant.COMPLETED);
+        try {
+            Order order = iImportProductRepository.getOrderById(orderId);
+            order.setConfirmBy(confirmBy);
+            order.setStatus(status);
+            iImportProductRepository.save(order);
+            List<ConsignmentProduct> consignmentProducts =
+                    iConsignmentProductRepository.getConsignmentProductByOrderId(orderId);
+            for(int i =0 ; i < consignmentProducts.size(); i++){
+                ConsignmentProductKey consignmentProductKey = consignmentProducts.get(i).getId();
+                Product product = productRepository.findProductById(consignmentProductKey.getProductid());
+                product.setQuantity(product.getQuantity() + consignmentProducts.get(i).getQuantity());
+                productRepository.save(product);
+            }
+            ResponseVo responseVo = new ResponseVo();
+            responseVo.setMessage("Xác nhận nhập hàng thành công !!");
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            messageResponse.setMessage("Xác nhận đơn hàng thất bại !");
+            messageResponse.setStatus(Constant.FAIL);
+            return ResponseEntity
+                    .badRequest()
+                    .body(messageResponse);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> cancelOrder(Long orderId, Long confirmBy) {
+        MessageResponse messageResponse = new MessageResponse();
+        if (confirmBy == null || confirmBy.equals("")) {
+            messageResponse.setMessage("Người xác nhận không thể bỏ trống !");
+            messageResponse.setStatus(Constant.FAIL);
+            return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+        }
+        if (orderId == null || orderId.equals("")) {
+            messageResponse.setMessage("Đơn hàng không tồn tại !");
+            messageResponse.setStatus(Constant.FAIL);
+            return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+        }
+        Status status = new Status();
+        status.setId(Constant.CANCEL);
+        try {
+            Order order = iImportProductRepository.getOrderById(orderId);
+            order.setConfirmBy(confirmBy);
+            order.setStatus(status);
+            iImportProductRepository.save(order);
+            ResponseVo responseVo = new ResponseVo();
+            responseVo.setMessage("Hủy xác nhận nhập hàng thành công !!");
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            messageResponse.setMessage("Xác nhận đơn hàng thất bại !");
+            messageResponse.setStatus(Constant.FAIL);
+            return ResponseEntity
+                    .badRequest()
+                    .body(messageResponse);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> editOrder(List<ConsignmentProductDTO> consignmentProductDTOList) {
+        for (ConsignmentProductDTO cPDTO1: consignmentProductDTOList) {
+            ConsignmentProduct consignmentProduct =
+                    iConsignmentProductRepository.getConsignmentProductById(cPDTO1.getConsignmentId(), cPDTO1.getProductId());
+            String str = cPDTO1.getExpirationDate();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime dateTime = LocalDateTime.parse(str, formatter);
+            consignmentProduct.setExpirationDate(dateTime);
+            consignmentProduct.setQuantity(cPDTO1.getQuantity());
+            consignmentProduct.setUnitPrice(cPDTO1.getUnitPrice());
+            iConsignmentProductRepository.save(consignmentProduct);
+        }
+        ResponseVo responseVo = new ResponseVo();
+        responseVo.setMessage("Sửa thông tin nhập hàng thành công !!");
+        return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
 }

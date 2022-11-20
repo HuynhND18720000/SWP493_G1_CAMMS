@@ -44,4 +44,9 @@ public class ManufacturerController {
     public ResponseEntity<?> editManufacturer(@RequestBody ManufacturerDTO manufacturerDTO) {
         return IManufacturerService.editManufacturer(manufacturerDTO);
     }
+
+    @GetMapping("/manufacturersNotPaging")
+    public ResponseEntity<?> getListManufacturerNotPaging() {
+        return IManufacturerService.findAllManufacturerNotPaging();
+    }
 }
