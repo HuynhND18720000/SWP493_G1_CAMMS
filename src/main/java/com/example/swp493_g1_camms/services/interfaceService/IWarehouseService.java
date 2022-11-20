@@ -9,4 +9,6 @@ public interface IWarehouseService {
     ResponseEntity<?> findWarehouseById(Long id);
     ResponseEntity<?> editWarehouse(WarehouseDTO warehouseDTO);
     ResponseEntity<?> addWarehouse(WarehouseDTO warehouseDTO);
+
+
 }
