@@ -23,11 +23,6 @@ public class ManufacturerController {
         return IManufacturerService.findManufacturerById(id);
     }
 
-    @GetMapping("/getAManufacturer1")
-    public ResponseEntity<?> getA1Manufacturer(Long id) {
-        return IManufacturerService.findAManufacturerById(id);
-    }
-
     @GetMapping("/manufacturers")
     public ResponseEntity<?> getListManufacturer(@RequestParam(required = false) Integer pageIndex,
                                                  @RequestParam(required = false) Integer pageSize) {
@@ -49,4 +44,9 @@ public class ManufacturerController {
     public ResponseEntity<?> editManufacturer(@RequestBody ManufacturerDTO manufacturerDTO) {
         return IManufacturerService.editManufacturer(manufacturerDTO);
     }
+    @GetMapping("/getManufacturerNotPagging")
+    public ResponseEntity<?> getAllManufacturerNotPagging() {
+        return IManufacturerService.getAllManufacturerNotPagging();
+    }
+
 }

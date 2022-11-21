@@ -15,7 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.example.swp493_g1_camms.repository.IManufacturerRepository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -77,22 +79,13 @@ public class ManufacturerServiceImpl implements IManufacturerService {
     @Override
     public ResponseEntity<?> findManufacturerById(Long id) {
         Manufacturer manufacturer = IManufacturerRepository.findManufacturerById(id);
-        ResponseVo responseVo = new ResponseVo();
-        Map<String, Object> map = new HashMap<>();
-        map.put("manufacturer", manufacturer);
-        responseVo.setData(map);
-        responseVo.setMessage("Lấy dữ liệu nhà cung cấp thành công");
-        return new ResponseEntity<>(responseVo, HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<?> findAManufacturerById(Long id) {
-        Manufacturer manufacturer = IManufacturerRepository.findManufacturerById(id);
         ManufacturerResponse manufacturerResponse = new ManufacturerResponse();
         manufacturerResponse.setId(manufacturer.getId());
         manufacturerResponse.setName(manufacturer.getName());
         manufacturerResponse.setPhone(manufacturer.getPhone());
-
+        manufacturerResponse.setEmail(manufacturer.getEmail());
+        manufacturerResponse.setAddress(manufacturer.getAddress());
+        manufacturerResponse.setDeletedAt(false);
         ResponseVo responseVo = new ResponseVo();
         Map<String, Object> map = new HashMap<>();
         map.put("manufacturer", manufacturerResponse);
@@ -121,6 +114,29 @@ public class ManufacturerServiceImpl implements IManufacturerService {
         map.put("totalPage", manufacturerPage.getTotalPages());
         responseVo.setData(map);
         responseVo.setMessage("Lay du lieu thanh cong");
+        return new ResponseEntity<>(responseVo, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> getAllManufacturerNotPagging() {
+        List<Manufacturer> manufacturers = IManufacturerRepository.getAllManufacturerNotPagging();
+        List<ManufacturerResponse> manufacturerResponses = new ArrayList<>();
+        for(int i = 0; i<manufacturers.size() ; i++){
+            ManufacturerResponse manufacturerResponse = new ManufacturerResponse();
+            manufacturerResponse.setId(manufacturers.get(i).getId());
+            manufacturerResponse.setName(manufacturers.get(i).getName());
+            manufacturerResponse.setPhone(manufacturers.get(i).getPhone());
+            manufacturerResponse.setEmail(manufacturers.get(i).getEmail());
+            manufacturerResponse.setAddress(manufacturers.get(i).getAddress());
+            manufacturerResponse.setDeletedAt(false);
+            manufacturerResponses.add(manufacturerResponse);
+        }
+
+        ResponseVo responseVo = new ResponseVo();
+        Map<String, Object> map = new HashMap<>();
+        map.put("manufacturer", manufacturerResponses);
+        responseVo.setData(map);
+        responseVo.setMessage("Lấy dữ liệu nhà cung cấp thành công");
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
 

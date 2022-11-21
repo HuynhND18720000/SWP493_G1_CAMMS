@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @EnableJpaRepositories
 public interface IManufacturerRepository extends JpaRepository<Manufacturer, Long> {
@@ -21,5 +23,6 @@ public interface IManufacturerRepository extends JpaRepository<Manufacturer, Lon
     @Query("SELECT m FROM Manufacturer m "
             + "Where m.id = ?1 AND m.deletedAt = false" )
     Manufacturer findManufactorById(Long manufactorId);
-
+    @Query(value = "SELECT * FROM manufacturer WHERE deleted_at = false", nativeQuery = true )
+    List<Manufacturer > getAllManufacturerNotPagging();
 }
