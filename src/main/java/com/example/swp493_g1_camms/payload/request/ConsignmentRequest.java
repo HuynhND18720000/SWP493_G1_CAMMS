@@ -15,5 +15,6 @@ import java.util.List;
 public class ConsignmentRequest {
     private Long consignmentId;
     private String importDate;
+
     private List<ProductRequest> productRequestList;
 }

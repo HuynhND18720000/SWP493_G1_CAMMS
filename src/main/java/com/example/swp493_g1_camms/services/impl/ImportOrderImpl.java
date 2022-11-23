@@ -149,6 +149,7 @@ public class ImportOrderImpl implements IImportOrderService {
             messageResponse.setMessage("Tao phieu nhap hang thanh cong");
             return new ResponseEntity<>(messageResponse,HttpStatus.OK);
         }catch (Exception e){
+            System.out.println("loi khong tao dc");
             messageResponse.setMessage(e+"");
             return ResponseEntity
                     .badRequest()
@@ -193,7 +194,7 @@ public class ImportOrderImpl implements IImportOrderService {
             List<Map<String, Object>> orderList = iImportProductRepository.getListImportOrders(pageable);
             BigInteger totalRecord = BigInteger.valueOf(0);
             if (!orderList.isEmpty()) {
-                totalRecord = (BigInteger) orderList.get(0).get("totalRecord");
+                totalRecord = BigInteger.valueOf(orderList.size());
             }
             output.put("orderList", orderList);
             output.put("pageIndex", pageIndex);
@@ -265,6 +266,11 @@ public class ImportOrderImpl implements IImportOrderService {
                 ConsignmentProductKey consignmentProductKey = consignmentProducts.get(i).getId();
                 Product product = productRepository.findProductById(consignmentProductKey.getProductid());
                 product.setQuantity(product.getQuantity() + consignmentProducts.get(i).getQuantity());
+
+                if(product.getId()==consignmentProductKey.getProductid()){
+                    product.setUnitprice((product.getUnitprice()+consignmentProducts.get(i).getUnitPrice())/2);
+                }
+
                 productRepository.save(product);
             }
             ResponseVo responseVo = new ResponseVo();
