@@ -63,7 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers("/api/deleteProduct/{id}").permitAll()
                 .and().authorizeRequests().antMatchers("/api/import/createOrder").permitAll()
                 .and().authorizeRequests().antMatchers("/api/import/getAllProductByManufacturer/{id}").permitAll()
-                .and().authorizeRequests().antMatchers("/api/export/export-product/{id}").permitAll()
+                .and().authorizeRequests().antMatchers("/api/export/export-product").permitAll()
                 .and().authorizeRequests().antMatchers("/api/import/list").permitAll()
                 .and().authorizeRequests().antMatchers("/api/import/getOrderDetail").permitAll()
                 .and().authorizeRequests().antMatchers("/api/import/confirm").permitAll()
@@ -71,6 +71,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers("/api/import/editOrder").permitAll()
                 .and().authorizeRequests().antMatchers("/getAManufacturer").permitAll()
                 .and().authorizeRequests().antMatchers("/getAManufacturer1").permitAll()
+                .and().authorizeRequests().antMatchers("/api/export/create-exportOrder").permitAll()
+                .and().authorizeRequests().antMatchers("/api/export").permitAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }

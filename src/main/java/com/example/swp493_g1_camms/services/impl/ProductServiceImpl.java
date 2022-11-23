@@ -193,19 +193,7 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public ResponseEntity<?> updateProduct(ProductRequest productRequest) {
         ResponseVo responseVo = new ResponseVo();
-        Product p =
-                productRepository.findProductByIdAndName(productRequest.getId(),productRequest.getName().trim());
-        if (p != null) {
-            responseVo.setMessage("Tên sản phẩm đã bị trùng !!");
-            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
-        }
-        Product p2 =
-                productRepository.findProductByIdAndProductCode(productRequest.getId(),
-                       productRequest.getProductCode().trim());
-        if (p2 != null) {
-            responseVo.setMessage("Mã sản phẩm đã bị trùng !!");
-            return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
-        }
+
         Product productBefore = productRepository.findProductById(productRequest.getId());
         Product product = convertToEntities.convertProduct(productRequest);
         Category category = categoryRepository.findCategoryById(productRequest.getCategory_id());
@@ -216,11 +204,18 @@ public class ProductServiceImpl implements IProductService {
         }
         Manufacturer manufacturer = manufacturerRepository.findManufactorById(
                 productRequest.getManufacturer_id());
+
         product.setCategory(category);
+        product.setName(productRequest.getName());
+        product.setProductCode(productRequest.getProductCode());
         product.setManufacturer(manufacturer);
         product.setDeletedAt(false);
         product.setImage(productRequest.getImage());
         product.setUnitprice(productRequest.getUnit_price());
+        product.setOutDate(productRequest.getOut_date());
+        product.setQuantity(productRequest.getQuantity());
+        product.setUnitMeasure(productRequest.getUnit_measure());
+
         productRepository.save(product);
         responseVo.setMessage("Cập nhập thành công !!");
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
