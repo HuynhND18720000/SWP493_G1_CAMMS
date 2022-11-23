@@ -198,10 +198,7 @@ public class ImportOrderImpl implements IImportOrderService {
 
         try {
             List<Map<String, Object>> orderList = iImportProductRepository.getListImportOrders(pagable);
-            BigInteger totalRecord = BigInteger.valueOf(0);
-            if (!orderList.isEmpty()) {
-                totalRecord = (BigInteger) orderList.get(0).get("totalRecord");
-            }
+            BigInteger totalRecord = orderRepository.getTotalRecord(1, null);
             output.put("orderList", orderList);
             output.put("pageIndex", pageIndex);
             output.put("pageSize", pageSize);
@@ -219,20 +216,16 @@ public class ImportOrderImpl implements IImportOrderService {
     }
 
     @Override
-    public ServiceResult<Map<String, Object>> getImportOderDetail(Integer pageIndex, Integer pageSize, Long orderId) {
+    public ServiceResult<Map<String, Object>> getImportOderDetail(Long orderId) {
         ServiceResult<Map<String, Object>> mapServiceResult = new ServiceResult<>();
         Map<String, Object> output = new HashMap<>();
-        Pageable pagable = PageRequest.of(pageIndex, pageSize,
-                Sort.by("id").ascending());
         try {
-            List<Map<String, Object>> listImportProducts = iImportProductRepository.getImportOrderDetail(orderId, pagable);
+            List<Map<String, Object>> listImportProducts = iImportProductRepository.getImportOrderDetail(orderId);
             BigInteger totalRecord = BigInteger.valueOf(0);
             if (!listImportProducts.isEmpty()) {
                 totalRecord = (BigInteger) listImportProducts.get(0).get("totalRecord");
             }
             output.put("listImportProduct", listImportProducts);
-            output.put("pageIndex", pageIndex);
-            output.put("pageSize", pageSize);
             output.put("totalRecord", totalRecord);
             mapServiceResult.setData(output);
             mapServiceResult.setMessage("success");

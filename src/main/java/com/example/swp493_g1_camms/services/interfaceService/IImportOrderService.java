@@ -14,7 +14,7 @@ public interface IImportOrderService {
 
     ServiceResult<Map<String,Object>> getListImportOrders(Integer pageIndex, Integer pageSize);
 
-    ServiceResult<Map<String,Object>> getImportOderDetail(Integer pageIndex, Integer pageSize, Long orderId);
+    ServiceResult<Map<String,Object>> getImportOderDetail(Long orderId);
 
     ResponseEntity<?> confirmOrder(Long orderId, Long confirmBy);
 
