@@ -71,6 +71,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers("/api/import/editOrder").permitAll()
                 .and().authorizeRequests().antMatchers("/getAManufacturer").permitAll()
                 .and().authorizeRequests().antMatchers("/getAManufacturer1").permitAll()
+                .and().authorizeRequests().antMatchers("/api/return/createReturnOrder").permitAll()
+                .and().authorizeRequests().antMatchers("/api/return/getOrderDetail").permitAll()
+                .and().authorizeRequests().antMatchers("/api/return/list").permitAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }

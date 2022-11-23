@@ -1,6 +1,7 @@
 package com.example.swp493_g1_camms.services.impl;
 
 import com.example.swp493_g1_camms.entities.Order;
+import com.example.swp493_g1_camms.entities.ServiceResult;
 import com.example.swp493_g1_camms.entities.Status;
 import com.example.swp493_g1_camms.entities.User;
 import com.example.swp493_g1_camms.payload.request.ExportOrderRequest;
@@ -15,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,9 +27,11 @@ import java.util.Map;
 public class ExportOrderImpl implements IExportOrderService {
     @Autowired
     IExportOrderRepository exportOrderRepository;
+
     @Autowired
     IWarehouseRepository warehouseRepository;
-
+    @Autowired
+    private IExportOrderRepository iExportOrderRepository;
 
     @Override
     public ResponseEntity<?> createExportOrder(ExportOrderRequest exportOrderRequest) {
@@ -88,6 +93,25 @@ public class ExportOrderImpl implements IExportOrderService {
         responseVo.setData(map);
         responseVo.setMessage("lay list product va consignment cuar product ve thanh cong");
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
+    }
+
+    @Override
+    public ServiceResult<Map<String, Object>> getOderDetail(Long orderId) {
+        ServiceResult<Map<String, Object>> mapServiceResult = new ServiceResult<>();
+        Map<String, Object> output = new HashMap<>();
+        try {
+            List<Map<String, Object>> listImportProducts = iExportOrderRepository.getExportOrderDetail(orderId);
+            output.put("listExportProduct", listImportProducts);
+            mapServiceResult.setData(output);
+            mapServiceResult.setMessage("success");
+            mapServiceResult.setStatus(HttpStatus.OK);
+        } catch (Exception e) {
+            mapServiceResult.setMessage("fail");
+            mapServiceResult.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+            return mapServiceResult;
+        }
+        return mapServiceResult;
     }
 
 }

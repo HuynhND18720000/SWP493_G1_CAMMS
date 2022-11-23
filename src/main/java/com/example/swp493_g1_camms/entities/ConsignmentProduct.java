@@ -41,5 +41,7 @@ public class ConsignmentProduct{
     @Column(name = "expiration_date")
     private LocalDateTime expirationDate;
 
+    @Column(name = "consignment_id_sell")
+    private Long consignmentIdSell;
 
 }
