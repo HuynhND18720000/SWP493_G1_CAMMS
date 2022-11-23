@@ -37,4 +37,10 @@ public interface IExportOrderRepository extends JpaRepository<Order, Long> {
     List<Long> getConsignmentCode();
     @Query(value = "SELECT o FROM Order as o  where o.deletedAt =false and o.orderType.id = 2\n")
     Page<Order> getListExportOrder(Pageable pageable);
+
+    @Query(value = "SELECT SUM(cp.quantity - cp1.quantity) as 'total'  \n" +
+            "FROM CAMMS.consignment_product as cp , CAMMS.consignment_product as cp1\n" +
+            "where cp.consignment_id = cp1.mark_con_id", nativeQuery = true)
+    Integer getQuantityAfterExport();
+
 }

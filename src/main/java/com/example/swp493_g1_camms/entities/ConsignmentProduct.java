@@ -44,4 +44,7 @@ public class ConsignmentProduct{
     @Column(name = "mark_con_id")
     private Long mark_get_product_from_consignment;
 
+    @Column(name = "quantity_sale")
+    private Integer quantity_sale;
+
 }
