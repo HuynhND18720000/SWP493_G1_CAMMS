@@ -15,7 +15,8 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ConsignmentProduct{
+public class
+ConsignmentProduct{
     @ManyToOne
     @MapsId("consignmentid")
     @JoinColumn(name = "consignment_id")
