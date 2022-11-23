@@ -23,6 +23,7 @@ public interface IOrderRepository extends JpaRepository<Order, Long> {
             "            order_type order_type1, order_detail order_detail1\n" +
             "            Where order1.user_id = user2.id\n" +
             "            and order1.order_type_id = order_type1.id \n" +
-            "            and order1.status_id = status1.id\n" )
+            "            and order1.status_id = status1.id\n" +
+            "            and order1.order_type_id = 3" )
     List<Map<String, Object>> getListReturnOrders(Pageable pageable);
 }
