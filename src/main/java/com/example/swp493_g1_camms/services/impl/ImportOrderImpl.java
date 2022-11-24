@@ -59,6 +59,9 @@ public class ImportOrderImpl implements IImportOrderService {
     ListProductResponse listProductResponse;
     @Autowired
     IConsignmentProductRepository iConsignmentProductRepository;
+    @Autowired
+    private IOrderRepository iOrderRepository;
+
     @Override
     public ResponseEntity<?> createOrder(ImportOrderRequest importOrderRequest) {
         List<ProductRequest> productList = new ArrayList<>();
@@ -185,16 +188,34 @@ public class ImportOrderImpl implements IImportOrderService {
     }
 
     @Override
-    public ServiceResult<Map<String, Object>> getListImportOrders(Integer pageIndex, Integer pageSize) {
+    public ServiceResult<Map<String, Object>> getListImportOrders(Integer pageIndex, Integer pageSize,  Integer status,
+                                                                  String dateFrom, String dateTo, Long userId, String orderCode) {
         ServiceResult<Map<String, Object>> mapServiceResult = new ServiceResult<>();
         Map<String, Object> output = new HashMap<>();
         Pageable pageable = PageRequest.of(pageIndex, pageSize, Sort.by("id").descending());
+        LocalDateTime dateFrom1 = null;
+        LocalDateTime dateTo1 = null;
+        if(dateFrom == null || dateFrom.equalsIgnoreCase("")){
+            dateFrom1 = null;
+        }else {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime dateTime = LocalDateTime.parse(dateFrom, formatter);
+            dateFrom1 = dateTime;
+        }
+        if(dateTo == null || dateTo.equalsIgnoreCase("")){
+            dateTo1 = null;
+        }else {
+            DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime dateTime1 = LocalDateTime.parse(dateTo, formatter1);
+            dateTo1 = dateTime1;
+        }
+
+        if(orderCode == null || orderCode.equalsIgnoreCase("") ){
+            orderCode = "";
+        }
         try {
-            List<Map<String, Object>> orderList = iImportProductRepository.getListImportOrders(pageable);
-            BigInteger totalRecord = BigInteger.valueOf(0);
-            if (!orderList.isEmpty()) {
-                totalRecord = (BigInteger) orderList.get(0).get("totalRecord");
-            }
+            List<Map<String, Object>> orderList = iImportProductRepository.getListImportOrders(status, dateFrom1, dateTo1, userId, orderCode, pageable);
+            BigInteger totalRecord = iOrderRepository.getTotalImportRecord(status, dateFrom1, dateTo1, userId, orderCode);
             output.put("orderList", orderList);
             output.put("pageIndex", pageIndex);
             output.put("pageSize", pageSize);

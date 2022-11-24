@@ -47,12 +47,17 @@ public class ImportOrderController {
     }
     @GetMapping("/list")
     public ResponseEntity<ServiceResult<Map<String, Object>>> listImport(@RequestParam(required = false) Integer pageIndex,
-                                                                         @RequestParam(required = false) Integer pageSize) throws ParseException {
+                                                                         @RequestParam(required = false) Integer pageSize,
+                                                                         @RequestParam(required = false) Integer status,
+                                                                         @RequestParam(required = false) String dateFrom,
+                                                                         @RequestParam(required = false) String dateTo,
+                                                                         @RequestParam(required = false) Long userId,
+                                                                         @RequestParam(required = false) String orderCode) throws ParseException {
         pageIndex = pageIndex == null ? defaultPage : pageIndex;
         pageSize = pageSize == null ? defaultSize : pageSize;
         try {
             pageIndex = pageIndex - 1;
-            ServiceResult<Map<String, Object>> mapServiceResult = importOrder.getListImportOrders(pageIndex, pageSize);
+            ServiceResult<Map<String, Object>> mapServiceResult = importOrder.getListImportOrders(pageIndex, pageSize, status, dateFrom, dateTo, userId, orderCode);
             return ResponseEntity.ok(mapServiceResult);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
