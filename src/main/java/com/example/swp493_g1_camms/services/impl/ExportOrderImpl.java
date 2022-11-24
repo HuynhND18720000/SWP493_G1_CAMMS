@@ -34,19 +34,41 @@ public class ExportOrderImpl implements IExportOrderService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private IOrderRepository iOrderRepository;
+
     @Override
-    public ServiceResult<Map<String, Object>> getListExportOrders(Integer pageIndex, Integer pageSize) {
+    public ServiceResult<Map<String, Object>> getListExportOrders(Integer pageIndex, Integer pageSize,  Integer status,
+                                                                  String dateFrom, String dateTo, Long userId, String orderCode) {
         ServiceResult<Map<String, Object>> mapServiceResult = new ServiceResult<>();
         Map<String, Object> output = new HashMap<>();
-        Pageable pagable = PageRequest.of(pageIndex, pageSize,
+        Pageable pageable = PageRequest.of(pageIndex, pageSize,
                 Sort.by("id").descending());
+        LocalDateTime dateFrom1 = null;
+        LocalDateTime dateTo1 = null;
+        if(dateFrom == null || dateFrom.equalsIgnoreCase("")){
+            dateFrom1 = null;
+        }else {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime dateTime = LocalDateTime.parse(dateFrom, formatter);
+            dateFrom1 = dateTime;
+        }
+        if(dateTo == null || dateTo.equalsIgnoreCase("")){
+            dateTo1 = null;
+        }else {
+            DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime dateTime1 = LocalDateTime.parse(dateTo, formatter1);
+            dateTo1 = dateTime1;
+        }
+
+        if(orderCode == null || orderCode.equalsIgnoreCase("") ){
+            orderCode = "";
+        }
 
         try {
-            List<Map<String, Object>> orderList = iExportOrderRepository.getListImportOrders(pagable);
-            BigInteger totalRecord = BigInteger.valueOf(0);
-            if (!orderList.isEmpty()) {
-                totalRecord = (BigInteger) orderList.get(0).get("totalRecord");
-            }
+            List<Map<String, Object>> orderList =
+                    iExportOrderRepository.getListExportOrders(status, dateFrom1, dateTo1, userId, orderCode, pageable);
+            BigInteger totalRecord = iOrderRepository.getTotalExportRecord(status, dateFrom1, dateTo1, userId, orderCode);
             output.put("orderList", orderList);
             output.put("pageIndex", pageIndex);
             output.put("pageSize", pageSize);
@@ -64,20 +86,12 @@ public class ExportOrderImpl implements IExportOrderService {
     }
 
     @Override
-    public ServiceResult<Map<String, Object>> getExportOderDetail(Integer pageIndex, Integer pageSize, Long orderId) {
+    public ServiceResult<Map<String, Object>> getExportOderDetail(Long orderId) {
         ServiceResult<Map<String, Object>> mapServiceResult = new ServiceResult<>();
         Map<String, Object> output = new HashMap<>();
-        Pageable pagable = PageRequest.of(pageIndex, pageSize);
         try {
-            List<Map<String, Object>> listImportProducts = iExportOrderRepository.getExportOrderDetail(orderId, pagable);
-            BigInteger totalRecord = BigInteger.valueOf(0);
-            if (!listImportProducts.isEmpty()) {
-                totalRecord = (BigInteger) listImportProducts.get(0).get("totalRecord");
-            }
+            List<Map<String, Object>> listImportProducts = iExportOrderRepository.getExportOrderDetail(orderId);
             output.put("listExportProduct", listImportProducts);
-            output.put("pageIndex", pageIndex);
-            output.put("pageSize", pageSize);
-            output.put("totalRecord", totalRecord);
             mapServiceResult.setData(output);
             mapServiceResult.setMessage("success");
             mapServiceResult.setStatus(HttpStatus.OK);
@@ -165,7 +179,7 @@ public class ExportOrderImpl implements IExportOrderService {
     }
 
     @Override
-    public ResponseEntity<?> editExportOrder(List<ConsignmentProductDTO> consignmentProductDTOList) {
+    public ResponseEntity<?> editExportOrder(Long orderId, List<ConsignmentProductDTO> consignmentProductDTOList) {
         for (ConsignmentProductDTO cPDTO1: consignmentProductDTOList) {
             ConsignmentProduct consignmentProduct =
                     iConsignmentProductRepository.getConsignmentProductById(cPDTO1.getConsignmentId(), cPDTO1.getProductId());
@@ -177,6 +191,12 @@ public class ExportOrderImpl implements IExportOrderService {
             consignmentProduct.setUnitPrice(cPDTO1.getUnitPrice());
             iConsignmentProductRepository.save(consignmentProduct);
         }
+        Order order = new Order();
+        order = iOrderRepository.getById(orderId);
+        Date in = new Date();
+        LocalDateTime ldt = LocalDateTime.ofInstant(in.toInstant(), ZoneId.systemDefault());
+        order.setUpdateDate(ldt);
+        iOrderRepository.save(order);
         ResponseVo responseVo = new ResponseVo();
         responseVo.setMessage("Sửa thông tin xuất hàng thành công !!");
         return new ResponseEntity<>(responseVo, HttpStatus.OK);

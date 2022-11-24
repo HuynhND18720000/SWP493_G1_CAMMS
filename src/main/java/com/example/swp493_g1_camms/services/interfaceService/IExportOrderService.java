@@ -8,13 +8,14 @@ import java.util.List;
 import java.util.Map;
 
 public interface IExportOrderService {
-    ServiceResult<Map<String,Object>> getListExportOrders(Integer pageIndex, Integer pageSize);
+    ServiceResult<Map<String,Object>> getListExportOrders(Integer pageIndex, Integer pageSize,  Integer status,
+                                                          String dateFrom, String dateTo, Long userId, String orderCode);
 
-    ServiceResult<Map<String,Object>> getExportOderDetail(Integer pageIndex, Integer pageSize, Long orderId);
+    ServiceResult<Map<String,Object>> getExportOderDetail(Long orderId);
 
     ResponseEntity<?> confirmExportOrder(Long orderId, Long confirmBy);
 
     ResponseEntity<?> cancelExportOrder(Long orderId, Long confirmBy);
 
-    ResponseEntity<?> editExportOrder(List<ConsignmentProductDTO> consignmentDTOList );
+    ResponseEntity<?> editExportOrder(Long orderId, List<ConsignmentProductDTO> consignmentDTOList );
 }

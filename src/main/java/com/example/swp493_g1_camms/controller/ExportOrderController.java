@@ -23,12 +23,19 @@ public class ExportOrderController {
 
     @GetMapping("/list")
     public ResponseEntity<ServiceResult<Map<String, Object>>> listImport(@RequestParam(required = false) Integer pageIndex,
-                                                                         @RequestParam(required = false) Integer pageSize) throws ParseException {
+                                                                         @RequestParam(required = false) Integer pageSize,
+                                                                         @RequestParam(required = false) Integer status,
+                                                                         @RequestParam(required = false) String dateFrom,
+                                                                         @RequestParam(required = false) String dateTo,
+                                                                         @RequestParam(required = false) Long userId,
+                                                                         @RequestParam(required = false) String orderCode
+    ) throws ParseException {
         pageIndex = pageIndex == null ? defaultPage : pageIndex;
         pageSize = pageSize == null ? defaultSize : pageSize;
         try {
             pageIndex = pageIndex - 1;
-            ServiceResult<Map<String, Object>> mapServiceResult = exportOrder.getListExportOrders(pageIndex, pageSize);
+            ServiceResult<Map<String, Object>> mapServiceResult =
+                    exportOrder.getListExportOrders(pageIndex, pageSize, status, dateFrom, dateTo, userId, orderCode);
             return ResponseEntity.ok(mapServiceResult);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -36,15 +43,10 @@ public class ExportOrderController {
     }
 
     @GetMapping("/getOrderDetail")
-    public ResponseEntity<ServiceResult<Map<String, Object>>> getOrderDetail(@RequestParam(required = false) Integer pageIndex,
-                                                                             @RequestParam(required = false) Integer pageSize,
-                                                                             @RequestParam(required = false) Long orderId)
+    public ResponseEntity<ServiceResult<Map<String, Object>>> getOrderDetail(@RequestParam(required = false) Long orderId)
             throws ParseException {
-        pageIndex = pageIndex == null ? defaultPage : pageIndex;
-        pageSize = pageSize == null ? defaultSize : pageSize;
         try {
-            pageIndex = pageIndex - 1;
-            ServiceResult<Map<String, Object>> mapServiceResult = exportOrder.getExportOderDetail(pageIndex, pageSize,orderId);
+            ServiceResult<Map<String, Object>> mapServiceResult = exportOrder.getExportOderDetail(orderId);
             return ResponseEntity.ok(mapServiceResult);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -64,7 +66,8 @@ public class ExportOrderController {
     }
 
     @PutMapping("/editOrder")
-    public ResponseEntity<?> editOrder(@RequestBody List<ConsignmentProductDTO> consignmentProductDTOList) {
-        return exportOrder.editExportOrder(consignmentProductDTOList);
+    public ResponseEntity<?> editOrder(@RequestParam(required = false) Long orderId,
+                                       @RequestBody List<ConsignmentProductDTO> consignmentProductDTOList) {
+        return exportOrder.editExportOrder(orderId, consignmentProductDTOList);
     }
 }
