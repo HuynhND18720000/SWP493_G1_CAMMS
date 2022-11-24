@@ -205,7 +205,7 @@ public class ExportOrderImpl implements IExportOrderService {
             consignmentProductResponse.setWarehouseName(lp.get("warehouseName").toString());
             consignmentProductResponse.setImportDate(lp.get("importDate").toString());
             consignmentProductResponse.setExpirationDate(lp.get("expirationDate").toString());
-            consignmentProductResponse.setQuantityInstock((Integer) lp.get("quantityInstock"));
+            consignmentProductResponse.setQuantityInstock(Integer.valueOf(lp.get("quantityInstock").toString()) );
             consignmentProductResponse.setQuantity(0);
             consignmentProductResponseList.add(consignmentProductResponse);
             exportOrderResponse.setConsignmentList(consignmentProductResponseList);

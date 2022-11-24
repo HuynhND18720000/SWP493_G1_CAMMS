@@ -22,13 +22,13 @@ public interface IExportOrderRepository extends JpaRepository<Order, Long> {
             "\tp.unitprice AS unitPrice,c.import_date AS importDate,\n" +
             "\tcp.expiration_date AS expirationDate,\n" +
             "\tcp.unit_price AS Price,\n" +
-            "\tcp.quantity AS quantityInstock\n" +
+            "\tcp.quantity_sale AS quantityInstock\n" +
             "                    from product p \n" +
             "                    JOIN consignment c ON c.deleted_at = 0 \n" +
             "                    JOIN warehouse wh ON wh.id = c.warehouse_id\n" +
             "                    JOIN consignment_product cp ON cp.product_id = p.id AND cp.consignment_id = c.id" +
             " \n" +
-            "                    WHERE  c.import_date is not null AND cp.quantity > 0 AND p.id= ?1\n" +
+            "                    WHERE  c.import_date is not null AND cp.quantity_sale > 0 AND p.id= ?1\n" +
             "                    order by cp.expiration_date desc", nativeQuery = true)
     List<Map<String, Object>> getProductInWareHouse(Long product_id);
 
