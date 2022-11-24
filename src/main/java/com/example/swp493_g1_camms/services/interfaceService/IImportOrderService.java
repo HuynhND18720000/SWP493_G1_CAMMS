@@ -21,5 +21,5 @@ public interface IImportOrderService {
 
     ResponseEntity<?> cancelOrder(Long orderId, Long confirmBy);
 
-    ResponseEntity<?> editOrder(List<ConsignmentProductDTO> consignmentDTOList );
+    ResponseEntity<?> editOrder(Long orderId, List<ConsignmentProductDTO> consignmentDTOList );
 }

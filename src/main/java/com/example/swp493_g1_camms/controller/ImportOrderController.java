@@ -93,7 +93,8 @@ public class ImportOrderController {
     }
 
     @PutMapping("/editOrder")
-    public ResponseEntity<?> editOrder(@RequestBody List<ConsignmentProductDTO> consignmentProductDTOList) {
-        return importOrder.editOrder(consignmentProductDTOList);
+    public ResponseEntity<?> editOrder(@RequestParam(required = false) Long orderId,
+            @RequestBody List<ConsignmentProductDTO> consignmentProductDTOList) {
+        return importOrder.editOrder(orderId, consignmentProductDTOList);
     }
 }

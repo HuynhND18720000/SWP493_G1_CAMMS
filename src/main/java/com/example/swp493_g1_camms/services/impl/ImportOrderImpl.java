@@ -335,7 +335,7 @@ public class ImportOrderImpl implements IImportOrderService {
     }
 
     @Override
-    public ResponseEntity<?> editOrder(List<ConsignmentProductDTO> consignmentProductDTOList) {
+    public ResponseEntity<?> editOrder(Long orderId, List<ConsignmentProductDTO> consignmentProductDTOList) {
         for (ConsignmentProductDTO cPDTO1: consignmentProductDTOList) {
             ConsignmentProduct consignmentProduct =
                     iConsignmentProductRepository.getConsignmentProductById(cPDTO1.getConsignmentId(), cPDTO1.getProductId());
@@ -347,6 +347,12 @@ public class ImportOrderImpl implements IImportOrderService {
             consignmentProduct.setUnitPrice(cPDTO1.getUnitPrice());
             iConsignmentProductRepository.save(consignmentProduct);
         }
+        Order order = new Order();
+        order = iOrderRepository.getById(orderId);
+        Date in = new Date();
+        LocalDateTime ldt = LocalDateTime.ofInstant(in.toInstant(), ZoneId.systemDefault());
+        order.setUpdateDate(ldt);
+        iOrderRepository.save(order);
         ResponseVo responseVo = new ResponseVo();
         responseVo.setMessage("Sửa thông tin nhập hàng thành công !!");
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
