@@ -59,6 +59,16 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<?> createStockTakingHistory() {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<?> getProducFromConsignmentInWarehouse() {
+        return null;
+    }
+
 
     @Override
     public ResponseEntity<?> findListDetailById(Long stockTakingHistoryId) {

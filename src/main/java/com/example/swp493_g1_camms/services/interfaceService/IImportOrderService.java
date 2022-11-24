@@ -12,7 +12,8 @@ public interface IImportOrderService {
     ResponseEntity<?> createOrder(ImportOrderRequest importOrderRequest);
     ResponseEntity<?> getProductByManufacturer(Long id);
 
-    ServiceResult<Map<String,Object>> getListImportOrders(Integer pageIndex, Integer pageSize);
+    ServiceResult<Map<String,Object>> getListImportOrders(Integer pageIndex, Integer pageSize,  Integer status,
+                                                          String dateFrom, String dateTo, Long userId, String orderCode);
 
     ServiceResult<Map<String,Object>> getImportOderDetail(Integer pageIndex, Integer pageSize, Long orderId);
 
@@ -20,5 +21,6 @@ public interface IImportOrderService {
 
     ResponseEntity<?> cancelOrder(Long orderId, Long confirmBy);
 
-    ResponseEntity<?> editOrder(List<ConsignmentProductDTO> consignmentDTOList );
+    ResponseEntity<?> editOrder(Long orderId, List<ConsignmentProductDTO> consignmentDTOList );
+
 }

@@ -8,4 +8,8 @@ public interface IStockTakingHistoryService {
 
     ResponseEntity<?> findAllStockTakingHistory(Integer pageIndex, Integer pageSize, Long wareHouseId, Long userId,
                               String startDate, String endDate, String orderBy);
+
+    ResponseEntity<?> createStockTakingHistory();
+
+    ResponseEntity<?> getProducFromConsignmentInWarehouse();
 }

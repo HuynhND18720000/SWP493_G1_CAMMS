@@ -1,13 +1,20 @@
 package com.example.swp493_g1_camms.controller;
 
+import com.example.swp493_g1_camms.entities.ServiceResult;
+import com.example.swp493_g1_camms.payload.request.ConsignmentProductDTO;
 import com.example.swp493_g1_camms.payload.request.ExportOrderRequest;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
 import com.example.swp493_g1_camms.services.impl.ExportOrderImpl;
 import com.example.swp493_g1_camms.utils.CurrentUserIsActive;
 import com.example.swp493_g1_camms.utils.StatusUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.text.ParseException;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/export")
@@ -55,5 +62,54 @@ public class ExportOrderController {
         pageIndex = pageIndex == null ? defaultPage : pageIndex;
         pageSize = pageSize == null ? defaultSize : pageSize;
         return exportOrder.getListExportOrder(pageIndex, pageSize);
+    }
+    @GetMapping("/list")
+    public ResponseEntity<ServiceResult<Map<String, Object>>> listImport(@RequestParam(required = false) Integer pageIndex,
+                                                                         @RequestParam(required = false) Integer pageSize,
+                                                                         @RequestParam(required = false) Integer status,
+                                                                         @RequestParam(required = false) String dateFrom,
+                                                                         @RequestParam(required = false) String dateTo,
+                                                                         @RequestParam(required = false) Long userId,
+                                                                         @RequestParam(required = false) String orderCode
+    ) throws ParseException {
+        pageIndex = pageIndex == null ? defaultPage : pageIndex;
+        pageSize = pageSize == null ? defaultSize : pageSize;
+        try {
+            pageIndex = pageIndex - 1;
+            ServiceResult<Map<String, Object>> mapServiceResult =
+                    exportOrder.getListExportOrders(pageIndex, pageSize, status, dateFrom, dateTo, userId, orderCode);
+            return ResponseEntity.ok(mapServiceResult);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/getOrderDetail")
+    public ResponseEntity<ServiceResult<Map<String, Object>>> getOrderDetail(@RequestParam(required = false) Long orderId)
+            throws ParseException {
+        try {
+            ServiceResult<Map<String, Object>> mapServiceResult = exportOrder.getExportOderDetail(orderId);
+            return ResponseEntity.ok(mapServiceResult);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/confirm")
+    public ResponseEntity<?> confirmOrder(@RequestParam(required = false) Long orderId,
+                                          @RequestParam(required = false)Long confirmBy) {
+        return exportOrder.confirmExportOrder(orderId, confirmBy);
+    }
+
+    @PutMapping("/cancel")
+    public ResponseEntity<?> cancelOrder(@RequestParam(required = false) Long orderId,
+                                         @RequestParam(required = false)Long confirmBy) {
+        return exportOrder.cancelExportOrder(orderId, confirmBy);
+    }
+
+    @PutMapping("/editOrder")
+    public ResponseEntity<?> editOrder(@RequestParam(required = false) Long orderId,
+                                       @RequestBody List<ConsignmentProductDTO> consignmentProductDTOList) {
+        return exportOrder.editExportOrder(orderId, consignmentProductDTOList);
     }
 }
