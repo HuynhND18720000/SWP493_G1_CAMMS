@@ -32,4 +32,12 @@ public class StockTakingHistoryController {
                 startDate, endDate, orderBy);
     }
 
+
+    @GetMapping("/detail/{stockTakingHistoryId}")
+    public ResponseEntity<?> getStockTakingHistoryDetail(@PathVariable Long stockTakingHistoryId) {
+        return stockTakingHistoryService.findListDetailById(stockTakingHistoryId);
+    }
+
+
+
 }

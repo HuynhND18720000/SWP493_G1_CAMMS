@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
@@ -56,4 +57,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p FROM Product as p, Manufacturer as m WHERE m.id = p.manufacturer.id AND m.id = ?1")
     List<Product> getAllProductByManufacturerId(Long manufacturerId);
+
+    @Query("SELECT p FROM Product p WHERE p.id IN (?1) AND p.deletedAt = false")
+    List<Product> findListAllByConsignmentList(Set<Long> id);
 }

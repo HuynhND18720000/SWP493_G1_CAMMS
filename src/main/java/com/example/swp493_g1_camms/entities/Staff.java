@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -35,7 +36,7 @@ public class Staff {
     private String role;
 
     @Column(name = "dob")
-    private LocalDateTime dob;
+    private LocalDate dob;
 
     @Column(name = "deleted_at")
     private Boolean deletedAt;

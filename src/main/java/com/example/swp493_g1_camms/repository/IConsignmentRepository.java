@@ -25,4 +25,9 @@ public interface IConsignmentRepository extends JpaRepository<Consignment,Long> 
     List<Consignment> getListConsignmentExportByConsignmentCode(Long consignment_code);
 
 
+    //lay ra nhieu consigment dua tren listId
+    @Query("SELECT c FROM Consignment c " + "Where c.id IN (?1)  AND c.deletedAt = false" )
+    List<Consignment> findAllConsignmentByListId(List<Long> listConsignmentId);
+
+
 }
