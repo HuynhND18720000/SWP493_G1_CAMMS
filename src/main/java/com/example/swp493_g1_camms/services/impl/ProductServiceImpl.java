@@ -195,28 +195,28 @@ public class ProductServiceImpl implements IProductService {
         ResponseVo responseVo = new ResponseVo();
 
         Product productBefore = productRepository.findProductById(productRequest.getId());
-        Product product = convertToEntities.convertProduct(productRequest);
+
         Category category = categoryRepository.findCategoryById(productRequest.getCategory_id());
         if (productRequest.getSubCategory_id() != null) {
             SubCategory subCategory = subCategoryRepository.findSubCategoryById(
                     productRequest.getSubCategory_id());
-            product.setSubCategory(subCategory);
+            productBefore.setSubCategory(subCategory);
         }
         Manufacturer manufacturer = manufacturerRepository.findManufactorById(
                 productRequest.getManufacturer_id());
 
-        product.setCategory(category);
-        product.setName(productRequest.getName());
-        product.setProductCode(productRequest.getProductCode());
-        product.setManufacturer(manufacturer);
-        product.setDeletedAt(false);
-        product.setImage(productRequest.getImage());
-        product.setUnitprice(productRequest.getUnit_price());
-        product.setOutDate(productRequest.getOut_date());
-        product.setQuantity(productRequest.getQuantity());
-        product.setUnitMeasure(productRequest.getUnit_measure());
+        productBefore.setCategory(category);
+        productBefore.setName(productRequest.getName());
+        productBefore.setProductCode(productRequest.getProductCode());
+        productBefore.setManufacturer(manufacturer);
+        productBefore.setDeletedAt(false);
+        productBefore.setImage(productRequest.getImage());
+        productBefore.setUnitprice(productRequest.getUnit_price());
+        productBefore.setOutDate(productRequest.getOut_date());
+        productBefore.setQuantity(productRequest.getQuantity());
+        productBefore.setUnitMeasure(productRequest.getUnit_measure());
 
-        productRepository.save(product);
+        productRepository.save(productBefore);
         responseVo.setMessage("Cập nhập thành công !!");
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }

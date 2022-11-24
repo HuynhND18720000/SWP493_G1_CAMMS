@@ -1,9 +1,7 @@
 package com.example.swp493_g1_camms.services.impl;
 
 import com.example.swp493_g1_camms.entities.*;
-import com.example.swp493_g1_camms.payload.response.ListStockTakingHistoryResponse;
-import com.example.swp493_g1_camms.payload.response.ResponseVo;
-import com.example.swp493_g1_camms.payload.response.StockTakingHistoryDetailResponse;
+import com.example.swp493_g1_camms.payload.response.*;
 import com.example.swp493_g1_camms.repository.*;
 import com.example.swp493_g1_camms.services.interfaceService.IStockTakingHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +76,29 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
 
     @Override
     public ResponseEntity<?> getProducFromConsignmentInWarehouse() {
+//        MessageResponse messageResponse = new MessageResponse();
+//        try{
+//            listProductResponse = new ListProductResponse();
+//            ResponseVo responseVo = new ResponseVo();
+//            List<Product> listProduct = productRepository.getAllProductByManufacturerId(id);
+//
+//            Map<String, Object> map = new HashMap<>();
+//            if (listProduct.size() == 0) {
+//                map.put("product", null);
+//                map.put("totalRecord", 0);
+//                responseVo.setMessage("Không tìm thấy List Manufacturer");
+//                responseVo.setData(map);
+//                return new ResponseEntity<>(responseVo, HttpStatus.OK);
+//            }
+//            map.put("product", listProductResponse.createSuccessData(listProduct));
+//            responseVo.setData(map);
+//            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+//        }catch(Exception e){
+//            messageResponse.setMessage(e+"");
+//            return ResponseEntity
+//                    .badRequest()
+//                    .body(messageResponse);
+//        }
         return null;
     }
 
