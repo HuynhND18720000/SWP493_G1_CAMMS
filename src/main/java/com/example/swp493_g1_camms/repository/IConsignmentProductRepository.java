@@ -1,5 +1,6 @@
 package com.example.swp493_g1_camms.repository;
 
+import com.example.swp493_g1_camms.entities.Consignment;
 import com.example.swp493_g1_camms.entities.ConsignmentProduct;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +24,9 @@ public interface IConsignmentProductRepository extends JpaRepository<Consignment
     @Query(nativeQuery = true,
             value =  "SELECT * FROM consignment_product WHERE consignment_id = ?1")
     ConsignmentProduct getConsignmentProductByConsignmentId(Long consignmentId);
+
+
+    //lay ra nhieu consigment tuong ung vs product dua tren listId
+    @Query("SELECT cp FROM ConsignmentProduct cp " + "Where cp.consignment.id IN (?1) AND cp.deletedAt = false" )
+    List<ConsignmentProduct> findAllConsignmentByListId(List<Long> listConsignmentId);
 }
