@@ -1,6 +1,7 @@
 package com.example.swp493_g1_camms.repository;
 
 import com.example.swp493_g1_camms.entities.Order;
+import com.example.swp493_g1_camms.entities.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,6 +17,7 @@ public interface IExportOrderRepository extends JpaRepository<Order, Long> {
 
     // dem so luong totalrecord de phan trang
     //kiem tra lai phan nay no van chua ca xuat ra
+    //ve xem lai
     @Query(value = "SELECT" +
             "\tp.id AS productId, c.id AS consignment_id, wh.id AS wareHouseId,\n" +
             "\t wh.name AS warehouseName, p.product_code AS productCode,\n" +
@@ -89,4 +91,7 @@ public interface IExportOrderRepository extends JpaRepository<Order, Long> {
 
     @Query("SELECT o FROM Order o WHERE o.id = ?1")
     public Order getOrderById(Long orderId);
+
+    @Query(value = "")
+    public List<Product> getListIntoDropList();
 }

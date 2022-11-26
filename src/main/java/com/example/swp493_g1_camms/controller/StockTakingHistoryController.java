@@ -1,5 +1,6 @@
 package com.example.swp493_g1_camms.controller;
 
+import com.example.swp493_g1_camms.services.impl.StockTakingHistoryServiceImpl;
 import com.example.swp493_g1_camms.services.interfaceService.IStockTakingHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,9 @@ public class StockTakingHistoryController {
 
     @Autowired
     IStockTakingHistoryService stockTakingHistoryService;
+
+    @Autowired
+    StockTakingHistoryServiceImpl stockTakingHistoryServiceimpl;
 
     @GetMapping
     public ResponseEntity<?> listStockTakingHistory(@RequestParam(required = false) Integer pageIndex,
@@ -38,6 +42,10 @@ public class StockTakingHistoryController {
         return stockTakingHistoryService.findListDetailById(stockTakingHistoryId);
     }
 
+    @GetMapping("/productByWarehouse/{warehouse_id}")
+    public ResponseEntity<?> getProductByWarehouse(@RequestParam Long warehouse_id){
+        return stockTakingHistoryServiceimpl.getProducFromConsignmentInWarehouse(warehouse_id);
+    }
 
 
 }

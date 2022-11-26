@@ -1,5 +1,6 @@
 package com.example.swp493_g1_camms.repository;
 
+import com.example.swp493_g1_camms.entities.Product;
 import com.example.swp493_g1_camms.entities.StockTakingHistory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -7,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 @EnableJpaRepositories
@@ -24,5 +27,14 @@ public interface IStockTakingHistoryRepository extends JpaRepository<StockTaking
 
     @Query("SELECT sth FROM StockTakingHistory sth Where sth.id = ?1 AND sth.deletedAt = false" )
     StockTakingHistory findStockTakingHistoryById(Long stockTakingHistoryId);
+
+    @Query(value = "select DISTINCT od from OrderDetail as od\n" +
+            "join Consignment as c on c.id = od.consignment.id\n" +
+            "join Order as o on o.id = od.id\n" +
+            "join Warehouse as wh on wh.id = c.warehouse.id and wh.id = ?1\n" +
+            "join ConsignmentProduct as cp on cp.consignment.id = c.id\n" +
+            "join Product as p on p.id = cp.product.id\n" +
+            "where o.status.id = 2")
+    List<Product> getProductByWarehouse(Long warehouse_id);
 
 }

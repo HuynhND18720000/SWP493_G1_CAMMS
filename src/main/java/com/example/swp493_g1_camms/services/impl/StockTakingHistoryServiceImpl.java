@@ -75,31 +75,24 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
     }
 
     @Override
-    public ResponseEntity<?> getProducFromConsignmentInWarehouse() {
-//        MessageResponse messageResponse = new MessageResponse();
-//        try{
-//            listProductResponse = new ListProductResponse();
-//            ResponseVo responseVo = new ResponseVo();
-//            List<Product> listProduct = productRepository.getAllProductByManufacturerId(id);
-//
-//            Map<String, Object> map = new HashMap<>();
-//            if (listProduct.size() == 0) {
-//                map.put("product", null);
-//                map.put("totalRecord", 0);
-//                responseVo.setMessage("Không tìm thấy List Manufacturer");
-//                responseVo.setData(map);
-//                return new ResponseEntity<>(responseVo, HttpStatus.OK);
-//            }
-//            map.put("product", listProductResponse.createSuccessData(listProduct));
-//            responseVo.setData(map);
-//            return new ResponseEntity<>(responseVo, HttpStatus.OK);
-//        }catch(Exception e){
-//            messageResponse.setMessage(e+"");
-//            return ResponseEntity
-//                    .badRequest()
-//                    .body(messageResponse);
-//        }
-        return null;
+    public ResponseEntity<?> getProducFromConsignmentInWarehouse(Long warehouse_Id) {
+        MessageResponse messageResponse = new MessageResponse();
+        ResponseVo responseVo = new ResponseVo();
+        Map<String, Object> map = new HashMap<>();
+        try{
+            List<Product> listProductGetByWareHouseId =
+                    stockTakingHistoryRepository.getProductByWarehouse(warehouse_Id);
+            System.out.println("lít product in trong ware house: "+listProductGetByWareHouseId.size());
+            map.put("listProductInWareHouse", listProductGetByWareHouseId);
+            responseVo.setData(map);
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }catch(Exception e){
+            messageResponse.setMessage(e+"");
+            return ResponseEntity
+                    .badRequest()
+                    .body(messageResponse);
+        }
+
     }
 
 

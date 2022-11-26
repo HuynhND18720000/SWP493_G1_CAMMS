@@ -358,6 +358,18 @@ public class ExportOrderImpl implements IExportOrderService {
                 Product product = productRepository.findProductById(consignmentProductId.getProductid());
                 product.setQuantity(product.getQuantity() - consignmentProducts.get(i).getQuantity());
                 productRepository.save(product);
+                ConsignmentProduct consignmentProduct = new ConsignmentProduct();
+                consignmentProduct =
+                        consignmentProductRepository.getConsignmentProductById(consignmentProductId.getConsignmentid(),
+                                consignmentProductId.getProductid());
+                ConsignmentProduct consignmentProduct2 = new ConsignmentProduct();
+                consignmentProduct2 =
+                        consignmentProductRepository.getConsignmentProductById(consignmentProduct.getMark_get_product_from_consignment(),
+                                consignmentProductId.getProductid());
+                if(consignmentProduct2 != null){
+                    consignmentProduct2.setQuantity_sale(consignmentProduct2.getQuantity_sale()-consignmentProducts.get(i).getQuantity());
+                    consignmentProductRepository.save(consignmentProduct2);}
+
             }
             ResponseVo responseVo = new ResponseVo();
             responseVo.setMessage("Xác nhận xuất hàng thành công !!");

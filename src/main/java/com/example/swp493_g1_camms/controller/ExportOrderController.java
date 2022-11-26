@@ -23,6 +23,18 @@ public class ExportOrderController {
     private final int defaultSize = 5;
     @Autowired
     ExportOrderImpl exportOrder;
+
+    @GetMapping(path = "/listProduct")
+    public ResponseEntity<?> loadListProductIntoDropList(){
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
+        return null;
+    }
+
     @GetMapping(path = "/export-product")
     public ResponseEntity<?> getListProductFromDropdownList(@RequestParam(required = false) Long id,
                                                             @RequestParam(required = false) Integer pageIndex,
