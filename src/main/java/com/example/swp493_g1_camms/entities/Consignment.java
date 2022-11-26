@@ -36,12 +36,20 @@ public class Consignment {
     @OneToMany(mappedBy = "consignment", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<StockTakingHistoryDetail> stockTakingHistoryDetails;
 
+    @OneToMany(mappedBy = "consignment", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<StockTakingHistoryDescription> stockTakingHistoryDescriptions;
+
+    @OneToMany(mappedBy = "consignment")
+    private Set<ConsignmentProduct> consignmentProducts;
+
+    @OneToMany(mappedBy = "consignment")
+    private Set<OrderStatusReturn> orderStatusReturns;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "warehouse_id", referencedColumnName = "id")
     private Warehouse warehouse;
 
-    @OneToMany(mappedBy = "consignment")
-    private Set<ConsignmentProduct> consignmentProducts;
+
 
     @Override
     public String toString() {

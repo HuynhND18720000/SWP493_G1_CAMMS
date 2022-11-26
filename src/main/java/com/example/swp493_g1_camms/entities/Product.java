@@ -64,6 +64,14 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private Set<ConsignmentProduct> consignmentProducts;
 
+    @OneToMany(mappedBy = "product")
+    private Set<StockTakingHistoryDescription> stockTakingHistoryDescriptions;
+
+    @OneToMany(mappedBy = "product")
+    private Set<OrderStatusReturn> orderStatusReturns;
+
+
+
     public Product(Long id, String productCode, String name, String description,
                    String image, Double unitprice,
                    LocalDateTime outDate, Integer quantity,

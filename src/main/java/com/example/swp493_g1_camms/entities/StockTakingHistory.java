@@ -33,6 +33,9 @@ public class StockTakingHistory {
     @OneToMany(mappedBy = "stockTakingHistory", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<StockTakingHistoryDetail> stockTakingHistoryDetails;
 
+    @OneToMany(mappedBy = "stockTakingHistory", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<StockTakingHistoryDescription> stockTakingHistoryDescriptions;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;

@@ -92,6 +92,6 @@ public interface IExportOrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT o FROM Order o WHERE o.id = ?1")
     public Order getOrderById(Long orderId);
 
-    @Query(value = "")
-    public List<Product> getListIntoDropList();
+//    @Query(value = "")
+//    public List<Product> getListIntoDropList();
 }
