@@ -58,6 +58,10 @@ public class ExportOrderImpl implements IExportOrderService {
 
     @Autowired
     private IOrderRepository iOrderRepository;
+
+    @Autowired
+    private IOrderStatusDeliverRepository iOrderStatusDeliverRepository;
+
     @Override
     public ResponseEntity<?> createExportOrder(ExportOrderRequest exportOrderRequest) {
         Order order = new Order();
@@ -447,6 +451,62 @@ public class ExportOrderImpl implements IExportOrderService {
         try {
             List<Map<String, Object>> listImportProducts = iExportOrderRepository.getExportOrderDetail(orderId);
             output.put("listExportProduct", listImportProducts);
+            mapServiceResult.setData(output);
+            mapServiceResult.setMessage("success");
+            mapServiceResult.setStatus(HttpStatus.OK);
+        } catch (Exception e) {
+            mapServiceResult.setMessage("fail");
+            mapServiceResult.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+            return mapServiceResult;
+        }
+        return mapServiceResult;
+    }
+
+    @Override
+    public ResponseEntity<?> deliveredExportOrder(Long orderId) {
+        OrderDeliver orderDeliver = new OrderDeliver();
+        Order order = orderRepository.getById(orderId);
+        order.setIsReturn(true);
+        orderDeliver.setOrder(order);
+        orderDeliver.setStatusDeliver(true);
+        iOrderStatusDeliverRepository.save(orderDeliver);
+        iOrderRepository.save(order);
+        ResponseVo responseVo = new ResponseVo();
+        responseVo.setMessage("Xác nhận giao hàng thành công !!");
+        return new ResponseEntity<>(responseVo, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> cancelDeliveredOrder(Long orderId, List<OrderStatusDeliverDTO> orderStatusDeliverDTOS) {
+//        for (OrderStatusDeliverDTO orderStatusDeliverDTO: orderStatusDeliverDTOS
+//             ) {
+//
+//        }
+        for(int i = 0 ; i< orderStatusDeliverDTOS.size(); i++){
+            OrderDeliver orderDeliver = new OrderDeliver();
+            orderDeliver.setProduct(productRepository.getById(orderStatusDeliverDTOS.get(i).getProductId()));
+            orderDeliver.setConsignment(consignmentRepository.getById(orderStatusDeliverDTOS.get(i).getConsignmentId()));
+            orderDeliver.setOrder(orderRepository.getById(orderId));
+            orderDeliver.setDescription(orderStatusDeliverDTOS.get(i).getDescription());
+            orderDeliver.setStatusDeliver(false);
+            orderDeliver.setQuantity(orderStatusDeliverDTOS.get(i).getQuantity());
+            orderDeliver.setDamagedQuantity(orderStatusDeliverDTOS.get(i).getDamagedQuantity());
+            iOrderStatusDeliverRepository.save(orderDeliver);
+        }
+        ResponseVo responseVo = new ResponseVo();
+        responseVo.setMessage("Hủy giao hàng thành công !!");
+        return new ResponseEntity<>(responseVo, HttpStatus.OK);
+    }
+
+    @Override
+    public ServiceResult<Map<String, Object>> getDetailCancelDeliveredOrder(Long orderId) {
+        ServiceResult<Map<String, Object>> mapServiceResult = new ServiceResult<>();
+        Map<String, Object> output = new HashMap<>();
+        try {
+            List<Map<String, Object>> detailCancelDeliveredOrder =
+                    iOrderStatusDeliverRepository.getDetailCancelDeliveredOrderByOrderId(orderId);
+            output.put("listExportProduct", detailCancelDeliveredOrder);
             mapServiceResult.setData(output);
             mapServiceResult.setMessage("success");
             mapServiceResult.setStatus(HttpStatus.OK);
