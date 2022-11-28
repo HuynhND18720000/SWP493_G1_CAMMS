@@ -29,4 +29,5 @@ public interface IConsignmentProductRepository extends JpaRepository<Consignment
     //lay ra nhieu consigment tuong ung vs product dua tren listId
     @Query("SELECT cp FROM ConsignmentProduct cp " + "Where cp.consignment.id IN (?1) AND cp.deletedAt = false" )
     List<ConsignmentProduct> findAllConsignmentByListId(List<Long> listConsignmentId);
+
 }

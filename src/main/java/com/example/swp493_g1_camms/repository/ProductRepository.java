@@ -60,4 +60,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p FROM Product p WHERE p.id IN (?1) AND p.deletedAt = false")
     List<Product> findListAllByConsignmentList(Set<Long> id);
+
+    @Query("select p from Consignment c join ConsignmentProduct cp on c.id = cp.consignment.id" +
+            " join Product p on p.id = cp.product.id where c.id = ?1")
+    Product findProductByConsignmentId(Long consignment_Id);
 }

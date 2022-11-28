@@ -1,7 +1,11 @@
 package com.example.swp493_g1_camms.controller;
 
+import com.example.swp493_g1_camms.payload.request.StockTakingRequest;
+import com.example.swp493_g1_camms.payload.response.MessageResponse;
 import com.example.swp493_g1_camms.services.impl.StockTakingHistoryServiceImpl;
 import com.example.swp493_g1_camms.services.interfaceService.IStockTakingHistoryService;
+import com.example.swp493_g1_camms.utils.CurrentUserIsActive;
+import com.example.swp493_g1_camms.utils.StatusUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +33,12 @@ public class StockTakingHistoryController {
                                                     @RequestParam(required = false) String startDate,
                                                     @RequestParam(required = false) String endDate,
                                                     @RequestParam(required = false) String orderBy) {
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
         pageIndex = pageIndex == null ? defaultPage : pageIndex;
         pageSize = pageSize == null ? defaultSize : pageSize;
 
@@ -36,16 +46,50 @@ public class StockTakingHistoryController {
                 startDate, endDate, orderBy);
     }
 
+    @PostMapping("/createStockTakingHistory")
+    public ResponseEntity<?> createStockTakingHistory(@RequestBody StockTakingRequest stockTakingRequest){
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
+        return stockTakingHistoryServiceimpl.createStockTakingHistory(stockTakingRequest);
+    }
 
     @GetMapping("/detail/{stockTakingHistoryId}")
     public ResponseEntity<?> getStockTakingHistoryDetail(@PathVariable Long stockTakingHistoryId) {
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
         return stockTakingHistoryService.findListDetailById(stockTakingHistoryId);
     }
 
-    @GetMapping("/productByWarehouse/{warehouse_id}")
-    public ResponseEntity<?> getProductByWarehouse(@RequestParam Long warehouse_id){
+    @GetMapping("/productByWarehouse")
+    public ResponseEntity<?> getProductByWarehouse(@RequestParam(required = false) Long warehouse_id){
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
         return stockTakingHistoryServiceimpl.getProducFromConsignmentInWarehouse(warehouse_id);
     }
 
+    @GetMapping(path = "/productDetails")
+    public ResponseEntity<?> getListProductFromDropdownList(@RequestParam(required = false) Long id){
+
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
+
+        return stockTakingHistoryServiceimpl.getInfoProductInWareHouse(id);
+    }
 
 }

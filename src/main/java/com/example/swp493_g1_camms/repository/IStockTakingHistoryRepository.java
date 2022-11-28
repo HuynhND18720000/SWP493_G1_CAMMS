@@ -28,13 +28,15 @@ public interface IStockTakingHistoryRepository extends JpaRepository<StockTaking
     @Query("SELECT sth FROM StockTakingHistory sth Where sth.id = ?1 AND sth.deletedAt = false" )
     StockTakingHistory findStockTakingHistoryById(Long stockTakingHistoryId);
 
-    @Query(value = "select DISTINCT od from OrderDetail as od\n" +
+    @Query(value = "select distinct p from OrderDetail as od \n" +
+            "join Order as o on od.order.id = o.id\n" +
             "join Consignment as c on c.id = od.consignment.id\n" +
-            "join Order as o on o.id = od.id\n" +
-            "join Warehouse as wh on wh.id = c.warehouse.id and wh.id = ?1\n" +
+            "join Warehouse as w on w.id = c.warehouse.id and w.id = ?1\n" +
             "join ConsignmentProduct as cp on cp.consignment.id = c.id\n" +
-            "join Product as p on p.id = cp.product.id\n" +
-            "where o.status.id = 2")
+            "join Product as p on p.id = cp.product.id and p.quantity > 0\n" +
+            "where o.orderType.id = 1 and o.status.id = 2 and o.deletedAt = false")
     List<Product> getProductByWarehouse(Long warehouse_id);
 
+    @Query(value = "SELECT MAX(sth.id) FROM StockTakingHistory as sth")
+    Long getLastStockId();
 }
