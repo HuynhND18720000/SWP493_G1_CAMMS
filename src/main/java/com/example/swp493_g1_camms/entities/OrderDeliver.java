@@ -9,12 +9,12 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "order_status_return")
+@Table(name = "order_deliver")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderStatusReturn {
+public class OrderDeliver {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +23,11 @@ public class OrderStatusReturn {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "status_id")
-    private Boolean statusId;
+    @Column(name = "status_deliver")
+    private Boolean statusDeliver;
+
+    @Column(name = "quantity")
+    private Integer quantity;
 
     @Column(name = "damaged_quantity")
     private Integer damagedQuantity;
@@ -40,4 +43,5 @@ public class OrderStatusReturn {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order;
+
 }

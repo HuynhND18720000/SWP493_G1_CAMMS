@@ -3,6 +3,7 @@ package com.example.swp493_g1_camms.controller;
 import com.example.swp493_g1_camms.entities.ServiceResult;
 import com.example.swp493_g1_camms.payload.request.ConsignmentProductDTO;
 import com.example.swp493_g1_camms.payload.request.ExportOrderRequest;
+import com.example.swp493_g1_camms.payload.request.OrderStatusDeliverDTO;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
 import com.example.swp493_g1_camms.services.impl.ExportOrderImpl;
 import com.example.swp493_g1_camms.utils.CurrentUserIsActive;
@@ -123,5 +124,41 @@ public class ExportOrderController {
     public ResponseEntity<?> editOrder(@RequestParam(required = false) Long orderId,
                                        @RequestBody List<ConsignmentProductDTO> consignmentProductDTOList) {
         return exportOrder.editExportOrder(orderId, consignmentProductDTOList);
+    }
+
+    //ok
+    @PostMapping("/delivered")
+    public ResponseEntity<?> deliveredExportOrder(@RequestParam(required = false) Long orderId
+    ) {
+        return exportOrder.deliveredExportOrder(orderId);
+    }
+
+    //lay du lieu ra de xem va viet vao don huy
+    @GetMapping("/getOrderDetailForCancelDeliveredOrder")
+    public ResponseEntity<ServiceResult<Map<String, Object>>> getOrderDetailForCancelDeliveredOrder(@RequestParam(required = false) Long orderId)
+            throws ParseException {
+        try {
+            ServiceResult<Map<String, Object>> mapServiceResult = exportOrder.getExportOderDetail(orderId);
+            return ResponseEntity.ok(mapServiceResult);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/cancelDeliveredOrder")
+    public ResponseEntity<?> cancelDeliveredOrder(@RequestParam(required = false) Long orderId,
+                                                  @RequestBody List<OrderStatusDeliverDTO> orderStatusDeliverDTOS) {
+        return exportOrder.cancelDeliveredOrder(orderId, orderStatusDeliverDTOS);
+    }
+
+    @GetMapping("/getDetailCancelDeliveredOrder")
+    public ResponseEntity<ServiceResult<Map<String, Object>>> getDetailCancelDeliveredOrder(@RequestParam(required = false) Long orderId)
+            throws ParseException {
+        try {
+            ServiceResult<Map<String, Object>> mapServiceResult = exportOrder.getDetailCancelDeliveredOrder(orderId);
+            return ResponseEntity.ok(mapServiceResult);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 }

@@ -1,6 +1,5 @@
 package com.example.swp493_g1_camms.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +7,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -68,7 +66,7 @@ public class Product {
     private Set<StockTakingHistoryDescription> stockTakingHistoryDescriptions;
 
     @OneToMany(mappedBy = "product")
-    private Set<OrderStatusReturn> orderStatusReturns;
+    private Set<OrderDeliver> orderDelivers;
 
 
 

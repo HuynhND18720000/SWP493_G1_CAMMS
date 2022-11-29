@@ -1,10 +1,7 @@
 package com.example.swp493_g1_camms.services.interfaceService;
 
 import com.example.swp493_g1_camms.entities.ServiceResult;
-import com.example.swp493_g1_camms.payload.request.ConsignmentProductDTO;
-import com.example.swp493_g1_camms.payload.request.ExportOrderRequest;
-import com.example.swp493_g1_camms.payload.request.ImportOrderRequest;
-import com.example.swp493_g1_camms.payload.request.ProductForExport;
+import com.example.swp493_g1_camms.payload.request.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -29,4 +26,10 @@ public interface IExportOrderService {
 
     ResponseEntity<?> editExportOrder(Long orderId, List<ConsignmentProductDTO> consignmentDTOList );
     ServiceResult<Map<String, Object>> getOderDetail(Long orderId);
+
+    ResponseEntity<?> deliveredExportOrder(Long orderId);
+
+    ResponseEntity<?> cancelDeliveredOrder(Long orderId, List<OrderStatusDeliverDTO> orderStatusDeliverDTOS);
+
+    ServiceResult<Map<String, Object>> getDetailCancelDeliveredOrder(Long orderId);
 }

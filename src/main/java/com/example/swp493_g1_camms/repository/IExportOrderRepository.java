@@ -70,7 +70,7 @@ public interface IExportOrderRepository extends JpaRepository<Order, Long> {
     List<Map<String, Object>> getListExportOrders(Integer status, LocalDateTime dateFrom, LocalDateTime dateTo,
                                                   Long userID, String orderCode, Pageable pageable);
 
-    @Query(nativeQuery = true, value = "SELECT consignment_product1.expiration_date, consignment_product1.quantity, \n" +
+    @Query(nativeQuery = true, value = "SELECT order1.is_return, consignment_product1.expiration_date, consignment_product1.quantity, \n" +
             "consignment_product1.unit_price, product1.id as product_id, product1.name as product_name,\n" +
             "product1.product_code, product1.unit_measure, warehouse1.id as warehouse_id, user1.full_name as creator, \n" +
             "warehouse1.name as warehouse_name, order_detail1.order_id, consignment1.id as consignment_id, \n" +
