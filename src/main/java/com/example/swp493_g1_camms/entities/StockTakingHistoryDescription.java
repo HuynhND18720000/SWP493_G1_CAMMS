@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
-@Table(name = "stock_taking_history_des")
+@Table(name = "stock_talking_history_des")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -20,7 +20,7 @@ public class StockTakingHistoryDescription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "different_quantity")
+    @Column(name = "differnce_quantity")
     private Integer differentQuantity;
 
     @Column(name = "description")
@@ -35,6 +35,6 @@ public class StockTakingHistoryDescription {
     private Product product;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "stock_taking_history_id", referencedColumnName = "id")
+    @JoinColumn(name = "stock_talking_history_id", referencedColumnName = "id")
     private StockTakingHistory stockTakingHistory;
 }
