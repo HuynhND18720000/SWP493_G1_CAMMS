@@ -18,21 +18,22 @@ public interface IExportOrderRepository extends JpaRepository<Order, Long> {
     // dem so luong totalrecord de phan trang
     //kiem tra lai phan nay no van chua ca xuat ra
     //ve xem lai
-    @Query(value = "SELECT" +
-            "\tp.id AS productId, c.id AS consignment_id, wh.id AS wareHouseId,\n" +
-            "\t wh.name AS warehouseName, p.product_code AS productCode,\n" +
-            "\t p.name AS productName,p.unit_measure AS unitMeasure,\n" +
-            "\tp.unitprice AS unitPrice,c.import_date AS importDate,\n" +
-            "\tcp.expiration_date AS expirationDate,\n" +
-            "\tcp.unit_price AS Price,\n" +
-            "\tcp.quantity_sale AS quantityInstock\n" +
-            "                    from product p \n" +
-            "                    JOIN consignment c ON c.deleted_at = 0 \n" +
-            "                    JOIN warehouse wh ON wh.id = c.warehouse_id\n" +
-            "                    JOIN consignment_product cp ON cp.product_id = p.id AND cp.consignment_id = c.id" +
-            " \n" +
-            "                    WHERE  c.import_date is not null AND cp.quantity_sale > 0 AND p.id= ?1\n" +
-            "                    order by cp.expiration_date desc", nativeQuery = true)
+    @Query(value = "SELECT p.id AS productId, c.id AS consignment_id, wh.id AS wareHouseId,\n" +
+            "         wh.name AS warehouseName, p.product_code AS productCode,\n" +
+            "\t\tp.name AS productName,p.unit_measure AS unitMeasure,\n" +
+            "\t\tp.unitprice AS unitPrice,c.import_date AS importDate,\n" +
+            "        cp.expiration_date AS expirationDate,\n" +
+            "        cp.unit_price AS Price,\n" +
+            "\t\tcp.quantity_sale AS quantityInstock\n" +
+            "        from order_detail as od\n" +
+            "join camms.order as o on o.id = od.order_id\n" +
+            "JOIN consignment c ON c.deleted_at = 0 and c.id = od.consignment_id\n" +
+            "JOIN warehouse wh ON wh.id = c.warehouse_id\n" +
+            "JOIN consignment_product cp ON  cp.consignment_id = c.id\n" +
+            "join product p on cp.product_id = p.id \n" +
+            "WHERE  c.import_date is not null AND cp.quantity_sale > 0 AND p.id= 1 and o.deleted_at\n" +
+            " = false and o.order_type_id = ?1 and o.status_id = 2\n" +
+            " order by cp.expiration_date desc", nativeQuery = true)
     List<Map<String, Object>> getProductInWareHouse(Long product_id);
 
     @Query(value = "SELECT DISTINCT c.consignment_code FROM consignment as c order by c.consignment_code\n",
