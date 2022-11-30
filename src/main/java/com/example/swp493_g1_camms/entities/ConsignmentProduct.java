@@ -1,4 +1,5 @@
 package com.example.swp493_g1_camms.entities;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,7 +42,10 @@ public class ConsignmentProduct{
     @Column(name = "expiration_date")
     private LocalDateTime expirationDate;
 
-    @Column(name = "consignment_id_sell")
-    private Long consignmentIdSell;
+    @Column(name = "mark_con_id")
+    private Long mark_get_product_from_consignment;
+
+    @Column(name = "quantity_sale")
+    private Integer quantity_sale;
 
 }

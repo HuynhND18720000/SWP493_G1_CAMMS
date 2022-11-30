@@ -100,7 +100,7 @@ public class ExportOrderImpl implements IExportOrderService {
         ServiceResult<Map<String, Object>> mapServiceResult = new ServiceResult<>();
         Map<String, Object> output = new HashMap<>();
         try {
-            List<Map<String, Object>> listImportProducts = iExportOrderRepository.getExportOrderDetail(orderId);
+            List<Map<String, Object>> listImportProducts = iExportOrderRepository.getReturnOrderDetail(orderId);
             output.put("listExportProduct", listImportProducts);
             mapServiceResult.setData(output);
             mapServiceResult.setMessage("success");

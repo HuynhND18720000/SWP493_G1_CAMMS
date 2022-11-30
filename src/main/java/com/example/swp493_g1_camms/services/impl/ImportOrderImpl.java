@@ -7,7 +7,6 @@ import com.example.swp493_g1_camms.payload.request.ImportOrderRequest;
 import com.example.swp493_g1_camms.payload.request.ProductRequest;
 import com.example.swp493_g1_camms.payload.response.ListProductResponse;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
-import com.example.swp493_g1_camms.payload.response.ProductResponse;
 import com.example.swp493_g1_camms.payload.response.ResponseVo;
 import com.example.swp493_g1_camms.repository.*;
 import com.example.swp493_g1_camms.services.interfaceService.IImportOrderService;
@@ -338,12 +337,12 @@ public class ImportOrderImpl implements IImportOrderService {
     public ResponseEntity<?> editOrder(Long orderId, List<ConsignmentProductDTO> consignmentProductDTOList) {
         for (ConsignmentProductDTO cPDTO1: consignmentProductDTOList) {
             ConsignmentProduct consignmentProduct =
-                    iConsignmentProductRepository.getConsignmentProductById(cPDTO1.getConsignmentId(), cPDTO1.getProductId());
+                    iConsignmentProductRepository.getConsignmentProductById(cPDTO1.getConsignmentIdFrom(), cPDTO1.getProductId());
             String str = cPDTO1.getExpirationDate();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime dateTime = LocalDateTime.parse(str, formatter);
             consignmentProduct.setExpirationDate(dateTime);
-            consignmentProduct.setQuantity(cPDTO1.getQuantity());
+            consignmentProduct.setQuantity(cPDTO1.getQuantityReturn());
             consignmentProduct.setUnitPrice(cPDTO1.getUnitPrice());
             iConsignmentProductRepository.save(consignmentProduct);
         }

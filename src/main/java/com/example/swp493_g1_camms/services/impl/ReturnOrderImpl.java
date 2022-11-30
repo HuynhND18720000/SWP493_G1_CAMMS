@@ -1,8 +1,7 @@
 package com.example.swp493_g1_camms.services.impl;
 
 import com.example.swp493_g1_camms.entities.*;
-import com.example.swp493_g1_camms.payload.request.ConsignmentRequest;
-import com.example.swp493_g1_camms.payload.request.ProductRequest;
+import com.example.swp493_g1_camms.payload.request.ConsignmentProductDTO;
 import com.example.swp493_g1_camms.payload.request.ReturnOrderDTO;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
 import com.example.swp493_g1_camms.payload.response.ResponseVo;
@@ -46,14 +45,17 @@ public class ReturnOrderImpl implements IReturnOderService {
     @Autowired
     IConsignmentProductRepository iConsignmentProductRepository;
 
+    @Autowired
+    IWarehouseRepository iWarehouseRepository;
+
     @Override
-    public ResponseEntity<?> createReturnOrder(ReturnOrderDTO returnOrderDTO) {
+    public ResponseEntity<?> createReturnOrder(Long orderId, String orderCode, Long confirmBy, String description, List<ConsignmentProductDTO> consignmentProductDTOs) {
         Order order = new Order();
         ResponseVo responseVo = new ResponseVo();
         MessageResponse messageResponse = new MessageResponse();
         try{
             //update old order
-            order = orderRepository.getById(returnOrderDTO.getOrderId());
+            order = orderRepository.getById(orderId);
             order.setStatus(statusRepository.findStatusById(Long.valueOf(4)));
             Date in = new Date();
             LocalDateTime ldt = LocalDateTime.ofInstant(in.toInstant(), ZoneId.systemDefault());
@@ -63,8 +65,8 @@ public class ReturnOrderImpl implements IReturnOderService {
             //create order return
             Order order1 = new Order();
             order1.setOrderType(orderTypeRepository.getOrderTypeById(Long.valueOf(3)));
-            order1.setOrderCode(returnOrderDTO.getOrderCode());
-            Optional<User> user = userRepository.getUserById(returnOrderDTO.getConfirmBy());
+            order1.setOrderCode(orderCode);
+            Optional<User> user = userRepository.getUserById(confirmBy);
             User u = user.get();
             if (u==null){
                 responseVo.setMessage("User khong ton tai");
@@ -72,46 +74,57 @@ public class ReturnOrderImpl implements IReturnOderService {
             }
 //            order1.setId(3L);
             order1.setUser(u);
-            order1.setConfirmBy(returnOrderDTO.getConfirmBy());
+            order1.setConfirmBy(confirmBy);
             order1.setConfirmDate(ldt);
             order1.setCreatedDate(ldt);
-            order1.setDescription(returnOrderDTO.getDescription());
+            order1.setDescription(description);
             order1.setIsReturn(false);
             order1.setStatus(statusRepository.findStatusById(Long.valueOf(2)));
             order1.setManufacturer(null);
             order1.setDeletedAt(false);
-            order1.setDescription("");
             orderRepository.save(order1);
 
             //Get return order id;
-            Long orderId = order1.getId();
+            Long orderId1 = order1.getId();
             System.out.println("dsa"+orderId);
 
             //Add to consignment product
-            for(int i = 0 ; i < returnOrderDTO.getConsignmentProductDTOs().size(); i++){
+            for(int i = 0 ; i < consignmentProductDTOs.size(); i++){
                 Consignment consignment = new Consignment();
                 consignment.setImportDate(ldt);
                 consignment.setDeletedAt(false);
+                //them
+                consignment.setWarehouse(iWarehouseRepository.getById(consignmentProductDTOs.get(i).getWarehouseIdFrom()));
                 consignmentRepository.save(consignment);
+
                 Long consignmentId = consignment.getId();
                 //Save to orderDetail
                 OrderDetail orderDetail = new OrderDetail();
                 orderDetail.setConsignment(consignmentRepository.getById(consignmentId));
                 orderDetail.setOrder(orderRepository.getById(orderId));
                 orderDetailRepository.save(orderDetail);
+
                 //Save to consigmentProduct
                 ConsignmentProduct consignmentProduct = new ConsignmentProduct();
                 consignmentProduct.setProduct(
-                        productRepository.findProductById(returnOrderDTO.getConsignmentProductDTOs().get(i).getProductId()));
+                        productRepository.findProductById(consignmentProductDTOs.get(i).getProductId()));
                 consignmentProduct.setConsignment(consignmentRepository.getById(consignmentId));
-                consignmentProduct.setQuantity(returnOrderDTO.getConsignmentProductDTOs().get(i).getQuantity());
-                consignmentProduct.setUnitPrice(returnOrderDTO.getConsignmentProductDTOs().get(i).getUnitPrice());
-                String str = returnOrderDTO.getConsignmentProductDTOs().get(i).getExpirationDate();
+                consignmentProduct.setQuantity(consignmentProductDTOs.get(i).getQuantityReturn());
+                consignmentProduct.setUnitPrice(consignmentProductDTOs.get(i).getUnitPrice());
+                String str = consignmentProductDTOs.get(i).getExpirationDate();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                 LocalDateTime dateTime = LocalDateTime.parse(str, formatter);
                 consignmentProduct.setExpirationDate(dateTime);
                 consignmentProduct.setDeletedAt(false);
-                consignmentProduct.setConsignmentIdSell(returnOrderDTO.getConsignmentProductDTOs().get(i).getConsignmentId());
+                consignmentProduct.setMark_get_product_from_consignment(
+                        consignmentProductDTOs.get(i).getConsignmentIdFrom());
+//                //update quantity sale
+                ConsignmentProduct consignmentProduct1 =
+                        iConsignmentProductRepository.getConsignmentProductById(consignmentProductDTOs.get(i).getConsignmentIdFrom(),
+                                consignmentProductDTOs.get(i).getProductId());
+                consignmentProduct1.setQuantity_sale(
+                        consignmentProduct1.getQuantity_sale() + consignmentProductDTOs.get(i).getQuantityReturn());
+                iConsignmentProductRepository.save(consignmentProduct1);
                 iConsignmentProductRepository.save(consignmentProduct);
             }
 

@@ -26,8 +26,7 @@ public interface IOrderRepository extends JpaRepository<Order, Long> {
             "            Where order1.user_id = user2.id\n" +
             "            and order1.order_type_id = order_type1.id \n" +
             "            and order1.status_id = status1.id\n" +
-            "            and order1.order_type_id = 3\n" +
-            "            and CASE WHEN ?1 IS NOT NULL THEN order1.status_id = ?1 ELSE order1.status_id = 4 END" )
+            "            and order1.order_type_id = 3\n")
     List<Map<String, Object>> getListReturnOrders(Pageable pageable);
 
     @Query(nativeQuery = true, value = "SELECT COUNT(*) from `order` order1"+

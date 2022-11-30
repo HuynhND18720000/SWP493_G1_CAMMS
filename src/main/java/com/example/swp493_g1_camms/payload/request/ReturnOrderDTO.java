@@ -12,10 +12,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReturnOrderDTO {
-
-    private Long orderId;
-    private String orderCode;
-    private Long confirmBy;
-    private String description;
     List<ConsignmentProductDTO> consignmentProductDTOs;
 }
