@@ -121,8 +121,6 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
                 c.setId(stdr.getId());
                 stockTakingHistoryDetail.setConsignment(c);
 
-                stockTakingHistoryDetailRepository.save(stockTakingHistoryDetail);
-
                 StockTakingHistoryDescription stockTakingHistoryDescription = new StockTakingHistoryDescription();
                 Product p = new Product();
                 p.setId(stdr.getProductId());
@@ -132,6 +130,8 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
                 //check cho nay so luong chenh lech
                 stockTakingHistoryDescription.setDifferentQuantity(stdr.getQuantityInstock() - stdr.getQuantity());
                 stockTakingHistoryDescription.setDescription(stdr.getDescription());
+
+                stockTakingHistoryDetailRepository.save(stockTakingHistoryDetail);
                 stockTakingHistoryDes.save(stockTakingHistoryDescription);
             }
             messageResponse.setMessage("Tao phieu xuat hang thanh cong");

@@ -129,7 +129,7 @@ public class ImportOrderImpl implements IImportOrderService {
                 consignmentProduct.setQuantity(pro.getQuantity());
                 consignmentProduct.setUnitPrice(pro.getUnitprice());
                 consignmentProduct.setDeletedAt(false);
-
+                consignmentProduct.setQuantity_sale(pro.getQuantity());
                 consignmentProduct.setExpirationDate(pro.getOutDate());
                 relationConsignmentProductRepository.save(consignmentProduct);
             }
