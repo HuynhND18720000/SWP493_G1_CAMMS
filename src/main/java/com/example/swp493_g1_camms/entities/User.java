@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -53,6 +54,12 @@ public class User {
 
     @Column(name = "token")
     private String token;
+
+    @Column(name = "one_time_password")
+    private String one_time_password;
+
+    @Column(name = "otp_requested_time")
+    private Date otp_requested_time;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Order> orders;
