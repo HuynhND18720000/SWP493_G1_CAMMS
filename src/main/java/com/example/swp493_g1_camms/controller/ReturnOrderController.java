@@ -1,6 +1,7 @@
 package com.example.swp493_g1_camms.controller;
 
 import com.example.swp493_g1_camms.entities.ServiceResult;
+import com.example.swp493_g1_camms.payload.request.ConsignmentProductDTO;
 import com.example.swp493_g1_camms.payload.request.ReturnOrderDTO;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
 import com.example.swp493_g1_camms.services.impl.ExportOrderImpl;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -30,15 +32,20 @@ public class ReturnOrderController {
     ExportOrderImpl exportOrder;
 
     @PostMapping(path = "/createReturnOrder")
-    public ResponseEntity<?> createReturnOrder(@RequestBody ReturnOrderDTO returnOrderDTO){
+    public ResponseEntity<?> createReturnOrder( @RequestParam(required = false) Long orderId,
+                                                @RequestParam(required = false) String orderCode,
+                                                @RequestParam(required = false) Long confirmBy,
+                                                @RequestParam(required = false) String description,
+                                                @RequestBody List<ConsignmentProductDTO> consignmentProductDTOs){
         boolean isActive = CurrentUserIsActive.currentUserIsActive();
         if(!isActive){
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
         }
-        return returnOderImpl.createReturnOrder(returnOrderDTO);
+        return returnOderImpl.createReturnOrder(orderId, orderCode, confirmBy, description, consignmentProductDTOs);
     }
+
 
     @GetMapping("/getOrderDetail")
     public ResponseEntity<ServiceResult<Map<String, Object>>> getOrderDetail(@RequestParam(required = false) Long orderId)
