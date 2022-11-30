@@ -266,6 +266,7 @@ public class ExportOrderImpl implements IExportOrderService {
     }
 
 
+
     @Override
     public ServiceResult<Map<String, Object>> getListExportOrders(Integer pageIndex, Integer pageSize,  Integer status,
                                                                   String dateFrom, String dateTo, Long userId, String orderCode) {
@@ -447,7 +448,7 @@ public class ExportOrderImpl implements IExportOrderService {
         ServiceResult<Map<String, Object>> mapServiceResult = new ServiceResult<>();
         Map<String, Object> output = new HashMap<>();
         try {
-            List<Map<String, Object>> listImportProducts = iExportOrderRepository.getExportOrderDetail(orderId);
+            List<Map<String, Object>> listImportProducts = iExportOrderRepository.getReturnOrderDetail(orderId);
             output.put("listExportProduct", listImportProducts);
             mapServiceResult.setData(output);
             mapServiceResult.setMessage("success");
@@ -518,5 +519,25 @@ public class ExportOrderImpl implements IExportOrderService {
             return mapServiceResult;
         }
         return mapServiceResult;
+    }
+
+    @Override
+    public ResponseEntity<?> displayListProductInWarehouseToDropList() {
+        ResponseVo responseVo = new ResponseVo();
+        Map<String, Object> map = new HashMap<>();
+        MessageResponse messageResponse = new MessageResponse();
+        try{
+            List<Product> productList = productRepository.getListProductInWarehouse();
+            map.put("listProductInWarehouse", ListProductResponse.createSuccessData(productList));
+            responseVo.setData(map);
+            messageResponse.setMessage("lay thanh cong");
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }catch(Exception e){
+            System.out.println("loi khong lay dc");
+            messageResponse.setMessage(e+"");
+            return ResponseEntity
+                    .badRequest()
+                    .body(messageResponse);
+        }
     }
 }

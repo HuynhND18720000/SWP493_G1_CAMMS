@@ -64,4 +64,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("select p from Consignment c join ConsignmentProduct cp on c.id = cp.consignment.id" +
             " join Product p on p.id = cp.product.id where c.id = ?1")
     Product findProductByConsignmentId(Long consignment_Id);
+
+    @Query(value = "select distinct p.* from order_detail as od\n" +
+            "join camms.order as o on o.id = od.order_id\n" +
+            "join consignment as c on c.id = od.consignment_id\n" +
+            "join consignment_product as cp on cp.consignment_id = c.id\n" +
+            "join product as p on p.id = cp.product_id\n" +
+            "where o.status_id = 2 and o.deleted_at = false and o.order_type_id = 1", nativeQuery = true)
+    List<Product> getListProductInWarehouse();
 }

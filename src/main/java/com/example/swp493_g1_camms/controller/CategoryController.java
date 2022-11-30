@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import com.example.swp493_g1_camms.services.interfaceService.ICategoryService;
 @Controller
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/category")
 public class CategoryController {
 

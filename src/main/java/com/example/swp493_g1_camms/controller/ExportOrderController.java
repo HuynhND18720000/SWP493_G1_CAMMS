@@ -33,7 +33,7 @@ public class ExportOrderController {
                     .badRequest()
                     .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
         }
-        return null;
+        return exportOrder.displayListProductInWarehouseToDropList();
     }
 
     @GetMapping(path = "/export-product")

@@ -9,13 +9,15 @@ import com.example.swp493_g1_camms.services.interfaceService.IWarehouseService;
 
 
 @RestController
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RequestMapping("/api/warehouses")
 public class WarehouseController {
     private final int defaultPage = 1;
     private final int defaultSize = 5;
     @Autowired
     private IWarehouseService IWarehouseService;
 
-    @GetMapping("/warehouses")
+    @GetMapping
     public ResponseEntity<?> getAllWarehouse(@RequestParam(required = false) Integer pageIndex,
                                              @RequestParam(required = false) Integer pageSize){
         pageIndex = pageIndex == null ? defaultPage : pageIndex;

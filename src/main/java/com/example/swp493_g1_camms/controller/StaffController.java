@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @Controller
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/staff")
 public class StaffController {
     private final int defaultPage = 1;

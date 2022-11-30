@@ -50,9 +50,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(unauthorizeHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeRequests().antMatchers("/api/auth/**").permitAll()
-                .and().authorizeRequests().antMatchers("/manufacturers").permitAll()
-                .and().authorizeRequests().antMatchers("/api/category").permitAll()
-                .and().authorizeRequests().antMatchers("/warehouses").permitAll()
                 .and().authorizeRequests().antMatchers("/api/user/userprofile").permitAll()
                 .and().authorizeRequests().antMatchers("/api/products").permitAll()
                 .and().authorizeRequests().antMatchers("/api/getAllProducts").permitAll()
@@ -73,6 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers("/getAManufacturer1").permitAll()
                 .and().authorizeRequests().antMatchers("/api/stockTakingHistory").permitAll()
                 .and().authorizeRequests().antMatchers("/api/export/export-product").permitAll()
+                .and().authorizeRequests().antMatchers("/api/export/listProduct").permitAll()
                 .and().authorizeRequests().antMatchers("/api/export/getOrderDetail").permitAll()
                 .and().authorizeRequests().antMatchers("/api/export/getDetailCancelDeliveredOrder").permitAll()
                 .and().authorizeRequests().antMatchers("/api/export/getOrderDetailForCancelDeliveredOrder").permitAll()
@@ -82,7 +80,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers("/api/export/delivered").permitAll()
                 .and().authorizeRequests().antMatchers("/api/export/cancelDeliveredOrder").permitAll()
                 .and().authorizeRequests().antMatchers("/api/stockTakingHistory").permitAll()
-                .anyRequest().authenticated();
+                .and().authorizeRequests().antMatchers("/api/category/**").permitAll()
+                .and().authorizeRequests().antMatchers("/api/subCategory/**").permitAll()
+                .and().authorizeRequests().antMatchers("/api/manufacturers/**").permitAll()
+                .and().authorizeRequests().antMatchers("/api/warehouses/**").permitAll()
+         .anyRequest().authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 

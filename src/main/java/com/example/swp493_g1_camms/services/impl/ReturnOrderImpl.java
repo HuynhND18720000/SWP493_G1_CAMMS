@@ -45,6 +45,8 @@ public class ReturnOrderImpl implements IReturnOderService {
 
     @Autowired
     IConsignmentProductRepository iConsignmentProductRepository;
+    @Autowired
+    IWarehouseRepository iWarehouseRepository;
 
     @Override
     public ResponseEntity<?> createReturnOrder(ReturnOrderDTO returnOrderDTO) {
@@ -92,8 +94,10 @@ public class ReturnOrderImpl implements IReturnOderService {
                 Consignment consignment = new Consignment();
                 consignment.setImportDate(ldt);
                 consignment.setDeletedAt(false);
+                consignment.setWarehouse(iWarehouseRepository.getById(returnOrderDTO.getWarehouseId()));
                 consignmentRepository.save(consignment);
                 Long consignmentId = consignment.getId();
+
                 //Save to orderDetail
                 OrderDetail orderDetail = new OrderDetail();
                 orderDetail.setConsignment(consignmentRepository.getById(consignmentId));

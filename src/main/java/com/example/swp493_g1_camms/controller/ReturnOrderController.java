@@ -17,6 +17,7 @@ import java.text.ParseException;
 import java.util.Map;
 
 @Controller
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/return")
 public class ReturnOrderController {
     private final int defaultPage = 1;

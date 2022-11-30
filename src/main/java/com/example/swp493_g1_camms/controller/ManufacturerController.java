@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.swp493_g1_camms.services.interfaceService.IManufacturerService;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RequestMapping("/api/manufacturers")
 @RestController
 public class ManufacturerController {
     private final int defaultPage = 1;
@@ -23,12 +25,12 @@ public class ManufacturerController {
         return IManufacturerService.findManufacturerById(id);
     }
 
-    @GetMapping("/getAManufacturer1")
-    public ResponseEntity<?> getA1Manufacturer(Long id) {
-        return IManufacturerService.findAManufacturerById(id);
-    }
+//    @GetMapping("/getAManufacturer1")
+//    public ResponseEntity<?> getA1Manufacturer(Long id) {
+//        return IManufacturerService.findAManufacturerById(id);
+//    }
 
-    @GetMapping("/manufacturers")
+    @GetMapping
     public ResponseEntity<?> getListManufacturer(@RequestParam(required = false) Integer pageIndex,
                                                  @RequestParam(required = false) Integer pageSize) {
         pageIndex = pageIndex == null ? defaultPage : pageIndex;
@@ -48,5 +50,9 @@ public class ManufacturerController {
     @PutMapping("/editManufacturer")
     public ResponseEntity<?> editManufacturer(@RequestBody ManufacturerDTO manufacturerDTO) {
         return IManufacturerService.editManufacturer(manufacturerDTO);
+    }
+    @GetMapping("/getManufacturerNotPagging")
+    public ResponseEntity<?> getAllManufacturerNotPagging() {
+        return IManufacturerService.getAllManufacturerNotPagging();
     }
 }

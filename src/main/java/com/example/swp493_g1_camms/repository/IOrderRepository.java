@@ -46,7 +46,7 @@ public interface IOrderRepository extends JpaRepository<Order, Long> {
     @Query(nativeQuery = true, value = "SELECT DISTINCT order1.id, order_code, user1.full_name as confirm_by_name, confirm_date, \n" +
             "            created_date, order1.description, is_return, update_date, user2.full_name as user_name,\n" +
             "            mn.name as manufacturer_name, order_type1.name as order_type_name, status1.name as status\n" +
-            "            FROM `order` order1\n" +
+            "            FROM order order1\n" +
             "            LEFT JOIN user user1 ON order1.confirm_by = user1.id\n" +
             "            LEFT JOIN manufacturer mn ON order1.manufacturer_id = mn.id,\n" +
             "            user user2, status status1,\n" +
@@ -54,8 +54,7 @@ public interface IOrderRepository extends JpaRepository<Order, Long> {
             "            Where order1.user_id = user2.id\n" +
             "            and order1.order_type_id = order_type1.id \n" +
             "            and order1.status_id = status1.id\n" +
-            "            and order1.order_type_id = 3\n" +
-            "            and CASE WHEN ?1 IS NOT NULL THEN order1.status_id = ?1 ELSE order1.status_id = 4 END" )
+            "            and order1.order_type_id = 3\n" )
     List<Map<String, Object>> getListReturnOrders(Pageable pageable);
 
 }

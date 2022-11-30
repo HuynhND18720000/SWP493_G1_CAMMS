@@ -32,4 +32,6 @@ public interface IExportOrderService {
     ResponseEntity<?> cancelDeliveredOrder(Long orderId, List<OrderStatusDeliverDTO> orderStatusDeliverDTOS);
 
     ServiceResult<Map<String, Object>> getDetailCancelDeliveredOrder(Long orderId);
+
+    ResponseEntity<?> displayListProductInWarehouseToDropList();
 }
