@@ -31,8 +31,8 @@ public interface IExportOrderRepository extends JpaRepository<Order, Long> {
             "JOIN warehouse wh ON wh.id = c.warehouse_id\n" +
             "JOIN consignment_product cp ON  cp.consignment_id = c.id\n" +
             "join product p on cp.product_id = p.id \n" +
-            "WHERE  c.import_date is not null AND cp.quantity_sale > 0 AND p.id= 1 and o.deleted_at\n" +
-            " = false and o.order_type_id = ?1 and o.status_id = 2\n" +
+            "WHERE  c.import_date is not null AND cp.quantity_sale > 0 AND p.id= ?1 and o.deleted_at\n" +
+            " = false and o.order_type_id = 1 and o.status_id = 2\n" +
             " order by cp.expiration_date desc", nativeQuery = true)
     List<Map<String, Object>> getProductInWareHouse(Long product_id);
 
