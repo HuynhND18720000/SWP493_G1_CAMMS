@@ -2,9 +2,6 @@ package com.example.swp493_g1_camms.services.impl;
 
 import com.example.swp493_g1_camms.entities.*;
 import com.example.swp493_g1_camms.payload.request.ConsignmentProductDTO;
-import com.example.swp493_g1_camms.payload.request.ConsignmentRequest;
-import com.example.swp493_g1_camms.payload.request.ProductRequest;
-import com.example.swp493_g1_camms.payload.request.ReturnOrderDTO;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
 import com.example.swp493_g1_camms.payload.response.ResponseVo;
 import com.example.swp493_g1_camms.repository.*;
@@ -97,7 +94,7 @@ public class ReturnOrderImpl implements IReturnOderService {
                 consignment.setImportDate(ldt);
                 consignment.setDeletedAt(false);
                 //them
-                consignment.setWarehouse(iWarehouseRepository.getById(consignmentProductDTOs.get(i).getWarehouseIdFrom()));
+                consignment.setWarehouse(iWarehouseRepository.getById(consignmentProductDTOs.get(i).getWarehouseId()));
                 consignmentRepository.save(consignment);
 
                 Long consignmentId = consignment.getId();
@@ -112,7 +109,7 @@ public class ReturnOrderImpl implements IReturnOderService {
                 consignmentProduct.setProduct(
                         productRepository.findProductById(consignmentProductDTOs.get(i).getProductId()));
                 consignmentProduct.setConsignment(consignmentRepository.getById(consignmentId));
-                consignmentProduct.setQuantity(consignmentProductDTOs.get(i).getQuantityReturn());
+                consignmentProduct.setQuantity(consignmentProductDTOs.get(i).getQuantity());
                 consignmentProduct.setUnitPrice(consignmentProductDTOs.get(i).getUnitPrice());
                 String str = consignmentProductDTOs.get(i).getExpirationDate();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -120,13 +117,13 @@ public class ReturnOrderImpl implements IReturnOderService {
                 consignmentProduct.setExpirationDate(dateTime);
                 consignmentProduct.setDeletedAt(false);
                 consignmentProduct.setMark_get_product_from_consignment(
-                        consignmentProductDTOs.get(i).getConsignmentIdFrom());
+                        consignmentProductDTOs.get(i).getConsignmentId());
 //                //update quantity sale
                 ConsignmentProduct consignmentProduct1 =
-                        iConsignmentProductRepository.getConsignmentProductById(consignmentProductDTOs.get(i).getConsignmentIdFrom(),
+                        iConsignmentProductRepository.getConsignmentProductById(consignmentProductDTOs.get(i).getConsignmentId(),
                                 consignmentProductDTOs.get(i).getProductId());
                 consignmentProduct1.setQuantity_sale(
-                        consignmentProduct1.getQuantity_sale() + consignmentProductDTOs.get(i).getQuantityReturn());
+                        consignmentProduct1.getQuantity_sale() + consignmentProductDTOs.get(i).getQuantity());
                 iConsignmentProductRepository.save(consignmentProduct1);
                 iConsignmentProductRepository.save(consignmentProduct);
             }

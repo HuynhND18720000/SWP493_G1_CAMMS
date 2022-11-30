@@ -424,12 +424,12 @@ public class ExportOrderImpl implements IExportOrderService {
     public ResponseEntity<?> editExportOrder(Long orderId, List<ConsignmentProductDTO> consignmentProductDTOList) {
         for (ConsignmentProductDTO cPDTO1: consignmentProductDTOList) {
             ConsignmentProduct consignmentProduct =
-                    iConsignmentProductRepository.getConsignmentProductById(cPDTO1.getConsignmentIdFrom(), cPDTO1.getProductId());
+                    iConsignmentProductRepository.getConsignmentProductById(cPDTO1.getConsignmentId(), cPDTO1.getProductId());
             String str = cPDTO1.getExpirationDate();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime dateTime = LocalDateTime.parse(str, formatter);
             consignmentProduct.setExpirationDate(dateTime);
-            consignmentProduct.setQuantity(cPDTO1.getQuantityReturn());
+            consignmentProduct.setQuantity(cPDTO1.getQuantity());
             consignmentProduct.setUnitPrice(cPDTO1.getUnitPrice());
             iConsignmentProductRepository.save(consignmentProduct);
         }

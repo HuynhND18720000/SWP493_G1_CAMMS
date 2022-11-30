@@ -10,16 +10,16 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ConsignmentProductDTO {
-    private Long consignmentIdFrom;
+    private Long consignmentId;
 
     private Long productId;
 
     private String expirationDate;
 
-    private Integer quantityReturn;
+    private Integer quantity;
 
     private Double unitPrice;
 
-    private Long warehouseIdFrom;
+    private Long warehouseId;
 
 }
