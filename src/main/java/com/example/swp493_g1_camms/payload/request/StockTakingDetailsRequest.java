@@ -18,8 +18,10 @@ public class StockTakingDetailsRequest {
     private Integer quantityInstock;
 
     private Integer quantity;
-
+    //diviant amount
     private double differentAmout;
 
     private String description;
+
+    private Double unitPrice;
 }
