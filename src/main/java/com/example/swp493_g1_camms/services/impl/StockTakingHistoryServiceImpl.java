@@ -44,8 +44,7 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
 
     @Autowired
     IStockTakingHistoryDescriptionRepository stockTakingHistoryDescriptionRepository;
-    @Autowired
-    IStockTakingHistoryDes stockTakingHistoryDes;
+
     @Override
     public ResponseEntity<?> findAllStockTakingHistory(Integer pageIndex, Integer pageSize, Long wareHouseId, Long userId, String startDate, String endDate, String orderBy) {
         String orderData = "createDate";
@@ -145,7 +144,7 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
                 stockTakingHistoryDescription.setDescription(stdr.getDescription());
 
                 stockTakingHistoryDetailRepository.save(stockTakingHistoryDetail);
-                stockTakingHistoryDes.save(stockTakingHistoryDescription);
+                stockTakingHistoryDescriptionRepository.save(stockTakingHistoryDescription);
             }
             messageResponse.setMessage("Tao phieu xuat hang thanh cong");
             return new ResponseEntity<>(messageResponse,HttpStatus.OK);
