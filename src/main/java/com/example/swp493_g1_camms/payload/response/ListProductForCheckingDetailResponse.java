@@ -2,6 +2,7 @@ package com.example.swp493_g1_camms.payload.response;
 
 import com.example.swp493_g1_camms.entities.ConsignmentProduct;
 import com.example.swp493_g1_camms.entities.Product;
+import com.example.swp493_g1_camms.entities.StockTakingHistoryDescription;
 import com.example.swp493_g1_camms.entities.StockTakingHistoryDetail;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,7 +30,7 @@ public class ListProductForCheckingDetailResponse {
     private List<ListConsignmentForCheckingDetailResponse> listConsignment;
 
     public static List<ListProductForCheckingDetailResponse> createSuccessData(List<Product> listProduct,
-                                                                               List<ConsignmentProduct> listConsignmentProduct, List<StockTakingHistoryDetail> listCheckingDetail) {
+                                                                               List<ConsignmentProduct> listConsignmentProduct, List<StockTakingHistoryDetail> listCheckingDetail, List<StockTakingHistoryDescription> listCheckingDescription) {
         List<ListProductForCheckingDetailResponse> listProductForCheckingDetailResponse = new ArrayList<>();
         for (Product product : listProduct) {
             ListProductForCheckingDetailResponse response = new ListProductForCheckingDetailResponse();
@@ -40,7 +41,7 @@ public class ListProductForCheckingDetailResponse {
             response.setQuantity(product.getQuantity());
             response.setUnitPrice(product.getUnitprice());
             response.setListConsignment(ListConsignmentForCheckingDetailResponse.
-                    createSuccessData(product.getId(), listConsignmentProduct, listCheckingDetail));
+                    createSuccessData(product.getId(), listConsignmentProduct, listCheckingDetail, listCheckingDescription));
             listProductForCheckingDetailResponse.add(response);
         }
         return listProductForCheckingDetailResponse;

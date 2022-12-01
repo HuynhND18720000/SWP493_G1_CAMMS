@@ -41,6 +41,9 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
     IExportOrderRepository exportOrderRepository;
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    IStockTakingHistoryDescriptionRepository stockTakingHistoryDescriptionRepository;
     @Autowired
     IStockTakingHistoryDes stockTakingHistoryDes;
     @Override
@@ -228,6 +231,7 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
             Map<String, Object> map = new HashMap<>();
 
             if (!ObjectUtils.isEmpty(stockTakingHistory)) {
+                List<StockTakingHistoryDescription> listDescription = stockTakingHistoryDescriptionRepository.findAllDescriptionByStockTakingHistoryId(stockTakingHistoryId);
                 List<StockTakingHistoryDetail> listDetail = stockTakingHistoryDetailRepository.findAllByStockTakingHistoryId(stockTakingHistoryId);
 
                 List<Long> listConsignmentId = new ArrayList<>();
@@ -235,7 +239,6 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
                     listConsignmentId.add(stockTakingHistoryDetail.getConsignment().getId());
                 }
 
-                //List<Consignment> ls = consignmentRepository.findAllConsignmentByListId(listConsignmentId);
                 List<ConsignmentProduct> listConsignment = consignmentProductRepository.findAllConsignmentByListId(listConsignmentId);
                 Set<Long> setProductId = new HashSet<>();
                 for (ConsignmentProduct cp : listConsignment ) {
@@ -247,7 +250,8 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
                     responseVo.setMessage("Không tìm thấy chi tiết đơn kiểm kho");
                     responseVo.setData(map);
                 }
-                map.put("stockTakingHistoryDetail", StockTakingHistoryDetailResponse.createSuccessData(stockTakingHistory, listDetail, listProduct, listConsignment));
+
+                map.put("stockTakingHistoryDetail", StockTakingHistoryDetailResponse.createSuccessData(stockTakingHistory, listDetail, listDescription, listProduct, listConsignment));
                 responseVo.setData(map);
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
             }
