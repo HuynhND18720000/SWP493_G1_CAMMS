@@ -116,16 +116,7 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
                 stockTakingHistoryDetail.setInstockQuantity(stdr.getQuantityInstock());
                 stockTakingHistoryDetail.setRealityQuantity(stdr.getQuantity());
                 stockTakingHistoryDetail.setStockTakingHistory(stockTakingHistory);
-
-                int real_quantity = stockTakingHistoryDetail.getRealityQuantity() -
-                        stockTakingHistoryDetail.getInstockQuantity();
-                double deviant_amount =
-                        real_quantity
-                                * stdr.getUnitPrice();
-                if(real_quantity < 0){
-                    deviant_amount *= -1;
-                }
-                stockTakingHistoryDetail.setDeviantAmount(deviant_amount);
+                stockTakingHistoryDetail.setDeviantAmount(stdr.getDifferentAmout());
                 Consignment c = new Consignment();
                 c.setId(stdr.getId());
                 stockTakingHistoryDetail.setConsignment(c);
