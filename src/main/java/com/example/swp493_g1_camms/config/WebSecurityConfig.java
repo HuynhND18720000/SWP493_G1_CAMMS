@@ -38,7 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
-    @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
+    @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
@@ -85,11 +85,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers("/api/export/delivered").permitAll()
                 .and().authorizeRequests().antMatchers("/api/export/cancelDeliveredOrder").permitAll()
                 .and().authorizeRequests().antMatchers("/api/stockTakingHistory").permitAll()
+                .and().authorizeRequests().antMatchers("/api/stockTakingHistory/detail/{stockTakingHistoryId}").permitAll()
                 .and().authorizeRequests().antMatchers("/api/category/**").permitAll()
                 .and().authorizeRequests().antMatchers("/api/subCategory/**").permitAll()
                 .and().authorizeRequests().antMatchers("/api/manufacturers/**").permitAll()
                 .and().authorizeRequests().antMatchers("/api/warehouses/**").permitAll()
                 .and().authorizeRequests().antMatchers("/api/return/createReturnOrder").permitAll()
+                .and().authorizeRequests().antMatchers("/api/forgot_password").permitAll()
+                .and().authorizeRequests().antMatchers("/api/check_otp").permitAll()
+                .and().authorizeRequests().antMatchers("/api/reset_password").permitAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }

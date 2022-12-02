@@ -1,15 +1,13 @@
 package com.example.swp493_g1_camms.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -41,6 +39,7 @@ public class User {
     private Boolean isActive;
 
     @Column(name = "email")
+    @Email
     private String email;
 
     @Column(name = "phone")
@@ -52,15 +51,6 @@ public class User {
     @Column(name = "dob")
     private LocalDate dob;
 
-    @Column(name = "token")
-    private String token;
-
-    @Column(name = "one_time_password")
-    private String one_time_password;
-
-    @Column(name = "otp_requested_time")
-    private Date otp_requested_time;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Order> orders;
 
@@ -70,6 +60,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<ReturnToManufacturer> returnToManufacturers;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<ResetPassHistory> resetPassHistories;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable( name = "user_role",

@@ -73,7 +73,7 @@ public class ExportOrderImpl implements IExportOrderService {
             int new_orderCode = Integer.parseInt((o.getId()+"").trim()) + 1;
             order.setOrderCode(String.valueOf(new_orderCode));
             order.setCreatedDate(convertDateUtils.convertDateFormat());
-            order.setIsReturn(false);
+            order.setIsReturn(null);
             order.setDeletedAt(false);
             Optional<User> user = userRepository.getUserById(exportOrderRequest.getUser_Id());
             User u = user.get();

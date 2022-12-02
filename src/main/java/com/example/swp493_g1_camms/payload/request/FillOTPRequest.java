@@ -7,6 +7,6 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetEmailRequest {
-    private String email_request;
+public class FillOTPRequest {
+    private String otp;
 }
