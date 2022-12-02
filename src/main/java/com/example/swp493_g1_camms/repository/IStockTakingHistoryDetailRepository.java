@@ -7,13 +7,15 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @EnableJpaRepositories
 public interface IStockTakingHistoryDetailRepository extends JpaRepository<StockTakingHistoryDetail, Long> {
 
-    @Query("SELECT sthDetail FROM StockTakingHistoryDetail sthDetail "
-            + "Where sthDetail.stockTakingHistory.id = ?1 " )
+    @Query("SELECT sthd FROM StockTakingHistoryDetail sthd "
+            + "Where sthd.stockTakingHistory.id = ?1" )
     List<StockTakingHistoryDetail> findAllByStockTakingHistoryId(Long id);
+
 
 }

@@ -41,8 +41,10 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
     IExportOrderRepository exportOrderRepository;
     @Autowired
     UserRepository userRepository;
+
     @Autowired
-    IStockTakingHistoryDes stockTakingHistoryDes;
+    IStockTakingHistoryDescriptionRepository stockTakingHistoryDescriptionRepository;
+
     @Override
     public ResponseEntity<?> findAllStockTakingHistory(Integer pageIndex, Integer pageSize, Long wareHouseId, Long userId, String startDate, String endDate, String orderBy) {
         String orderData = "createDate";
@@ -142,7 +144,7 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
                 stockTakingHistoryDescription.setDescription(stdr.getDescription());
 
                 stockTakingHistoryDetailRepository.save(stockTakingHistoryDetail);
-                stockTakingHistoryDes.save(stockTakingHistoryDescription);
+                stockTakingHistoryDescriptionRepository.save(stockTakingHistoryDescription);
             }
             messageResponse.setMessage("Tao phieu xuat hang thanh cong");
             return new ResponseEntity<>(messageResponse,HttpStatus.OK);
@@ -228,6 +230,7 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
             Map<String, Object> map = new HashMap<>();
 
             if (!ObjectUtils.isEmpty(stockTakingHistory)) {
+                List<StockTakingHistoryDescription> listDescription = stockTakingHistoryDescriptionRepository.findAllDescriptionByStockTakingHistoryId(stockTakingHistoryId);
                 List<StockTakingHistoryDetail> listDetail = stockTakingHistoryDetailRepository.findAllByStockTakingHistoryId(stockTakingHistoryId);
 
                 List<Long> listConsignmentId = new ArrayList<>();
@@ -235,7 +238,6 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
                     listConsignmentId.add(stockTakingHistoryDetail.getConsignment().getId());
                 }
 
-                //List<Consignment> ls = consignmentRepository.findAllConsignmentByListId(listConsignmentId);
                 List<ConsignmentProduct> listConsignment = consignmentProductRepository.findAllConsignmentByListId(listConsignmentId);
                 Set<Long> setProductId = new HashSet<>();
                 for (ConsignmentProduct cp : listConsignment ) {
@@ -247,7 +249,8 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
                     responseVo.setMessage("Không tìm thấy chi tiết đơn kiểm kho");
                     responseVo.setData(map);
                 }
-                map.put("stockTakingHistoryDetail", StockTakingHistoryDetailResponse.createSuccessData(stockTakingHistory, listDetail, listProduct, listConsignment));
+
+                map.put("stockTakingHistoryDetail", StockTakingHistoryDetailResponse.createSuccessData(stockTakingHistory, listDetail, listDescription, listProduct, listConsignment));
                 responseVo.setData(map);
                 return new ResponseEntity<>(responseVo, HttpStatus.OK);
             }

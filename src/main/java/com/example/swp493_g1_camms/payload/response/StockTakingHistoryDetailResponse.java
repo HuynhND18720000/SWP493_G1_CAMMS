@@ -30,6 +30,7 @@ public class StockTakingHistoryDetailResponse {
     public static StockTakingHistoryDetailResponse createSuccessData(
             StockTakingHistory stockTakingHistory,
             List<StockTakingHistoryDetail> listDetail,
+            List<StockTakingHistoryDescription> listDescription,
             List<Product> listProduct, List<ConsignmentProduct> listConsignment) {
         StockTakingHistoryDetailResponse response = new StockTakingHistoryDetailResponse();
         response.setId(stockTakingHistory.getId());
@@ -38,7 +39,7 @@ public class StockTakingHistoryDetailResponse {
         response.setWareHouseName(stockTakingHistory.getWarehouse().getName());
         response.setCreateDate(stockTakingHistory.getCreateDate());
         response.setTotalDifferentAmount(stockTakingHistory.getTotalDifferentAmount());
-        response.setListProduct(ListProductForCheckingDetailResponse.createSuccessData(listProduct, listConsignment, listDetail));
+        response.setListProduct(ListProductForCheckingDetailResponse.createSuccessData(listProduct, listConsignment, listDetail, listDescription));
         return response;
     }
 }
