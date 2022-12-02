@@ -42,7 +42,8 @@ public class ListConsignmentForCheckingDetailResponse {
             for (StockTakingHistoryDetail stockTakingHistoryDetail : listCheckingDetail) {
                 for(StockTakingHistoryDescription stockTakingHistoryDescription : listCheckingDescription){
                     if (consignment.getProduct().getId() == productId && stockTakingHistoryDetail.getConsignment().getId() == consignment.getConsignment().getId()
-                        && stockTakingHistoryDescription.getConsignment().getId() == consignment.getConsignment().getId()) {
+                        && stockTakingHistoryDescription.getConsignment().getId() == consignment.getConsignment().getId()
+                        && stockTakingHistoryDescription.getProduct().getId() == consignment.getProduct().getId()) {
                         ListConsignmentForCheckingDetailResponse response = new ListConsignmentForCheckingDetailResponse();
                         response.setId(consignment.getConsignment().getId());
                         response.setExpirationDate(consignment.getExpirationDate());
