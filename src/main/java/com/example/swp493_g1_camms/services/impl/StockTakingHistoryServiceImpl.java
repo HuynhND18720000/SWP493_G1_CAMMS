@@ -132,11 +132,15 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
                 Consignment c = new Consignment();
                 c.setId(stdr.getId());
                 stockTakingHistoryDetail.setConsignment(c);
+                // t bo sung them truong productId, nen add them vao bang detail truong id
+                Product p1 = new Product();
+                p1.setId(stdr.getProductId());
+                stockTakingHistoryDetail.setProduct(p1);
 
                 StockTakingHistoryDescription stockTakingHistoryDescription = new StockTakingHistoryDescription();
-                Product p = new Product();
-                p.setId(stdr.getProductId());
-                stockTakingHistoryDescription.setProduct(p);
+                Product p2 = new Product();
+                p2.setId(stdr.getProductId());
+                stockTakingHistoryDescription.setProduct(p2);
                 stockTakingHistoryDescription.setStockTakingHistory(stockTakingHistory1);
                 stockTakingHistoryDescription.setConsignment(c);
                 //check cho nay so luong chenh lech
@@ -230,7 +234,7 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
             Map<String, Object> map = new HashMap<>();
 
             if (!ObjectUtils.isEmpty(stockTakingHistory)) {
-                List<StockTakingHistoryDescription> listDescription = stockTakingHistoryDescriptionRepository.findAllDescriptionByStockTakingHistoryId(stockTakingHistoryId);
+
                 List<StockTakingHistoryDetail> listDetail = stockTakingHistoryDetailRepository.findAllByStockTakingHistoryId(stockTakingHistoryId);
 
                 List<Long> listConsignmentId = new ArrayList<>();
@@ -243,6 +247,7 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
                 for (ConsignmentProduct cp : listConsignment ) {
                     setProductId.add(cp.getProduct().getId());
                 }
+                List<StockTakingHistoryDescription> listDescription = stockTakingHistoryDescriptionRepository.findAllDescriptionByStockTakingHistoryId(stockTakingHistoryId);
                 List<Product> listProduct = productRepository.findListAllByConsignmentList(setProductId);
 
                 if (listDetail.isEmpty()) {

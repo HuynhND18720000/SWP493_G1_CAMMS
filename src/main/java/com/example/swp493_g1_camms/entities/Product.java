@@ -66,6 +66,9 @@ public class Product {
     private Set<StockTakingHistoryDescription> stockTakingHistoryDescriptions;
 
     @OneToMany(mappedBy = "product")
+    private Set<StockTakingHistoryDetail> stockTakingHistoryDetails;
+
+    @OneToMany(mappedBy = "product")
     private Set<OrderDeliver> orderDelivers;
 
 

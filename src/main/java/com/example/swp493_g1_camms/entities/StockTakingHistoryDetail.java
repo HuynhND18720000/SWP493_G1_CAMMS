@@ -32,6 +32,10 @@ public class StockTakingHistoryDetail {
     private Consignment consignment;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    private Product product;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "stock_taking_history_id", referencedColumnName = "id")
     private StockTakingHistory stockTakingHistory;
 }
