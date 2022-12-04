@@ -84,7 +84,9 @@ public class ManufacturerServiceImpl implements IManufacturerService {
         manufacturerResponse.setId(manufacturer.getId());
         manufacturerResponse.setName(manufacturer.getName());
         manufacturerResponse.setPhone(manufacturer.getPhone());
-
+        manufacturerResponse.setEmail(manufacturer.getEmail());
+        manufacturerResponse.setAddress(manufacturer.getAddress());
+        manufacturerResponse.setDeletedAt(false);
         ResponseVo responseVo = new ResponseVo();
         Map<String, Object> map = new HashMap<>();
         map.put("manufacturer", manufacturerResponse);
@@ -94,22 +96,6 @@ public class ManufacturerServiceImpl implements IManufacturerService {
 
     }
 
-    //test
-    @Override
-    public ResponseEntity<?> findAManufacturerById(Long id) {
-        Manufacturer manufacturer = IManufacturerRepository.findManufacturerById(id);
-        ManufacturerResponse manufacturerResponse = new ManufacturerResponse();
-        manufacturerResponse.setId(manufacturer.getId());
-        manufacturerResponse.setName(manufacturer.getName());
-        manufacturerResponse.setPhone(manufacturer.getPhone());
-
-        ResponseVo responseVo = new ResponseVo();
-        Map<String, Object> map = new HashMap<>();
-        map.put("manufacturer", manufacturerResponse);
-        responseVo.setData(map);
-        responseVo.setMessage("Lấy dữ liệu nhà cung cấp thành công");
-        return new ResponseEntity<>(responseVo, HttpStatus.OK);
-    }
 
     @Override
     public ResponseEntity<?> SearchManufacturer(Integer pageIndex, Integer pageSize, String name) {

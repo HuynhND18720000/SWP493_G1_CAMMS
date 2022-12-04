@@ -25,10 +25,6 @@ public class ManufacturerController {
         return IManufacturerService.findManufacturerById(id);
     }
 
-//    @GetMapping("/getAManufacturer1")
-//    public ResponseEntity<?> getA1Manufacturer(Long id) {
-//        return IManufacturerService.findAManufacturerById(id);
-//    }
 
     @GetMapping
     public ResponseEntity<?> getListManufacturer(@RequestParam(required = false) Integer pageIndex,

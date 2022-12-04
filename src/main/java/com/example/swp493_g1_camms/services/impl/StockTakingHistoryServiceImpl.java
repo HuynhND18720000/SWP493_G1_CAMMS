@@ -238,7 +238,7 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
                     listConsignmentId.add(stockTakingHistoryDetail.getConsignment().getId());
                 }
 
-                List<ConsignmentProduct> listConsignment = consignmentProductRepository.findAllConsignmentByListId(listConsignmentId);
+                List<ConsignmentProduct> listConsignment = consignmentProductRepository.findAllConsignmentByListId(listConsignmentId,stockTakingHistoryId);
                 Set<Long> setProductId = new HashSet<>();
                 for (ConsignmentProduct cp : listConsignment ) {
                     setProductId.add(cp.getProduct().getId());
