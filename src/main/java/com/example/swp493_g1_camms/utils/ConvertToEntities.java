@@ -6,7 +6,7 @@ import com.example.swp493_g1_camms.entities.SubCategory;
 import com.example.swp493_g1_camms.payload.request.CategoryDTO;
 import com.example.swp493_g1_camms.payload.request.ProductRequest;
 import com.example.swp493_g1_camms.payload.request.SubCategoryDTO;
-import com.example.swp493_g1_camms.repository.ProductRepository;
+import com.example.swp493_g1_camms.repository.IProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 @Component
 public class ConvertToEntities {
     @Autowired
-    ProductRepository productRepository;
+    IProductRepository IProductRepository;
     public SubCategory convertSubCategory(SubCategoryDTO subCategoryDTO) {
         SubCategory subCategory = new SubCategory();
         subCategory.setId(subCategoryDTO.getId());

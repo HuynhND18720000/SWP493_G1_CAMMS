@@ -27,11 +27,11 @@ public interface IExportOrderService {
     ResponseEntity<?> editExportOrder(Long orderId, List<ConsignmentProductDTO> consignmentDTOList );
     ServiceResult<Map<String, Object>> getOderDetail(Long orderId);
 
-    ResponseEntity<?> deliveredExportOrder(Long orderId);
+    ResponseEntity<?> exportedExportOrder(Long orderId);
 
-    ResponseEntity<?> cancelDeliveredOrder(Long orderId, List<OrderStatusDeliverDTO> orderStatusDeliverDTOS);
+    ResponseEntity<?> cancelExportedExportOrder(Long orderId, List<OrderStatusExportedDTO> orderStatusExportedDTOS);
 
-    ServiceResult<Map<String, Object>> getDetailCancelDeliveredOrder(Long orderId);
+    ServiceResult<Map<String, Object>> getDetailCancelExportedExportOrder(Long orderId);
 
     ResponseEntity<?> displayListProductInWarehouseToDropList();
 }

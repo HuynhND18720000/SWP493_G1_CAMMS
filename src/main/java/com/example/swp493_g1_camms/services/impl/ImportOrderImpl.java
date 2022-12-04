@@ -30,7 +30,7 @@ import org.springframework.data.domain.Sort;
 public class ImportOrderImpl implements IImportOrderService {
 
     @Autowired
-    ProductRepository productRepository;
+    IProductRepository IProductRepository;
     @Autowired
     ConvertToEntities convertToEntities;
     @Autowired
@@ -38,7 +38,7 @@ public class ImportOrderImpl implements IImportOrderService {
     @Autowired
     ConvertDateUtils convertDateUtils;
     @Autowired
-    UserRepository userRepository;
+    IUserRepository IUserRepository;
     @Autowired
     IManufacturerRepository manufacturerRepository;
     @Autowired
@@ -75,7 +75,7 @@ public class ImportOrderImpl implements IImportOrderService {
             order.setCreatedDate(convertDateUtils.convertDateFormat());
             order.setIsReturn(false);
             order.setDeletedAt(false);
-            Optional<User> user = userRepository.getUserById(importOrderRequest.getUser_Id());
+            Optional<User> user = IUserRepository.getUserById(importOrderRequest.getUser_Id());
             User u = user.get();
             if (u==null){
                 responseVo.setMessage("User khong ton tai");
@@ -164,7 +164,7 @@ public class ImportOrderImpl implements IImportOrderService {
         try{
             listProductResponse = new ListProductResponse();
             ResponseVo responseVo = new ResponseVo();
-            List<Product> listProduct = productRepository.getAllProductByManufacturerId(id);
+            List<Product> listProduct = IProductRepository.getAllProductByManufacturerId(id);
 
             Map<String, Object> map = new HashMap<>();
             if (listProduct.size() == 0) {
@@ -283,14 +283,14 @@ public class ImportOrderImpl implements IImportOrderService {
                     iConsignmentProductRepository.getConsignmentProductByOrderId(orderId);
             for(int i =0 ; i < consignmentProducts.size(); i++){
                 ConsignmentProductKey consignmentProductKey = consignmentProducts.get(i).getId();
-                Product product = productRepository.findProductById(consignmentProductKey.getProductid());
+                Product product = IProductRepository.findProductById(consignmentProductKey.getProductid());
                 product.setQuantity(product.getQuantity() + consignmentProducts.get(i).getQuantity());
 
                 if(product.getId()==consignmentProductKey.getProductid()){
                     product.setUnitprice((product.getUnitprice()+consignmentProducts.get(i).getUnitPrice())/2);
                 }
 
-                productRepository.save(product);
+                IProductRepository.save(product);
             }
             ResponseVo responseVo = new ResponseVo();
             responseVo.setMessage("Xác nhận nhập hàng thành công !!");

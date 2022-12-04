@@ -24,7 +24,7 @@ import java.util.*;
 public class ReturnOrderImpl implements IReturnOderService {
 
     @Autowired
-    ProductRepository productRepository;
+    IProductRepository IProductRepository;
     @Autowired
     IOrderRepository orderRepository;
     @Autowired
@@ -33,7 +33,7 @@ public class ReturnOrderImpl implements IReturnOderService {
     IOrderTypeRepository orderTypeRepository;
 
     @Autowired
-    UserRepository userRepository;
+    IUserRepository IUserRepository;
 
     @Autowired
     IConsignmentRepository consignmentRepository;
@@ -66,7 +66,7 @@ public class ReturnOrderImpl implements IReturnOderService {
             Order order1 = new Order();
             order1.setOrderType(orderTypeRepository.getOrderTypeById(Long.valueOf(3)));
             order1.setOrderCode(orderCode);
-            Optional<User> user = userRepository.getUserById(confirmBy);
+            Optional<User> user = IUserRepository.getUserById(confirmBy);
             User u = user.get();
             if (u==null){
                 responseVo.setMessage("User khong ton tai");
@@ -101,13 +101,13 @@ public class ReturnOrderImpl implements IReturnOderService {
                 //Save to orderDetail
                 OrderDetail orderDetail = new OrderDetail();
                 orderDetail.setConsignment(consignmentRepository.getById(consignmentId));
-                orderDetail.setOrder(orderRepository.getById(orderId));
+                orderDetail.setOrder(order1);
                 orderDetailRepository.save(orderDetail);
 
                 //Save to consigmentProduct
                 ConsignmentProduct consignmentProduct = new ConsignmentProduct();
                 consignmentProduct.setProduct(
-                        productRepository.findProductById(consignmentProductDTOs.get(i).getProductId()));
+                        IProductRepository.findProductById(consignmentProductDTOs.get(i).getProductId()));
                 consignmentProduct.setConsignment(consignmentRepository.getById(consignmentId));
                 consignmentProduct.setQuantity(consignmentProductDTOs.get(i).getQuantity());
                 consignmentProduct.setUnitPrice(consignmentProductDTOs.get(i).getUnitPrice());
@@ -118,13 +118,17 @@ public class ReturnOrderImpl implements IReturnOderService {
                 consignmentProduct.setDeletedAt(false);
                 consignmentProduct.setMark_get_product_from_consignment(
                         consignmentProductDTOs.get(i).getConsignmentId());
-//                //update quantity sale
+
                 ConsignmentProduct consignmentProduct1 =
                         iConsignmentProductRepository.getConsignmentProductById(consignmentProductDTOs.get(i).getConsignmentId(),
                                 consignmentProductDTOs.get(i).getProductId());
-                consignmentProduct1.setQuantity_sale(
-                        consignmentProduct1.getQuantity_sale() + consignmentProductDTOs.get(i).getQuantity());
-                iConsignmentProductRepository.save(consignmentProduct1);
+
+                ConsignmentProduct consignmentProduct2 =
+                        iConsignmentProductRepository.getConsignmentProductById(consignmentProduct1.getMark_get_product_from_consignment(),
+                                consignmentProductDTOs.get(i).getProductId());
+                consignmentProduct2.setQuantity_sale(
+                        consignmentProduct2.getQuantity_sale() + consignmentProductDTOs.get(i).getQuantity());
+                iConsignmentProductRepository.save(consignmentProduct2);
                 iConsignmentProductRepository.save(consignmentProduct);
             }
 

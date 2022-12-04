@@ -2,8 +2,8 @@ package com.example.swp493_g1_camms.controller;
 
 import com.example.swp493_g1_camms.payload.request.LoginRequest;
 import com.example.swp493_g1_camms.payload.response.JwtResponse;
-import com.example.swp493_g1_camms.repository.RoleRepository;
-import com.example.swp493_g1_camms.repository.UserRepository;
+import com.example.swp493_g1_camms.repository.IRoleRepository;
+import com.example.swp493_g1_camms.repository.IUserRepository;
 import com.example.swp493_g1_camms.security.jwt.JwtUtils;
 import com.example.swp493_g1_camms.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +26,9 @@ public class AuthController {
     @Autowired
     AuthenticationManager authenticationManager;
     @Autowired
-    UserRepository userRepository;
+    IUserRepository IUserRepository;
     @Autowired
-    RoleRepository roleRepository;
+    IRoleRepository IRoleRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
     @Autowired

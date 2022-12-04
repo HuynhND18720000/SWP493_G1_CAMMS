@@ -72,6 +72,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers("/api/import/cancel").permitAll()
                 .and().authorizeRequests().antMatchers("/api/import/editOrder").permitAll()
                 .and().authorizeRequests().antMatchers("/getAManufacturer").permitAll()
+                .and().authorizeRequests().antMatchers("api/manufacturers/getAManufacturer").permitAll()
                 .and().authorizeRequests().antMatchers("/getAManufacturer1").permitAll()
                 .and().authorizeRequests().antMatchers("/api/stockTakingHistory").permitAll()
                 .and().authorizeRequests().antMatchers("/api/export/export-product").permitAll()

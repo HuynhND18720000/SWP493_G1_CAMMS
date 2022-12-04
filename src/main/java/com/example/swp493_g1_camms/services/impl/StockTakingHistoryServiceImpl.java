@@ -35,12 +35,12 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
     @Autowired
     IConsignmentProductRepository consignmentProductRepository;
     @Autowired
-    ProductRepository productRepository;
+    IProductRepository IProductRepository;
 
     @Autowired
     IExportOrderRepository exportOrderRepository;
     @Autowired
-    UserRepository userRepository;
+    IUserRepository IUserRepository;
 
     @Autowired
     IStockTakingHistoryDescriptionRepository stockTakingHistoryDescriptionRepository;
@@ -90,7 +90,7 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
             //them vao bang stock taking history
             stockTakingHistory.setCreateDate(ldt);
             stockTakingHistory.setDeletedAt(false);
-            Optional<User> user = userRepository.getUserById(stockTakingRequest.getUser_Id());
+            Optional<User> user = IUserRepository.getUserById(stockTakingRequest.getUser_Id());
             User u = user.get();
             if (u==null){
                 responseVo.setMessage("User khong ton tai");
@@ -243,7 +243,7 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
                 for (ConsignmentProduct cp : listConsignment ) {
                     setProductId.add(cp.getProduct().getId());
                 }
-                List<Product> listProduct = productRepository.findListAllByConsignmentList(setProductId);
+                List<Product> listProduct = IProductRepository.findListAllByConsignmentList(setProductId);
 
                 if (listDetail.isEmpty()) {
                     responseVo.setMessage("Không tìm thấy chi tiết đơn kiểm kho");

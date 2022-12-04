@@ -35,7 +35,7 @@ public class ExportOrderImpl implements IExportOrderService {
     @Autowired
     ConvertDateUtils convertDateUtils;
     @Autowired
-    UserRepository userRepository;
+    IUserRepository IUserRepository;
     @Autowired
     IManufacturerRepository manufacturerRepository;
     @Autowired
@@ -45,7 +45,7 @@ public class ExportOrderImpl implements IExportOrderService {
     @Autowired
     IConsignmentRepository consignmentRepository;
     @Autowired
-    ProductRepository productRepository;
+    IProductRepository IProductRepository;
     @Autowired
     IOrderDetailRepository orderDetailRepository;
     @Autowired
@@ -75,7 +75,7 @@ public class ExportOrderImpl implements IExportOrderService {
             order.setCreatedDate(convertDateUtils.convertDateFormat());
             order.setIsReturn(null);
             order.setDeletedAt(false);
-            Optional<User> user = userRepository.getUserById(exportOrderRequest.getUser_Id());
+            Optional<User> user = IUserRepository.getUserById(exportOrderRequest.getUser_Id());
             User u = user.get();
             if (u==null){
                 responseVo.setMessage("User khong ton tai");
@@ -157,7 +157,7 @@ public class ExportOrderImpl implements IExportOrderService {
                     ConsignmentProduct consignmentProduct = new ConsignmentProduct();
                     consignmentProduct.setProduct(product);
                     consignmentProduct.setQuantity(lcpe.getQuantity());
-                    double unitprice_sale = productRepository.totalPrice(product_id);
+                    double unitprice_sale = IProductRepository.totalPrice(product_id);
                     consignmentProduct.setUnitPrice(unitprice_sale);
                     consignmentProduct.setDeletedAt(false);
                     String expDate = lcpe.getExpirationDate();
@@ -358,9 +358,9 @@ public class ExportOrderImpl implements IExportOrderService {
                     iConsignmentProductRepository.getConsignmentProductByOrderId(orderId);
             for(int i =0 ; i < consignmentProducts.size(); i++){
                 ConsignmentProductKey consignmentProductId = consignmentProducts.get(i).getId();
-                Product product = productRepository.findProductById(consignmentProductId.getProductid());
+                Product product = IProductRepository.findProductById(consignmentProductId.getProductid());
                 product.setQuantity(product.getQuantity() - consignmentProducts.get(i).getQuantity());
-                productRepository.save(product);
+                IProductRepository.save(product);
                 ConsignmentProduct consignmentProduct = new ConsignmentProduct();
                 consignmentProduct =
                         consignmentProductRepository.getConsignmentProductById(consignmentProductId.getConsignmentid(),
@@ -463,7 +463,7 @@ public class ExportOrderImpl implements IExportOrderService {
     }
 
     @Override
-    public ResponseEntity<?> deliveredExportOrder(Long orderId) {
+    public ResponseEntity<?> exportedExportOrder(Long orderId) {
         OrderDeliver orderDeliver = new OrderDeliver();
         Order order = orderRepository.getById(orderId);
         order.setIsReturn(true);
@@ -477,23 +477,23 @@ public class ExportOrderImpl implements IExportOrderService {
     }
 
     @Override
-    public ResponseEntity<?> cancelDeliveredOrder(Long orderId, List<OrderStatusDeliverDTO> orderStatusDeliverDTOS) {
-//        for (OrderStatusDeliverDTO orderStatusDeliverDTO: orderStatusDeliverDTOS
+    public ResponseEntity<?> cancelExportedExportOrder(Long orderId, List<OrderStatusExportedDTO> orderStatusExportedDTOS) {
+//        for (OrderStatusExportedDTO orderStatusDeliverDTO: orderStatusExportedDTOS
 //             ) {
 //
 //        }
         Order order = orderRepository.getById(orderId);
         order.setIsReturn(false);
         orderRepository.save(order);
-        for(int i = 0 ; i< orderStatusDeliverDTOS.size(); i++){
+        for(int i = 0; i< orderStatusExportedDTOS.size(); i++){
             OrderDeliver orderDeliver = new OrderDeliver();
-            orderDeliver.setProduct(productRepository.getById(orderStatusDeliverDTOS.get(i).getProductId()));
-            orderDeliver.setConsignment(consignmentRepository.getById(orderStatusDeliverDTOS.get(i).getConsignmentId()));
+            orderDeliver.setProduct(IProductRepository.getById(orderStatusExportedDTOS.get(i).getProductId()));
+            orderDeliver.setConsignment(consignmentRepository.getById(orderStatusExportedDTOS.get(i).getConsignmentId()));
             orderDeliver.setOrder(orderRepository.getById(orderId));
-            orderDeliver.setDescription(orderStatusDeliverDTOS.get(i).getDescription());
+            orderDeliver.setDescription(orderStatusExportedDTOS.get(i).getDescription());
             orderDeliver.setStatusDeliver(false);
-            orderDeliver.setQuantity(orderStatusDeliverDTOS.get(i).getQuantity());
-            orderDeliver.setDamagedQuantity(orderStatusDeliverDTOS.get(i).getDamagedQuantity());
+            orderDeliver.setQuantity(orderStatusExportedDTOS.get(i).getQuantity());
+            orderDeliver.setDamagedQuantity(orderStatusExportedDTOS.get(i).getDamagedQuantity());
             iOrderStatusDeliverRepository.save(orderDeliver);
         }
         ResponseVo responseVo = new ResponseVo();
@@ -502,7 +502,7 @@ public class ExportOrderImpl implements IExportOrderService {
     }
 
     @Override
-    public ServiceResult<Map<String, Object>> getDetailCancelDeliveredOrder(Long orderId) {
+    public ServiceResult<Map<String, Object>> getDetailCancelExportedExportOrder(Long orderId) {
         ServiceResult<Map<String, Object>> mapServiceResult = new ServiceResult<>();
         Map<String, Object> output = new HashMap<>();
         try {
@@ -527,7 +527,7 @@ public class ExportOrderImpl implements IExportOrderService {
         Map<String, Object> map = new HashMap<>();
         MessageResponse messageResponse = new MessageResponse();
         try{
-            List<Product> productList = productRepository.getListProductInWarehouse();
+            List<Product> productList = IProductRepository.getListProductInWarehouse();
             map.put("listProductInWarehouse", ListProductResponse.createSuccessData(productList));
             responseVo.setData(map);
             messageResponse.setMessage("lay thanh cong");

@@ -6,10 +6,9 @@ import com.example.swp493_g1_camms.entities.User;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
 import com.example.swp493_g1_camms.payload.response.ResponseVo;
 import com.example.swp493_g1_camms.repository.IResetPassHistoryRepository;
-import com.example.swp493_g1_camms.repository.UserRepository;
-import com.example.swp493_g1_camms.security.jwt.JwtUtils;
+import com.example.swp493_g1_camms.repository.IUserRepository;
 import com.example.swp493_g1_camms.security.services.AuthenticationFacade;
-import com.example.swp493_g1_camms.services.interfaceService.UserService;
+import com.example.swp493_g1_camms.services.interfaceService.IUserService;
 import com.example.swp493_g1_camms.utils.Constant;
 import com.example.swp493_g1_camms.utils.EmailSender;
 import io.jsonwebtoken.Jwts;
@@ -17,7 +16,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,9 +26,9 @@ import java.time.ZoneId;
 import java.util.*;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements IUserService {
     @Autowired
-    UserRepository userRepository;
+    IUserRepository IUserRepository;
     @Autowired
     EmailSender emailSender;
 
@@ -61,7 +59,7 @@ public class UserServiceImpl implements UserService {
         MessageResponse messageResponse = new MessageResponse();
         try{
             System.out.println("email lay dc ve la:"+email);
-            User user = userRepository.getUserByEmail(email);
+            User user = IUserRepository.getUserByEmail(email);
 
             if(user == null){
                 responseVo.setMessage("Không tìm thấy nguoi dung!");
@@ -144,7 +142,7 @@ public class UserServiceImpl implements UserService {
                 //co van de
                 String usernameOfCurrentUser = authenticationFacade.currentUserNameSimple();
                 System.out.println("user hien tai la "+usernameOfCurrentUser);
-                Optional<User> user = userRepository.findByUsername(usernameOfCurrentUser);
+                Optional<User> user = IUserRepository.findByUsername(usernameOfCurrentUser);
                 //thieu lay ra token hien tai
                 long user_id_of_otp = resetPassHistory.getUser().getId();
                 long current_user_id = user.get().getId();
@@ -187,9 +185,9 @@ public class UserServiceImpl implements UserService {
             //get current user active
             String usernameOfCurrentUser = authenticationFacade.currentUserNameSimple();
             System.out.println("user hien tai la "+usernameOfCurrentUser);
-            Optional<User> user = userRepository.findByUsername(usernameOfCurrentUser);
+            Optional<User> user = IUserRepository.findByUsername(usernameOfCurrentUser);
             //lay ra user theo user id cua current user hien tai
-            Optional<User> current_user_using_pass = userRepository.getUserById(user.get().getId());
+            Optional<User> current_user_using_pass = IUserRepository.getUserById(user.get().getId());
             //so sanh mk lay tu client vs mk cua user dang dung
             boolean checkPasswordDuplicated = passwordEncoder.matches(new_password,
                     current_user_using_pass.get().getPassword());
@@ -229,7 +227,7 @@ public class UserServiceImpl implements UserService {
                                     resetPassHistoryRepository.save(resetPassHistory);
                                     //thay doi mk o bang user
                                     user.get().setPassword(bcrypt_password);
-                                    userRepository.save(user.get());
+                                    IUserRepository.save(user.get());
 
                                     output.put("status",Constant.SUCCESS);
                                     output.put("message","Cập nhật mật khẩu thành công.");
@@ -241,6 +239,7 @@ public class UserServiceImpl implements UserService {
                             checkPasswordIsOldPassword = false;
                         }
                     }
+                    //thieu truong hop
                     if(checkPasswordIsOldPassword == false){
                         //ma hoa password lay tu phia user
                         String bcrypt_password = passwordEncoder.encode(new_password);
@@ -256,7 +255,7 @@ public class UserServiceImpl implements UserService {
                         resetPassHistoryRepository.save(resetPassHistory);
                         //thay doi mk o bang user
                         user.get().setPassword(bcrypt_password);
-                        userRepository.save(user.get());
+                        IUserRepository.save(user.get());
 
                         output.put("status",Constant.SUCCESS);
                         output.put("message","Cập nhật mật khẩu thành công.");
@@ -276,7 +275,7 @@ public class UserServiceImpl implements UserService {
                     resetPassHistoryRepository.save(resetPassHistory);
                     //thay doi mk o bang user
                     user.get().setPassword(bcrypt_password);
-                    userRepository.save(user.get());
+                    IUserRepository.save(user.get());
 
                     output.put("status",Constant.SUCCESS);
                     output.put("message","Cập nhật mật khẩu thành công.");

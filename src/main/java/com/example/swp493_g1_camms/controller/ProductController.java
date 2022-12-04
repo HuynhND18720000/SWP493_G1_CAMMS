@@ -1,19 +1,13 @@
 package com.example.swp493_g1_camms.controller;
 
-import com.example.swp493_g1_camms.entities.Product;
 import com.example.swp493_g1_camms.payload.request.ProductRequest;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
-import com.example.swp493_g1_camms.repository.ProductRepository;
 import com.example.swp493_g1_camms.services.impl.ProductServiceImpl;
 import com.example.swp493_g1_camms.utils.CurrentUserIsActive;
 import com.example.swp493_g1_camms.utils.StatusUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)

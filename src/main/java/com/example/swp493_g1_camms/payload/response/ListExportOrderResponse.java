@@ -3,10 +3,9 @@ package com.example.swp493_g1_camms.payload.response;
 import com.example.swp493_g1_camms.entities.ConsignmentProduct;
 import com.example.swp493_g1_camms.entities.Order;
 import com.example.swp493_g1_camms.entities.OrderDetail;
-import com.example.swp493_g1_camms.entities.Product;
 import com.example.swp493_g1_camms.repository.IConsignmentProductRepository;
 import com.example.swp493_g1_camms.repository.IOrderDetailRepository;
-import com.example.swp493_g1_camms.repository.ProductRepository;
+import com.example.swp493_g1_camms.repository.IProductRepository;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -34,7 +33,7 @@ public class ListExportOrderResponse {
     @Autowired
     IConsignmentProductRepository consignmentProductRepository;
     @Autowired
-    ProductRepository productRepository;
+    IProductRepository IProductRepository;
 
     public static List<ListExportOrderResponse> createSuccessData(List<Order> orderList){
         List<ListExportOrderResponse> listExportOrderResponses = new ArrayList<>();
@@ -77,7 +76,7 @@ public class ListExportOrderResponse {
         double totalPrice = 0;
         for (ConsignmentProduct cp:consignment_id_list
              ) {
-//            Product p = productRepository.findProductById(cp.getProduct().getId());
+//            Product p = IProductRepository.findProductById(cp.getProduct().getId());
             totalPrice += cp.getProduct().getUnitprice()*cp.getQuantity();
         }
         return totalPrice;
