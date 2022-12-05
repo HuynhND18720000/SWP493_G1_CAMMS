@@ -24,6 +24,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Service
 public class UserServiceImpl implements IUserService {
@@ -52,6 +54,7 @@ public class UserServiceImpl implements IUserService {
         }
         return otp;
     }
+
     //lấy email từ client rồi gưit otp về gmail
     @Override
     public ResponseEntity<?> getEmailInForgotPassword(String email) {
@@ -79,6 +82,7 @@ public class UserServiceImpl implements IUserService {
                     resetPassHistory.setOld_password(null);
                     resetPassHistory.setOtp_code(ma_OTP);
                     resetPassHistory.setCreate_date(ldt);
+                    resetPassHistory.setStatus(false);
                     //set otp valid during 5 minutes
                     LocalDateTime resetTime_OTP
                             = LocalDateTime.now().plusMinutes(5);
@@ -196,23 +200,40 @@ public class UserServiceImpl implements IUserService {
                 output.put("message","Bạn đã sử dụng mật khẩu này gần đây. Hay chọn một mật khẩu khác.");
                 return new ResponseEntity<>(output, HttpStatus.OK);
             }else{
+                //lấy ra list lich su khi ma user thay doi mk
                 List<ResetPassHistory> resetPassHistoryList =
                         resetPassHistoryRepository.getUserByUserId(user.get().getId());
                 boolean checkPasswordIsOldPassword = false;
+                boolean usedOTP = false;
+                //neu nhu nguoi dung thuc hien day du thao tac doi mk
+                //list danh sach se ko rong
+                //kiem tra list danh sach co rong hay khoong
+
                 if(resetPassHistoryList.size() != 0){
                     for (ResetPassHistory rph: resetPassHistoryList
                     ) {
-                        if(passwordEncoder.matches(new_password,rph.getOld_password())){
-                            //lay ra date hien tai
-                            Date in = new Date();
-                            LocalDateTime ldt = LocalDateTime.ofInstant(in.toInstant(), ZoneId.systemDefault());
-                            //lay ra valid date for using old password
-                            LocalDateTime date_for_old_pass = rph.getTime_active_pass();
-                            if(ldt.isBefore(date_for_old_pass)){
-                                output.put("status",Constant.FAIL);
-                                output.put("message","Bạn đã sử dụng mật khẩu này gần đây. Vui lòng chọn một mật khẩu khác.");
-                            }else{
-                                if(ldt.isAfter(date_for_old_pass) || ldt.isEqual(date_for_old_pass)){
+                        System.out.println("mk user nhap la:" + new_password);
+                        System.out.println("mk lay tu db la:" + rph.getOld_password());
+                        //kiem tra otp chi dc dung 1 lan sau khi ma cap nhat xong mat khau
+                        if (rph.isStatus() == false) {
+                            usedOTP = false;
+                            if (passwordEncoder.matches(new_password, rph.getOld_password())) {
+                                System.out.println("da vao day 1");
+                                checkPasswordIsOldPassword = true;
+                                //lay ra date hien tai
+                                Date in = new Date();
+                                LocalDateTime ldt = LocalDateTime.ofInstant(in.toInstant(), ZoneId.systemDefault());
+                                //lay ra valid date for using old password
+                                LocalDateTime date_for_old_pass = rph.getTime_active_pass();
+                                System.out.println("ngay bay gio:" + ldt);
+                                System.out.println("ngay han dc sua mk la:" + date_for_old_pass);
+
+                                if (ldt.isBefore(date_for_old_pass)) {
+                                    output.put("status", Constant.FAIL);
+                                    output.put("message", "Bạn đã sử dụng mật khẩu này gần đây. " +
+                                            "Vui lòng chọn một mật khẩu khác.");
+                                    return new ResponseEntity<>(output, HttpStatus.OK);
+                                } else {
                                     //ma hoa password lay tu phia user
                                     String bcrypt_password = passwordEncoder.encode(new_password);
                                     //lay ra password ma nguoi dung dang su dung truoc khi maf thuc hien forgot password
@@ -223,24 +244,29 @@ public class UserServiceImpl implements IUserService {
                                     );
 
                                     resetPassHistory.setOld_password(old_password);
+                                    resetPassHistory.setStatus(true);
                                     // chu y co nen them truong status cua otp khi ma dung xong otp
                                     resetPassHistoryRepository.save(resetPassHistory);
                                     //thay doi mk o bang user
                                     user.get().setPassword(bcrypt_password);
                                     IUserRepository.save(user.get());
 
-                                    output.put("status",Constant.SUCCESS);
-                                    output.put("message","Cập nhật mật khẩu thành công.");
+                                    output.put("status", Constant.SUCCESS);
+                                    output.put("message", "Cập nhật mật khẩu thành công.");
                                     return new ResponseEntity<>(output, HttpStatus.OK);
+
                                 }
+
+                            } else {
+                                checkPasswordIsOldPassword = false;
                             }
-                            checkPasswordIsOldPassword = true;
                         }else{
-                            checkPasswordIsOldPassword = false;
+                            usedOTP = false;
                         }
                     }
                     //thieu truong hop
                     if(checkPasswordIsOldPassword == false){
+                        System.out.println("da vao day 2");
                         //ma hoa password lay tu phia user
                         String bcrypt_password = passwordEncoder.encode(new_password);
                         //lay ra password ma nguoi dung dang su dung truoc khi maf thuc hien forgot password
@@ -249,16 +275,27 @@ public class UserServiceImpl implements IUserService {
                         ResetPassHistory resetPassHistory = resetPassHistoryRepository.getUserByOtpCode(
                                 resetPasswordRequest.getOtp()
                         );
+                        if(resetPassHistory.isStatus() == false){
+                            resetPassHistory.setOld_password(old_password);
+                            resetPassHistory.setStatus(true);
 
-                        resetPassHistory.setOld_password(old_password);
-                        // chu y co nen them truong status cua otp khi ma dung xong otp
-                        resetPassHistoryRepository.save(resetPassHistory);
-                        //thay doi mk o bang user
-                        user.get().setPassword(bcrypt_password);
-                        IUserRepository.save(user.get());
+                            resetPassHistoryRepository.save(resetPassHistory);
+                            //thay doi mk o bang user
+                            user.get().setPassword(bcrypt_password);
+                            IUserRepository.save(user.get());
 
-                        output.put("status",Constant.SUCCESS);
-                        output.put("message","Cập nhật mật khẩu thành công.");
+                            output.put("status",Constant.SUCCESS);
+                            output.put("message","Cập nhật mật khẩu thành công.");
+                            return new ResponseEntity<>(output, HttpStatus.OK);
+                        }else{
+                            output.put("status",Constant.FAIL);
+                            output.put("message","Cap nhat that bai. Ma OTP da dc su dung");
+                            return new ResponseEntity<>(output, HttpStatus.OK);
+                        }
+                    }
+                    if(usedOTP==true){
+                        output.put("status",Constant.FAIL);
+                        output.put("message","Cap nhat that bai. Ma OTP da dc su dung");
                         return new ResponseEntity<>(output, HttpStatus.OK);
                     }
                 }else{
@@ -270,16 +307,25 @@ public class UserServiceImpl implements IUserService {
                     ResetPassHistory resetPassHistory = resetPassHistoryRepository.getUserByOtpCode(
                             resetPasswordRequest.getOtp()
                     );
+                    if(resetPassHistory.isStatus() == false){
+                        resetPassHistory.setOld_password(old_password);
+                        resetPassHistory.setStatus(true);
 
-                    resetPassHistory.setOld_password(old_password);
-                    resetPassHistoryRepository.save(resetPassHistory);
-                    //thay doi mk o bang user
-                    user.get().setPassword(bcrypt_password);
-                    IUserRepository.save(user.get());
+                        resetPassHistoryRepository.save(resetPassHistory);
+                        //thay doi mk o bang user
+                        user.get().setPassword(bcrypt_password);
+                        IUserRepository.save(user.get());
 
-                    output.put("status",Constant.SUCCESS);
-                    output.put("message","Cập nhật mật khẩu thành công.");
-                    return new ResponseEntity<>(output, HttpStatus.OK);
+                        output.put("status",Constant.SUCCESS);
+                        output.put("message","Cập nhật mật khẩu thành công.");
+                        return new ResponseEntity<>(output, HttpStatus.OK);
+                    }else{
+                        output.put("status",Constant.FAIL);
+                        output.put("message","Cap nhat that bai. Ma OTP da dc su dung");
+                        return new ResponseEntity<>(output, HttpStatus.OK);
+                    }
+
+
                 }
 
             }

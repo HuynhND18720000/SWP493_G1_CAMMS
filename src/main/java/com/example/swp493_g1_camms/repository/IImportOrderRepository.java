@@ -1,7 +1,6 @@
 package com.example.swp493_g1_camms.repository;
 
 import com.example.swp493_g1_camms.entities.Order;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +13,7 @@ import java.util.Map;
 
 @Repository
 @EnableJpaRepositories
-public interface IImportProductRepository extends JpaRepository<Order, Long> {
+public interface IImportOrderRepository extends JpaRepository<Order, Long> {
     @Query(nativeQuery = true, value = "SELECT DISTINCT order1.id, order_code, user1.full_name as confirm_by_name, confirm_date, \n" +
             "            created_date, order1.description, is_return, update_date, user2.full_name as user_name,\n" +
             "            mn.name as manufacturer_name, order_type1.name as order_type_name, status1.name as status, \n" +

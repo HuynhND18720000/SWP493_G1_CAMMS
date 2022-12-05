@@ -2,10 +2,9 @@ package com.example.swp493_g1_camms.controller;
 
 import com.example.swp493_g1_camms.entities.ServiceResult;
 import com.example.swp493_g1_camms.payload.request.ConsignmentProductDTO;
-import com.example.swp493_g1_camms.payload.request.ReturnOrderDTO;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
-import com.example.swp493_g1_camms.services.impl.ExportOrderImpl;
-import com.example.swp493_g1_camms.services.impl.ReturnOrderImpl;
+import com.example.swp493_g1_camms.services.impl.ExportOrderServiceImpl;
+import com.example.swp493_g1_camms.services.impl.ReturnOrderServiceImpl;
 import com.example.swp493_g1_camms.utils.CurrentUserIsActive;
 import com.example.swp493_g1_camms.utils.StatusUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +25,10 @@ public class ReturnOrderController {
 
     private final int defaultSize = 5;
     @Autowired
-    ReturnOrderImpl returnOderImpl;
+    ReturnOrderServiceImpl returnOderImpl;
 
     @Autowired
-    ExportOrderImpl exportOrder;
+    ExportOrderServiceImpl exportOrder;
 
     @PostMapping(path = "/createReturnOrder")
     public ResponseEntity<?> createReturnOrder( @RequestParam(required = false) Long orderId,

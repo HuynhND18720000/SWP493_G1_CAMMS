@@ -27,7 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 @Service
-public class ImportOrderImpl implements IImportOrderService {
+public class ImportOrderServiceImpl implements IImportOrderService {
 
     @Autowired
     IProductRepository IProductRepository;
@@ -54,7 +54,7 @@ public class ImportOrderImpl implements IImportOrderService {
     @Autowired
     IOrderDetailRepository orderDetailRepository;
     @Autowired
-    IImportProductRepository iImportProductRepository;
+    IImportOrderRepository iImportOrderRepository;
     ListProductResponse listProductResponse;
     @Autowired
     IConsignmentProductRepository iConsignmentProductRepository;
@@ -213,7 +213,7 @@ public class ImportOrderImpl implements IImportOrderService {
             orderCode = "";
         }
         try {
-            List<Map<String, Object>> orderList = iImportProductRepository.getListImportOrders(status, dateFrom1, dateTo1, userId, orderCode, pageable);
+            List<Map<String, Object>> orderList = iImportOrderRepository.getListImportOrders(status, dateFrom1, dateTo1, userId, orderCode, pageable);
             BigInteger totalRecord = iOrderRepository.getTotalImportRecord(status, dateFrom1, dateTo1, userId, orderCode);
             output.put("orderList", orderList);
             output.put("pageIndex", pageIndex);
@@ -238,7 +238,7 @@ public class ImportOrderImpl implements IImportOrderService {
         Pageable pagable = PageRequest.of(pageIndex, pageSize,
                 Sort.by("id").ascending());
         try {
-            List<Map<String, Object>> listImportProducts = iImportProductRepository.getImportOrderDetail(orderId, pagable);
+            List<Map<String, Object>> listImportProducts = iImportOrderRepository.getImportOrderDetail(orderId, pagable);
             BigInteger totalRecord = BigInteger.valueOf(0);
             if (!listImportProducts.isEmpty()) {
                 totalRecord = (BigInteger) listImportProducts.get(0).get("totalRecord");
@@ -275,10 +275,10 @@ public class ImportOrderImpl implements IImportOrderService {
         Status status = new Status();
         status.setId(Constant.COMPLETED);
         try {
-            Order order = iImportProductRepository.getOrderById(orderId);
+            Order order = iImportOrderRepository.getOrderById(orderId);
             order.setConfirmBy(confirmBy);
             order.setStatus(status);
-            iImportProductRepository.save(order);
+            iImportOrderRepository.save(order);
             List<ConsignmentProduct> consignmentProducts =
                     iConsignmentProductRepository.getConsignmentProductByOrderId(orderId);
             for(int i =0 ; i < consignmentProducts.size(); i++){
@@ -321,10 +321,10 @@ public class ImportOrderImpl implements IImportOrderService {
         Status status = new Status();
         status.setId(Constant.CANCEL);
         try {
-            Order order = iImportProductRepository.getOrderById(orderId);
+            Order order = iImportOrderRepository.getOrderById(orderId);
             order.setConfirmBy(confirmBy);
             order.setStatus(status);
-            iImportProductRepository.save(order);
+            iImportOrderRepository.save(order);
             ResponseVo responseVo = new ResponseVo();
             responseVo.setMessage("Hủy xác nhận nhập hàng thành công !!");
             return new ResponseEntity<>(responseVo, HttpStatus.OK);

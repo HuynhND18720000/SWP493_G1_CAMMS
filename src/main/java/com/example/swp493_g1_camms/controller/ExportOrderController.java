@@ -5,7 +5,7 @@ import com.example.swp493_g1_camms.payload.request.ConsignmentProductDTO;
 import com.example.swp493_g1_camms.payload.request.ExportOrderRequest;
 import com.example.swp493_g1_camms.payload.request.OrderStatusExportedDTO;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
-import com.example.swp493_g1_camms.services.impl.ExportOrderImpl;
+import com.example.swp493_g1_camms.services.impl.ExportOrderServiceImpl;
 import com.example.swp493_g1_camms.utils.CurrentUserIsActive;
 import com.example.swp493_g1_camms.utils.StatusUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class ExportOrderController {
     private final int defaultPage = 1;
     private final int defaultSize = 5;
     @Autowired
-    ExportOrderImpl exportOrder;
+    ExportOrderServiceImpl exportOrder;
 
     @GetMapping(path = "/listProduct")
     public ResponseEntity<?> loadListProductIntoDropList(){

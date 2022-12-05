@@ -23,7 +23,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
-public class ExportOrderImpl implements IExportOrderService {
+public class ExportOrderServiceImpl implements IExportOrderService {
     @Autowired
     IOrderStatusDeliverRepository iOrderStatusDeliverRepository;
     @Autowired
@@ -464,12 +464,12 @@ public class ExportOrderImpl implements IExportOrderService {
 
     @Override
     public ResponseEntity<?> exportedExportOrder(Long orderId) {
-        OrderDeliver orderDeliver = new OrderDeliver();
+        OrderExported orderExported = new OrderExported();
         Order order = orderRepository.getById(orderId);
         order.setIsReturn(true);
-        orderDeliver.setOrder(order);
-        orderDeliver.setStatusDeliver(true);
-        iOrderStatusDeliverRepository.save(orderDeliver);
+        orderExported.setOrder(order);
+        orderExported.setStatusExported(true);
+        iOrderStatusDeliverRepository.save(orderExported);
         iOrderRepository.save(order);
         ResponseVo responseVo = new ResponseVo();
         responseVo.setMessage("Xác nhận giao hàng thành công !!");
@@ -486,15 +486,15 @@ public class ExportOrderImpl implements IExportOrderService {
         order.setIsReturn(false);
         orderRepository.save(order);
         for(int i = 0; i< orderStatusExportedDTOS.size(); i++){
-            OrderDeliver orderDeliver = new OrderDeliver();
-            orderDeliver.setProduct(IProductRepository.getById(orderStatusExportedDTOS.get(i).getProductId()));
-            orderDeliver.setConsignment(consignmentRepository.getById(orderStatusExportedDTOS.get(i).getConsignmentId()));
-            orderDeliver.setOrder(orderRepository.getById(orderId));
-            orderDeliver.setDescription(orderStatusExportedDTOS.get(i).getDescription());
-            orderDeliver.setStatusDeliver(false);
-            orderDeliver.setQuantity(orderStatusExportedDTOS.get(i).getQuantity());
-            orderDeliver.setDamagedQuantity(orderStatusExportedDTOS.get(i).getDamagedQuantity());
-            iOrderStatusDeliverRepository.save(orderDeliver);
+            OrderExported orderExported = new OrderExported();
+            orderExported.setProduct(IProductRepository.getById(orderStatusExportedDTOS.get(i).getProductId()));
+            orderExported.setConsignment(consignmentRepository.getById(orderStatusExportedDTOS.get(i).getConsignmentId()));
+            orderExported.setOrder(orderRepository.getById(orderId));
+            orderExported.setDescription(orderStatusExportedDTOS.get(i).getDescription());
+            orderExported.setStatusExported(false);
+            orderExported.setQuantity(orderStatusExportedDTOS.get(i).getQuantity());
+            orderExported.setDamagedQuantity(orderStatusExportedDTOS.get(i).getDamagedQuantity());
+            iOrderStatusDeliverRepository.save(orderExported);
         }
         ResponseVo responseVo = new ResponseVo();
         responseVo.setMessage("Hủy giao hàng thành công !!");

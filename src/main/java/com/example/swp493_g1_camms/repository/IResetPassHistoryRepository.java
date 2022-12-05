@@ -18,6 +18,7 @@ public interface IResetPassHistoryRepository extends JpaRepository<ResetPassHist
     @Query("select rph from ResetPassHistory as rph where rph.otp_code =?1")
     ResetPassHistory getUserByOtpCode(String otp);
 
-    @Query("select rph from ResetPassHistory rph where rph.user.id = ?1 and NULLIF(rph.old_password, ' ') IS NOT NULL ")
+    @Query("select rph from ResetPassHistory rph where rph.user.id = ?1 " +
+            "and NULLIF(rph.old_password, ' ') IS NOT NULL ")
     List<ResetPassHistory> getUserByUserId(Long user_Id);
 }

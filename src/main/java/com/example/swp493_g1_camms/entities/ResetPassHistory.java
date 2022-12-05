@@ -40,4 +40,7 @@ public class ResetPassHistory {
 
     @Column(name = "time_active_pass")
     private LocalDateTime time_active_pass;
+
+    @Column(name = "status")
+    private boolean status;
 }

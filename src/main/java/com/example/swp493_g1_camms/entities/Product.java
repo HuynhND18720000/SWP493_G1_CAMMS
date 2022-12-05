@@ -66,7 +66,7 @@ public class Product {
     private Set<StockTakingHistoryDescription> stockTakingHistoryDescriptions;
 
     @OneToMany(mappedBy = "product")
-    private Set<OrderDeliver> orderDelivers;
+    private Set<OrderExported> orderExporteds;
 
 
 

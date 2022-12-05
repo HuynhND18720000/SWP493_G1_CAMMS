@@ -48,7 +48,7 @@ public class Order {
     private Set<OrderDetail> orderDetails;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<OrderDeliver> orderDelivers;
+    private Set<OrderExported> orderExporteds;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")

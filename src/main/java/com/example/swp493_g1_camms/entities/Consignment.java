@@ -41,7 +41,7 @@ public class Consignment {
     private Set<ConsignmentProduct> consignmentProducts;
 
     @OneToMany(mappedBy = "consignment")
-    private Set<OrderDeliver> orderDelivers;
+    private Set<OrderExported> orderExporteds;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "warehouse_id", referencedColumnName = "id")
