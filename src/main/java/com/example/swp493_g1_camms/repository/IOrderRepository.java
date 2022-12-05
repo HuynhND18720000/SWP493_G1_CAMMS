@@ -15,7 +15,7 @@ public interface IOrderRepository extends JpaRepository<Order, Long> {
     @Query(value = "SELECT o FROM Order as o where o.orderCode = ?1")
     Order getOrderByOrderCode(String order_code);
 
-    @Query(nativeQuery = true, value = "SELECT COUNT(*) from CAMMS.order order1"+
+    @Query(nativeQuery = true, value = "SELECT COUNT(*) from `order` order1"+
             "            WHERE order1.order_type_id = 2\n" +
             "            AND CASE WHEN ?1 IS NOT NULL THEN order1.status_id = ?1 \n" +
             "            ELSE order1.status_id = 1 OR order1.status_id = 2 OR order1.status_id = 4 END \n"+

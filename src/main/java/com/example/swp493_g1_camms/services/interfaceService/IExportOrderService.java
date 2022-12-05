@@ -8,6 +8,7 @@ import com.example.swp493_g1_camms.payload.request.ProductForExport;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +20,7 @@ public interface IExportOrderService {
     ResponseEntity<?> getListExportOrder(Integer pageIndex, Integer pageSize);
 
     ServiceResult<Map<String,Object>> getListExportOrders(Integer pageIndex, Integer pageSize, Integer status,
-                                                          String dateFrom, String dateTo, Long userId, String orderCode);
+                                                          LocalDateTime dateFrom, LocalDateTime dateTo, Long userId, String orderCode);
 
     ServiceResult<Map<String,Object>> getExportOderDetail(Long orderId);
 

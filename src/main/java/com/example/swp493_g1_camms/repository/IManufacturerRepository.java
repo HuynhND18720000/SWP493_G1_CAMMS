@@ -22,4 +22,7 @@ public interface IManufacturerRepository extends JpaRepository<Manufacturer, Lon
             + "Where m.id = ?1 AND m.deletedAt = false" )
     Manufacturer findManufactorById(Long manufactorId);
 
+    @Query("SELECT m FROM Manufacturer m "
+            + "Where m.email like ?1 AND m.deletedAt = false" )
+    Manufacturer findManufactorByEmail(String email);
 }

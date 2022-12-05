@@ -7,12 +7,14 @@ import com.example.swp493_g1_camms.payload.response.MessageResponse;
 import com.example.swp493_g1_camms.services.impl.ExportOrderImpl;
 import com.example.swp493_g1_camms.utils.CurrentUserIsActive;
 import com.example.swp493_g1_camms.utils.StatusUtils;
+import com.example.swp493_g1_camms.services.impl.ValidCheckServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +25,9 @@ public class ExportOrderController {
     private final int defaultSize = 5;
     @Autowired
     ExportOrderImpl exportOrder;
+
+    ValidCheckServiceImpl validCheckServiceImpl;
+
     @GetMapping(path = "/export-product")
     public ResponseEntity<?> getListProductFromDropdownList(@RequestParam(required = false) Long id,
                                                             @RequestParam(required = false) Integer pageIndex,
@@ -50,21 +55,9 @@ public class ExportOrderController {
         return exportOrder.createExportOrder(exportOrderRequest);
     }
 
-    @GetMapping
-    public ResponseEntity<?> getListExportOrder(@RequestParam(required = false) Integer pageIndex,
-                                                @RequestParam(required = false) Integer pageSize){
-        boolean isActive = CurrentUserIsActive.currentUserIsActive();
-        if(!isActive){
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
-        }
-        pageIndex = pageIndex == null ? defaultPage : pageIndex;
-        pageSize = pageSize == null ? defaultSize : pageSize;
-        return exportOrder.getListExportOrder(pageIndex, pageSize);
-    }
+
     @GetMapping("/list")
-    public ResponseEntity<ServiceResult<Map<String, Object>>> listImport(@RequestParam(required = false) Integer pageIndex,
+    public ResponseEntity<ServiceResult<Map<String, Object>>> listExport(@RequestParam(required = false) Integer pageIndex,
                                                                          @RequestParam(required = false) Integer pageSize,
                                                                          @RequestParam(required = false) Integer status,
                                                                          @RequestParam(required = false) String dateFrom,
@@ -76,8 +69,14 @@ public class ExportOrderController {
         pageSize = pageSize == null ? defaultSize : pageSize;
         try {
             pageIndex = pageIndex - 1;
+            LocalDateTime dateFrom1 = null;
+            LocalDateTime dateTo1 = null;
+            validCheckServiceImpl.validDate(dateFrom1, dateTo1, dateFrom, dateTo);
+            if(orderCode == null || orderCode.equalsIgnoreCase("") ){
+                orderCode = "";
+            }
             ServiceResult<Map<String, Object>> mapServiceResult =
-                    exportOrder.getListExportOrders(pageIndex, pageSize, status, dateFrom, dateTo, userId, orderCode);
+                    exportOrder.getListExportOrders(pageIndex, pageSize, status, dateFrom1, dateTo1, userId, orderCode);
             return ResponseEntity.ok(mapServiceResult);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -49,7 +49,7 @@ public class ManufacturerServiceImpl implements IManufacturerService {
     @Override
     public ResponseEntity<?> addManufacturer(ManufacturerDTO manufacturerDTO) {
         Manufacturer manufacturer = new Manufacturer();
-        manufacturer.setId(9L);
+        //xoa id
         manufacturer.setName(manufacturerDTO.getName());
         manufacturer.setAddress(manufacturerDTO.getAddress());
         manufacturer.setEmail(manufacturerDTO.getEmail());
