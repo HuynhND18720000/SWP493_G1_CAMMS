@@ -78,7 +78,7 @@ public class ReturnOrderServiceImpl implements IReturnOderService {
             order1.setConfirmDate(ldt);
             order1.setCreatedDate(ldt);
             order1.setDescription(description);
-            order1.setIsReturn(false);
+            order1.setIsReturn(null);
             order1.setStatus(statusRepository.findStatusById(Long.valueOf(2)));
             order1.setManufacturer(null);
             order1.setDeletedAt(false);
@@ -94,7 +94,8 @@ public class ReturnOrderServiceImpl implements IReturnOderService {
                 consignment.setImportDate(ldt);
                 consignment.setDeletedAt(false);
                 //them
-                consignment.setWarehouse(iWarehouseRepository.getById(consignmentProductDTOs.get(i).getWarehouseId()));
+                consignment.setWarehouse(iWarehouseRepository.getById(
+                        consignmentProductDTOs.get(i).getWarehouseId()));
                 consignmentRepository.save(consignment);
 
                 Long consignmentId = consignment.getId();
@@ -120,7 +121,8 @@ public class ReturnOrderServiceImpl implements IReturnOderService {
                         consignmentProductDTOs.get(i).getConsignmentId());
 
                 ConsignmentProduct consignmentProduct1 =
-                        iConsignmentProductRepository.getConsignmentProductById(consignmentProductDTOs.get(i).getConsignmentId(),
+                        iConsignmentProductRepository.getConsignmentProductById(
+                                consignmentProductDTOs.get(i).getConsignmentId(),
                                 consignmentProductDTOs.get(i).getProductId());
 
                 ConsignmentProduct consignmentProduct2 =

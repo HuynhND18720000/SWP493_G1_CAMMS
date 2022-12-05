@@ -35,12 +35,12 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
     @Autowired
     IConsignmentProductRepository consignmentProductRepository;
     @Autowired
-    ProductRepository productRepository;
+    IProductRepository productRepository;
 
     @Autowired
     IExportOrderRepository exportOrderRepository;
     @Autowired
-    UserRepository userRepository;
+    IUserRepository userRepository;
 
     @Autowired
     IStockTakingHistoryDescriptionRepository stockTakingHistoryDescriptionRepository;
