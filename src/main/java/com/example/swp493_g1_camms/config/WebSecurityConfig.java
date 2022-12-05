@@ -95,6 +95,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers("/api/forgot_password").permitAll()
                 .and().authorizeRequests().antMatchers("/api/check_otp").permitAll()
                 .and().authorizeRequests().antMatchers("/api/reset_password").permitAll()
+                .and().authorizeRequests().antMatchers("/api/user/userprofile/change_password").permitAll()
+                .and().authorizeRequests().antMatchers("/api/export/confirm").permitAll()
+                .and().authorizeRequests().antMatchers("/api/export/cancel").permitAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }

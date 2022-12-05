@@ -5,6 +5,7 @@ import com.example.swp493_g1_camms.payload.request.GetEmailRequest;
 import com.example.swp493_g1_camms.payload.request.ResetPasswordRequest;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
 import com.example.swp493_g1_camms.services.impl.UserServiceImpl;
+import com.example.swp493_g1_camms.services.interfaceService.IUserService;
 import com.example.swp493_g1_camms.utils.CurrentUserIsActive;
 import com.example.swp493_g1_camms.utils.StatusUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class ForgotPasswordController {
     @Autowired
-    UserServiceImpl userService;
+    IUserService userService;
 
     @PostMapping("/forgot_password")
     ResponseEntity<?> forgotPassword(@RequestBody GetEmailRequest email_request) {

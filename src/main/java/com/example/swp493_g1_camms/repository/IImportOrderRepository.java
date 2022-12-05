@@ -48,17 +48,20 @@ public interface IImportOrderRepository extends JpaRepository<Order, Long> {
             "consignment_product1.unit_price, product1.id as product_id, product1.name as product_name,\n" +
             "product1.product_code, product1.unit_measure, warehouse1.id as warehouse_id, user1.full_name as creator, \n" +
             "warehouse1.name as warehouse_name, order_detail1.order_id, consignment1.id as consignment_id, \n" +
-            "user2.full_name as confirm_by, user2.id as confirm_by_id, user1.id as creator_id \n" +
+            "user2.full_name as confirm_by, user2.id as confirm_by_id, user1.id as creator_id , " +
+            "manufacturer1.name, manufacturer1.id\n" +
             "FROM CAMMS.order order1\n" +
             "LEFT JOIN CAMMS.user user2 ON order1.confirm_by = user2.id,\n" +
             "order_detail order_detail1, consignment consignment1, product product1,\n" +
-            "warehouse warehouse1, consignment_product consignment_product1, user user1\n" +
+            "warehouse warehouse1, consignment_product consignment_product1, user user1, " +
+            "manufacturer manufacturer1\n" +
             "WHERE order1.id = ?1\n" +
             "AND order1.id = order_detail1.order_id\n" +
             "AND order_detail1.consignment_id = consignment1.id\n" +
             "AND consignment1.warehouse_id = warehouse1.id\n" +
             "AND consignment1.id = consignment_product1.consignment_id\n" +
             "AND order1.user_id = user1.id\n" +
+            "AND order1.manufacturer_id = manufacturer1.id\n" +
             "AND product1.id = consignment_product1.product_id")
     List<Map<String, Object>> getImportOrderDetail(Long orderId, Pageable pagable);
 

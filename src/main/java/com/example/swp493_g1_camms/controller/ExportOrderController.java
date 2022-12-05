@@ -6,6 +6,7 @@ import com.example.swp493_g1_camms.payload.request.ExportOrderRequest;
 import com.example.swp493_g1_camms.payload.request.OrderStatusExportedDTO;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
 import com.example.swp493_g1_camms.services.impl.ExportOrderServiceImpl;
+import com.example.swp493_g1_camms.services.interfaceService.IExportOrderService;
 import com.example.swp493_g1_camms.utils.CurrentUserIsActive;
 import com.example.swp493_g1_camms.utils.StatusUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,13 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/export")
 public class ExportOrderController {
     private final int defaultPage = 1;
     private final int defaultSize = 5;
     @Autowired
-    ExportOrderServiceImpl exportOrder;
+    IExportOrderService exportOrder;
 
     @GetMapping(path = "/listProduct")
     public ResponseEntity<?> loadListProductIntoDropList(){
@@ -77,7 +79,7 @@ public class ExportOrderController {
         return exportOrder.getListExportOrder(pageIndex, pageSize);
     }
     @GetMapping("/list")
-    public ResponseEntity<ServiceResult<Map<String, Object>>> listImport(@RequestParam(required = false) Integer pageIndex,
+    public ResponseEntity<ServiceResult<Map<String, Object>>> listExport(@RequestParam(required = false) Integer pageIndex,
                                                                          @RequestParam(required = false) Integer pageSize,
                                                                          @RequestParam(required = false) Integer status,
                                                                          @RequestParam(required = false) String dateFrom,

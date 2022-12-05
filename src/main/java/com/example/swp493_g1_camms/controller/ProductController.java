@@ -3,6 +3,7 @@ package com.example.swp493_g1_camms.controller;
 import com.example.swp493_g1_camms.payload.request.ProductRequest;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
 import com.example.swp493_g1_camms.services.impl.ProductServiceImpl;
+import com.example.swp493_g1_camms.services.interfaceService.IProductService;
 import com.example.swp493_g1_camms.utils.CurrentUserIsActive;
 import com.example.swp493_g1_camms.utils.StatusUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ public class ProductController {
     private final int defaultPage = 1;
     private final int defaultSize = 5;
     @Autowired
-    ProductServiceImpl productService;
+    IProductService productService;
     //cách 1: get all products
     @GetMapping("/products")
     public ResponseEntity<?> getAllProducts(@RequestParam(required = false) Integer pageIndex,

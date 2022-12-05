@@ -132,15 +132,14 @@ public class UserServiceImpl implements IUserService {
     }
     @Override
     public ResponseEntity<?> checkOTPFromClient(String otp) {
-        ResponseVo responseVo = new ResponseVo();
         MessageResponse messageResponse = new MessageResponse();
         Map<String, Object> output = new HashMap<>();
         try{
             String otp_exist = resetPassHistoryRepository.getOTPExist(otp);
             System.out.println("otp lay dc ve la:"+otp);
+
             if(otp.equalsIgnoreCase(otp_exist)){
                 //neu dung otp cho nguoi khac ma khong phai cua minh
-
                 ResetPassHistory resetPassHistory = resetPassHistoryRepository.getUserByOtpCode(otp);
                 //get current user to check whether user have correct this otp or other user have otp
                 //co van de

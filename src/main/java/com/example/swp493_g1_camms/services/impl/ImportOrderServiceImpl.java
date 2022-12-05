@@ -69,6 +69,7 @@ public class ImportOrderServiceImpl implements IImportOrderService {
         MessageResponse messageResponse = new MessageResponse();
         try{
             List<Order> lo = orderRepository.getLastOrderCode();
+            //kt list rong hay ko
             Order o = lo.get(0);
             int new_orderCode = Integer.parseInt((o.getId()+"").trim()) + 1;
             order.setOrderCode(String.valueOf(new_orderCode));

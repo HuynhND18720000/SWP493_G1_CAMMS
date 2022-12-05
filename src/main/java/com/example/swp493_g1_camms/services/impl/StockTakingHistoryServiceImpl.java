@@ -133,10 +133,14 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
                 c.setId(stdr.getId());
                 stockTakingHistoryDetail.setConsignment(c);
 
+                Product p1 = new Product();
+                p1.setId(stdr.getProductId());
+                stockTakingHistoryDetail.setProduct(p1);
+
                 StockTakingHistoryDescription stockTakingHistoryDescription = new StockTakingHistoryDescription();
-                Product p = new Product();
-                p.setId(stdr.getProductId());
-                stockTakingHistoryDescription.setProduct(p);
+                Product p2 = new Product();
+                p2.setId(stdr.getProductId());
+                stockTakingHistoryDescription.setProduct(p2);
                 stockTakingHistoryDescription.setStockTakingHistory(stockTakingHistory1);
                 stockTakingHistoryDescription.setConsignment(c);
                 //check cho nay so luong chenh lech
@@ -180,9 +184,10 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
     }
 
     @Override
-    public ResponseEntity<?> getInfoProductInWareHouse(Long product_id) {
+    public ResponseEntity<?> getInfoProductInWareHouse(Long product_id, Long warehouse_id) {
         Map<String, Object> map = new HashMap<>();
-        List<Map<String, Object>> listProduct = exportOrderRepository.getProductInWareHouse(product_id);
+        List<Map<String, Object>> listProduct =
+                exportOrderRepository.getProductInWareHouseForStockTaking(product_id, warehouse_id);
         List<ExportOrderResponse> exportOrderResponseList =  new ArrayList<>();
         List<ListConsignmentProductResponse> consignmentProductResponseList = new ArrayList<>();
         ExportOrderResponse exportOrderResponse = new ExportOrderResponse();

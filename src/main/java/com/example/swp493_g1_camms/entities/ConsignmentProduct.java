@@ -47,4 +47,6 @@ public class ConsignmentProduct{
     @Column(name = "quantity_sale")
     private Integer quantity_sale;
 
+    @Column(name="average_price")
+    private Double average_price;
 }

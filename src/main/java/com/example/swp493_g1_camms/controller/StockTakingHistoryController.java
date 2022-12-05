@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/stockTakingHistory")
 public class StockTakingHistoryController {
@@ -22,8 +22,6 @@ public class StockTakingHistoryController {
     @Autowired
     IStockTakingHistoryService stockTakingHistoryService;
 
-    @Autowired
-    StockTakingHistoryServiceImpl stockTakingHistoryServiceimpl;
 
     @GetMapping
     public ResponseEntity<?> listStockTakingHistory(@RequestParam(required = false) Integer pageIndex,
@@ -54,7 +52,7 @@ public class StockTakingHistoryController {
                     .badRequest()
                     .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
         }
-        return stockTakingHistoryServiceimpl.createStockTakingHistory(stockTakingRequest);
+        return stockTakingHistoryService.createStockTakingHistory(stockTakingRequest);
     }
 
     @GetMapping("/detail/{stockTakingHistoryId}")
@@ -76,11 +74,12 @@ public class StockTakingHistoryController {
                     .badRequest()
                     .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
         }
-        return stockTakingHistoryServiceimpl.getProducFromConsignmentInWarehouse(warehouse_id);
+        return stockTakingHistoryService.getProducFromConsignmentInWarehouse(warehouse_id);
     }
 
     @GetMapping(path = "/productDetails")
-    public ResponseEntity<?> getListProductFromDropdownList(@RequestParam(required = false) Long id){
+    public ResponseEntity<?> getListProductFromDropdownList(@RequestParam(required = false) Long id,
+                                                            @RequestParam(required = false) Long wid){
 
         boolean isActive = CurrentUserIsActive.currentUserIsActive();
         if(!isActive){
@@ -89,7 +88,7 @@ public class StockTakingHistoryController {
                     .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
         }
 
-        return stockTakingHistoryServiceimpl.getInfoProductInWareHouse(id);
+        return stockTakingHistoryService.getInfoProductInWareHouse(id, wid);
     }
 
 }

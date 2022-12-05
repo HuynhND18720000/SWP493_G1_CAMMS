@@ -36,6 +36,23 @@ public interface IExportOrderRepository extends JpaRepository<Order, Long> {
             " order by cp.expiration_date desc", nativeQuery = true)
     List<Map<String, Object>> getProductInWareHouse(Long product_id);
 
+    @Query(value = "SELECT p.id AS productId, c.id AS consignment_id, wh.id AS wareHouseId,\n" +
+            "         wh.name AS warehouseName, p.product_code AS productCode,\n" +
+            "\t\tp.name AS productName,p.unit_measure AS unitMeasure,\n" +
+            "\t\tp.unitprice AS unitPrice,c.import_date AS importDate,\n" +
+            "        cp.expiration_date AS expirationDate,\n" +
+            "        cp.unit_price AS Price,\n" +
+            "\t\tcp.quantity_sale AS quantityInstock\n" +
+            "        from order_detail as od\n" +
+            "join camms.order as o on o.id = od.order_id\n" +
+            "JOIN consignment c ON c.deleted_at = 0 and c.id = od.consignment_id\n" +
+            "JOIN warehouse wh ON wh.id = c.warehouse_id\n" +
+            "JOIN consignment_product cp ON  cp.consignment_id = c.id\n" +
+            "join product p on cp.product_id = p.id \n" +
+            "WHERE  c.import_date is not null AND cp.quantity_sale > 0 AND p.id= ?1 and o.deleted_at\n" +
+            " = false and o.order_type_id = 1 and o.status_id = 2 and c.warehouse_id = ?2\n" +
+            " order by cp.expiration_date desc", nativeQuery = true)
+    List<Map<String, Object>> getProductInWareHouseForStockTaking(Long product_id, Long warehouse_id);
     @Query(value = "SELECT DISTINCT c.consignment_code FROM consignment as c order by c.consignment_code\n",
     nativeQuery = true)
     List<Long> getConsignmentCode();
@@ -83,7 +100,7 @@ public interface IExportOrderRepository extends JpaRepository<Order, Long> {
             "warehouse1.name as warehouse_name, order_detail1.order_id, consignment1.id as consignment_id, \n" +
             "user2.full_name as confirm_by, user2.id as confirm_by_id, user1.id as creator_id, order1.id, order1.status_id, \n" +
             "consignment_product2.quantity_sale, order1.is_return \n" +
-            "FROM order order1\n" +
+            "FROM camms.order order1\n" +
             "LEFT JOIN user user2 ON order1.confirm_by = user2.id,\n" +
             "order_detail order_detail1, consignment consignment1, product product1,\n" +
             "warehouse warehouse1, consignment_product consignment_product1, user user1, " +
@@ -106,8 +123,10 @@ public interface IExportOrderRepository extends JpaRepository<Order, Long> {
     @Query(nativeQuery = true, value = "SELECT consignment_product1.expiration_date, consignment_product1.quantity, \n" +
             "consignment_product1.unit_price, product1.id as product_id, product1.name as product_name,\n" +
             "product1.product_code, product1.unit_measure, warehouse1.id as warehouse_id, user1.full_name as creator, \n" +
-            "warehouse1.name as warehouse_name, order_detail1.order_id, consignment1.id as consignment_id, \n" +
-            "user2.full_name as confirm_by, user2.id as confirm_by_id, user1.id as creator_id, order1.id, order1.status_id \n" +
+            "warehouse1.name as warehouse_name, order_detail1.order_id, consignment1.id as consignment_id, " +
+            "order1.order_code,\n" +
+            "user2.full_name as confirm_by, user2.id as confirm_by_id, user1.id as creator_id, order1.id, " +
+            "order1.status_id \n" +
             "FROM camms.order order1\n" +
             "LEFT JOIN user user2 ON order1.confirm_by = user2.id,\n" +
             "order_detail order_detail1, consignment consignment1, product product1,\n" +

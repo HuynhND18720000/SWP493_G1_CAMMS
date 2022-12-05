@@ -14,5 +14,5 @@ public interface IStockTakingHistoryService {
 
     ResponseEntity<?> getProducFromConsignmentInWarehouse(Long warehouse_id);
 
-    public ResponseEntity<?> getInfoProductInWareHouse(Long product_id);
+    public ResponseEntity<?> getInfoProductInWareHouse(Long product_id, Long warehouse_id);
 }
