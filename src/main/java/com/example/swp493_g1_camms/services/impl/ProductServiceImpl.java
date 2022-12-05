@@ -210,7 +210,7 @@ public class ProductServiceImpl implements IProductService {
         productBefore.setImage(productRequest.getImage());
         productBefore.setUnitprice(productRequest.getUnit_price());
         productBefore.setOutDate(productRequest.getOut_date());
-        productBefore.setQuantity(productRequest.getQuantity());
+
         productBefore.setUnitMeasure(productRequest.getUnit_measure());
 
         IProductRepository.save(productBefore);
