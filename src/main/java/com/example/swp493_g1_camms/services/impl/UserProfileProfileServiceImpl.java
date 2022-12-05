@@ -4,6 +4,7 @@ import com.example.swp493_g1_camms.entities.User;
 import com.example.swp493_g1_camms.payload.request.ChangePasswordRequest;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
 import com.example.swp493_g1_camms.payload.response.ResponseVo;
+import com.example.swp493_g1_camms.payload.response.UserProfileResponse;
 import com.example.swp493_g1_camms.repository.IUserRepository;
 import com.example.swp493_g1_camms.security.services.AuthenticationFacade;
 import com.example.swp493_g1_camms.services.interfaceService.IUserProfileService;
@@ -24,19 +25,41 @@ public class UserProfileProfileServiceImpl implements IUserProfileService {
     //can sua lai toan bo
     @Override
     public ResponseEntity<?> getUserProfile() {
-        String usernameOfCurrentUser = authenticationFacade.currentUserNameSimple();
-        System.out.println("user hien tai la "+usernameOfCurrentUser);
-        Optional<User> user = IUserRepository.findByUsername(usernameOfCurrentUser);
-        boolean currentUserIsActive = CurrentUserIsActive.currentUserIsActive();
+        MessageResponse messageResponse = new MessageResponse();
         ResponseVo responseVo = new ResponseVo();
-        if(!currentUserIsActive){
+        try{
+            String usernameOfCurrentUser = authenticationFacade.currentUserNameSimple();
+            System.out.println("user hien tai la "+usernameOfCurrentUser);
+            Optional<User> user = IUserRepository.findByUsername(usernameOfCurrentUser);
+
+            if (!user.isPresent()){
+                messageResponse.setStatus(500);
+                messageResponse.setMessage("user ko ton tai");
+                responseVo.setData(messageResponse);
+                return new ResponseEntity<>(responseVo, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            UserProfileResponse userProfileResponse = new UserProfileResponse();
+            userProfileResponse.setUser_id(user.get().getId());
+            userProfileResponse.setUsername(user.get().getUsername());
+            userProfileResponse.setDob(user.get().getDob());
+            if(user.get().getImage()!= null){
+                userProfileResponse.setImage(user.get().getImage());
+            }else{
+                userProfileResponse.setImage(null);
+            }
+            userProfileResponse.setEmail(user.get().getEmail());
+            userProfileResponse.setFullName(user.get().getFullName());
+            userProfileResponse.setPhone(user.get().getPhone());
+            responseVo.setData(userProfileResponse);
+
+            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+        }catch(Exception e){
+            System.out.println("loi khong lay dc");
+            messageResponse.setMessage(e+"");
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Tài khoản của bạn đã bị tạm dừng!", StatusUtils.NOT_Allow));
-
+                    .body(messageResponse);
         }
-        responseVo.setData(user);
-        return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
 
     //lam 1 api load mk hien tai len
