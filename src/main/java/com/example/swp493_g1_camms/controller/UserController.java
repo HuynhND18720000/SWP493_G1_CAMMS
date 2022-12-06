@@ -18,6 +18,12 @@ public class UserController {
 
     @GetMapping("/userprofile")
     public ResponseEntity<?> getUserProfile() {
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
         return userProfileService.getUserProfile();
     }
 
@@ -30,5 +36,16 @@ public class UserController {
                     .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
         }
         return userProfileService.changePassword(changePasswordRequest);
+    }
+
+    @GetMapping("/userprofile/currentPassword")
+    public  ResponseEntity<?> getCurrentUserByUserId(@RequestBody Long user_id){
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
+        return  userProfileService.getPasswordOfCurrentUser(user_id);
     }
 }

@@ -98,6 +98,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers("/api/user/userprofile/change_password").permitAll()
                 .and().authorizeRequests().antMatchers("/api/export/confirm").permitAll()
                 .and().authorizeRequests().antMatchers("/api/export/cancel").permitAll()
+                .and().authorizeRequests().antMatchers("/api/export/exported").permitAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }

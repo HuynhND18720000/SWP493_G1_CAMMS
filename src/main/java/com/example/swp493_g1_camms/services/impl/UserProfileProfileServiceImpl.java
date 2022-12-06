@@ -75,7 +75,6 @@ public class UserProfileProfileServiceImpl implements IUserProfileService {
         }
     }
 
-    //lam 1 api load mk hien tai len
     @Override
     public ResponseEntity<?> changePassword(ChangePasswordRequest changePasswordRequest) {
         ResponseVo responseVo = new ResponseVo();
@@ -144,7 +143,7 @@ public class UserProfileProfileServiceImpl implements IUserProfileService {
                     output.put("status", Constant.SUCCESS);
                     output.put("message", "Cập nhật mật khẩu thành công.");
                     return new ResponseEntity<>(output, HttpStatus.OK);
-                } else {
+                }else {
                     boolean mark = false;
                     for (ResetPassHistory rph : resetPassHistoryList
                     ) {
@@ -169,20 +168,75 @@ public class UserProfileProfileServiceImpl implements IUserProfileService {
                                 String old_password = user.get().getPassword();
                                 //cap nhat lai old_password vao bang resetpasswordhistory
                                 // cap nhat vao object chua mk cu do
+                                ResetPassHistory resetPassHistory = new ResetPassHistory();
+                                resetPassHistory.setUser(user.get());
+                                resetPassHistory.setOld_password(old_password);
+                                //set lai time cho mk moi
+                                Calendar c = Calendar.getInstance();
+                                c.setTime(in);//set current time
+                                //add 1 month to valid password when want to use old password
+                                c.add(Calendar.MONTH, 1);
+                                // convert calendar to date
+                                Date currentDatePlusOne = c.getTime();
+                                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                                String date_format = dateFormat.format(currentDatePlusOne);
+                                Date date1 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse(date_format);
+                                //set future date
+                                LocalDateTime localDateTime_futrue =
+                                        LocalDateTime.ofInstant(date1.toInstant(), ZoneId.systemDefault());
+                                resetPassHistory.setTime_active_pass(localDateTime_futrue);
+                                resetPassHistory.setStatus(false);
+                                resetPassHistoryRepository.save(resetPassHistory);
 
-
+                                user.get().setPassword(bcrypt_password);
+                                IUserRepository.save(user.get());
+                                output.put("status", Constant.SUCCESS);
+                                output.put("message", "Cập nhật mật khẩu thành công.");
+                                return new ResponseEntity<>(output, HttpStatus.OK);
                             }
+                        }else{
+                            mark = false;
                         }
 
                     }
                     if(mark==false){
+                        //lay ra date hien tai
+                        Date in = new Date();
+                        LocalDateTime ldt = LocalDateTime.ofInstant(in.toInstant(), ZoneId.systemDefault());
+                        //ma hoa password lay tu phia user
+                        String bcrypt_password = passwordEncoder.encode(new_password);
+                        //lay ra password ma nguoi dung dang su dung truoc khi maf thuc hien forgot password
+                        String old_password = user.get().getPassword();
+                        //cap nhat lai old_password vao bang resetpasswordhistory
+                        // cap nhat vao object chua mk cu do
+                        ResetPassHistory resetPassHistory = new ResetPassHistory();
+                        resetPassHistory.setUser(user.get());
+                        resetPassHistory.setOld_password(old_password);
+                        //set lai time cho mk moi
+                        Calendar c = Calendar.getInstance();
+                        c.setTime(in);//set current time
+                        //add 1 month to valid password when want to use old password
+                        c.add(Calendar.MONTH, 1);
+                        // convert calendar to date
+                        Date currentDatePlusOne = c.getTime();
+                        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                        String date_format = dateFormat.format(currentDatePlusOne);
+                        Date date1 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse(date_format);
+                        //set future date
+                        LocalDateTime localDateTime_futrue =
+                                LocalDateTime.ofInstant(date1.toInstant(), ZoneId.systemDefault());
+                        resetPassHistory.setTime_active_pass(localDateTime_futrue);
+                        resetPassHistory.setStatus(false);
+                        resetPassHistoryRepository.save(resetPassHistory);
+
+                        user.get().setPassword(bcrypt_password);
+                        IUserRepository.save(user.get());
                         output.put("status", Constant.SUCCESS);
                         output.put("message", "Cập nhật mật khẩu thành công.");
                         return new ResponseEntity<>(output, HttpStatus.OK);
                     }
                 }
             }
-
         }catch(Exception e){
             System.out.println("loi khong gui dc");
             messageResponse.setMessage(e+"");
@@ -191,6 +245,33 @@ public class UserProfileProfileServiceImpl implements IUserProfileService {
                     .body(messageResponse);
         }
         return null;
+    }
+
+    @Override
+    public ResponseEntity<?> getPasswordOfCurrentUser(Long user_id) {
+        MessageResponse messageResponse = new MessageResponse();
+        ResponseVo responseVo = new ResponseVo();
+        try{
+            Optional<User> currentUser = IUserRepository.getUserById(user_id);
+            if(!currentUser.isPresent()){
+                messageResponse.setMessage("user khong ton tai");
+                return ResponseEntity
+                        .badRequest()
+                        .body(messageResponse);
+            }
+            User u = new User();
+            u.setPassword(currentUser.get().getPassword());
+            u.setId(currentUser.get().getId());
+            responseVo.setData(u);
+            responseVo.setMessage("lay dc thong tin mk cua nguoi dung thanh cong");
+            return  new ResponseEntity<>(responseVo,HttpStatus.OK);
+        }catch (Exception e){
+            System.out.println("loi khong lay dc");
+            messageResponse.setMessage(e+"");
+            return ResponseEntity
+                    .badRequest()
+                    .body(messageResponse);
+        }
     }
 
 }

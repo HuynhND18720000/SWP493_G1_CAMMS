@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface IResetPassHistoryRepository extends JpaRepository<ResetPassHistory, Long> {
 
-    @Query("select rph.otp_code from ResetPassHistory as rph where rph.otp_code =?1")
+    @Query("select rph.otp_code from ResetPassHistory as rph where rph.otp_code =?1 and rph.status = false")
     String getOTPExist(String otp);
 
     @Override

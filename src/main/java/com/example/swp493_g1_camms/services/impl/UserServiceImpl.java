@@ -135,6 +135,7 @@ public class UserServiceImpl implements IUserService {
         MessageResponse messageResponse = new MessageResponse();
         Map<String, Object> output = new HashMap<>();
         try{
+            //loi dung otp roi nhung van update dc mk
             String otp_exist = resetPassHistoryRepository.getOTPExist(otp);
             System.out.println("otp lay dc ve la:"+otp);
 
