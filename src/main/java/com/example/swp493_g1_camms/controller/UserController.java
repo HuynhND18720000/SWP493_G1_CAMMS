@@ -21,8 +21,7 @@ public class UserController {
         return userProfileService.getUserProfile();
     }
 
-    @RequestMapping(value = "/userprofile/change_password", method = {RequestMethod.PUT,
-    RequestMethod.POST})
+    @PutMapping("/userprofile/change_password")
     public ResponseEntity<?> updatePassword(@RequestBody ChangePasswordRequest changePasswordRequest){
         boolean isActive = CurrentUserIsActive.currentUserIsActive();
         if(!isActive){

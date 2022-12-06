@@ -26,4 +26,8 @@ public interface IManufacturerRepository extends JpaRepository<Manufacturer, Lon
 
     @Query(value = "SELECT * FROM manufacturer WHERE deleted_at = false", nativeQuery = true )
     List<Manufacturer > getAllManufacturerNotPagging();
+
+    @Query("SELECT m FROM Manufacturer m "
+            + "Where m.email like ?1 AND m.deletedAt = false" )
+    Manufacturer findManufactorByEmail(String email);
 }

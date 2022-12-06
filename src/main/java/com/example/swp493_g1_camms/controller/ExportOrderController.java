@@ -7,6 +7,7 @@ import com.example.swp493_g1_camms.payload.request.OrderStatusExportedDTO;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
 import com.example.swp493_g1_camms.services.impl.ExportOrderServiceImpl;
 import com.example.swp493_g1_camms.services.interfaceService.IExportOrderService;
+import com.example.swp493_g1_camms.services.interfaceService.IValidCheckService;
 import com.example.swp493_g1_camms.utils.CurrentUserIsActive;
 import com.example.swp493_g1_camms.utils.StatusUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +28,9 @@ public class ExportOrderController {
     private final int defaultSize = 5;
     @Autowired
     IExportOrderService exportOrder;
+
+    @Autowired
+    IValidCheckService validCheckService;
 
     @GetMapping(path = "/listProduct")
     public ResponseEntity<?> loadListProductIntoDropList(){
@@ -91,8 +96,16 @@ public class ExportOrderController {
         pageSize = pageSize == null ? defaultSize : pageSize;
         try {
             pageIndex = pageIndex - 1;
+            LocalDateTime dateFrom1 = null;
+            LocalDateTime dateTo1 = null;
+            dateFrom1 = validCheckService.validDate(dateFrom1, dateFrom);
+            dateTo1 = validCheckService.validDate(dateTo1, dateTo);
+            if(orderCode == null || orderCode.equalsIgnoreCase("") ){
+                orderCode = "";
+            }
             ServiceResult<Map<String, Object>> mapServiceResult =
-                    exportOrder.getListExportOrders(pageIndex, pageSize, status, dateFrom, dateTo, userId, orderCode);
+                    exportOrder.getListExportOrders(pageIndex, pageSize, status,
+                            dateFrom1, dateTo1, userId, orderCode);
             return ResponseEntity.ok(mapServiceResult);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

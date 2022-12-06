@@ -269,36 +269,16 @@ public class ExportOrderServiceImpl implements IExportOrderService {
 
     @Override
     public ServiceResult<Map<String, Object>> getListExportOrders(Integer pageIndex, Integer pageSize,  Integer status,
-                                                                  String dateFrom, String dateTo, Long userId, String orderCode) {
+                                                                  LocalDateTime dateFrom, LocalDateTime dateTo, Long userId, String orderCode) {
         ServiceResult<Map<String, Object>> mapServiceResult = new ServiceResult<>();
         Map<String, Object> output = new HashMap<>();
         Pageable pageable = PageRequest.of(pageIndex, pageSize,
                 Sort.by("id").descending());
-        LocalDateTime dateFrom1 = null;
-        LocalDateTime dateTo1 = null;
-        if(dateFrom == null || dateFrom.equalsIgnoreCase("")){
-            dateFrom1 = null;
-        }else {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            LocalDateTime dateTime = LocalDateTime.parse(dateFrom, formatter);
-            dateFrom1 = dateTime;
-        }
-        if(dateTo == null || dateTo.equalsIgnoreCase("")){
-            dateTo1 = null;
-        }else {
-            DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            LocalDateTime dateTime1 = LocalDateTime.parse(dateTo, formatter1);
-            dateTo1 = dateTime1;
-        }
-
-        if(orderCode == null || orderCode.equalsIgnoreCase("") ){
-            orderCode = "";
-        }
 
         try {
             List<Map<String, Object>> orderList =
-                    exportOrderRepository.getListExportOrders(status, dateFrom1, dateTo1, userId, orderCode, pageable);
-            BigInteger totalRecord = orderRepository.getTotalExportRecord(status, dateFrom1, dateTo1, userId, orderCode);
+                    exportOrderRepository.getListExportOrders(status, dateFrom, dateTo, userId, orderCode, pageable);
+            BigInteger totalRecord = orderRepository.getTotalExportRecord(status, dateFrom, dateTo, userId, orderCode);
             output.put("orderList", orderList);
             output.put("pageIndex", pageIndex);
             output.put("pageSize", pageSize);
@@ -354,26 +334,7 @@ public class ExportOrderServiceImpl implements IExportOrderService {
             order.setConfirmBy(confirmBy);
             order.setStatus(status);
             exportOrderRepository.save(order);
-            List<ConsignmentProduct> consignmentProducts =
-                    consignmentProductRepository.getConsignmentProductByOrderId(orderId);
-            for(int i =0 ; i < consignmentProducts.size(); i++){
-                ConsignmentProductKey consignmentProductId = consignmentProducts.get(i).getId();
-                Product product = productRepository.findProductById(consignmentProductId.getProductid());
-                product.setQuantity(product.getQuantity() - consignmentProducts.get(i).getQuantity());
-                productRepository.save(product);
-                ConsignmentProduct consignmentProduct = new ConsignmentProduct();
-                consignmentProduct =
-                        consignmentProductRepository.getConsignmentProductById(consignmentProductId.getConsignmentid(),
-                                consignmentProductId.getProductid());
-                ConsignmentProduct consignmentProduct2 = new ConsignmentProduct();
-                consignmentProduct2 =
-                        consignmentProductRepository.getConsignmentProductById(consignmentProduct.getMark_get_product_from_consignment(),
-                                consignmentProductId.getProductid());
-                if(consignmentProduct2 != null){
-                    consignmentProduct2.setQuantity_sale(consignmentProduct2.getQuantity_sale()-consignmentProducts.get(i).getQuantity());
-                    consignmentProductRepository.save(consignmentProduct2);}
 
-            }
             ResponseVo responseVo = new ResponseVo();
             responseVo.setMessage("Xác nhận xuất hàng thành công !!");
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
@@ -471,6 +432,27 @@ public class ExportOrderServiceImpl implements IExportOrderService {
         orderExported.setStatusExported(true);
         orderExportedStatusRepository.save(orderExported);
         orderRepository.save(order);
+        List<ConsignmentProduct> consignmentProducts =
+                consignmentProductRepository.getConsignmentProductByOrderId(orderId);
+        for(int i =0 ; i < consignmentProducts.size(); i++){
+            ConsignmentProductKey consignmentProductId = consignmentProducts.get(i).getId();
+            Product product = productRepository.findProductById(consignmentProductId.getProductid());
+            product.setQuantity(product.getQuantity() - consignmentProducts.get(i).getQuantity());
+            productRepository.save(product);
+            ConsignmentProduct consignmentProduct = new ConsignmentProduct();
+            consignmentProduct =
+                    consignmentProductRepository.getConsignmentProductById(consignmentProductId.getConsignmentid(),
+                            consignmentProductId.getProductid());
+            ConsignmentProduct consignmentProduct2 = new ConsignmentProduct();
+            consignmentProduct2 =
+                    consignmentProductRepository.getConsignmentProductById(consignmentProduct.getMark_get_product_from_consignment(),
+                            consignmentProductId.getProductid());
+            if(consignmentProduct2 != null){
+                consignmentProduct2.setQuantity_sale(consignmentProduct2.getQuantity_sale()-consignmentProducts.get(i).getQuantity());
+                consignmentProductRepository.save(consignmentProduct2);
+            }
+
+        }
         ResponseVo responseVo = new ResponseVo();
         responseVo.setMessage("Xác nhận giao hàng thành công !!");
         return new ResponseEntity<>(responseVo, HttpStatus.OK);

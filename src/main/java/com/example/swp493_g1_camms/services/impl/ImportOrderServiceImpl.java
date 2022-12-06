@@ -189,33 +189,14 @@ public class ImportOrderServiceImpl implements IImportOrderService {
 
     @Override
     public ServiceResult<Map<String, Object>> getListImportOrders(Integer pageIndex, Integer pageSize,  Integer status,
-                                                                  String dateFrom, String dateTo, Long userId, String orderCode) {
+                                                                  LocalDateTime dateFrom, LocalDateTime dateTo, Long userId, String orderCode) {
         ServiceResult<Map<String, Object>> mapServiceResult = new ServiceResult<>();
         Map<String, Object> output = new HashMap<>();
         Pageable pageable = PageRequest.of(pageIndex, pageSize, Sort.by("id").descending());
-        LocalDateTime dateFrom1 = null;
-        LocalDateTime dateTo1 = null;
-        if(dateFrom == null || dateFrom.equalsIgnoreCase("")){
-            dateFrom1 = null;
-        }else {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            LocalDateTime dateTime = LocalDateTime.parse(dateFrom, formatter);
-            dateFrom1 = dateTime;
-        }
-        if(dateTo == null || dateTo.equalsIgnoreCase("")){
-            dateTo1 = null;
-        }else {
-            DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            LocalDateTime dateTime1 = LocalDateTime.parse(dateTo, formatter1);
-            dateTo1 = dateTime1;
-        }
 
-        if(orderCode == null || orderCode.equalsIgnoreCase("") ){
-            orderCode = "";
-        }
         try {
-            List<Map<String, Object>> orderList = iImportOrderRepository.getListImportOrders(status, dateFrom1, dateTo1, userId, orderCode, pageable);
-            BigInteger totalRecord = iOrderRepository.getTotalImportRecord(status, dateFrom1, dateTo1, userId, orderCode);
+            List<Map<String, Object>> orderList = iImportOrderRepository.getListImportOrders(status, dateFrom, dateTo, userId, orderCode, pageable);
+            BigInteger totalRecord = iOrderRepository.getTotalImportRecord(status, dateFrom, dateTo, userId, orderCode);
             output.put("orderList", orderList);
             output.put("pageIndex", pageIndex);
             output.put("pageSize", pageSize);

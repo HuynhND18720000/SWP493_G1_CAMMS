@@ -24,7 +24,7 @@ import java.util.*;
 public class ReturnOrderServiceImpl implements IReturnOderService {
 
     @Autowired
-    IProductRepository IProductRepository;
+    IProductRepository productRepository;
     @Autowired
     IOrderRepository orderRepository;
     @Autowired
@@ -33,7 +33,7 @@ public class ReturnOrderServiceImpl implements IReturnOderService {
     IOrderTypeRepository orderTypeRepository;
 
     @Autowired
-    IUserRepository IUserRepository;
+    IUserRepository userRepository;
 
     @Autowired
     IConsignmentRepository consignmentRepository;
@@ -66,7 +66,7 @@ public class ReturnOrderServiceImpl implements IReturnOderService {
             Order order1 = new Order();
             order1.setOrderType(orderTypeRepository.getOrderTypeById(Long.valueOf(3)));
             order1.setOrderCode(orderCode);
-            Optional<User> user = IUserRepository.getUserById(confirmBy);
+            Optional<User> user = userRepository.getUserById(confirmBy);
             User u = user.get();
             if (u==null){
                 responseVo.setMessage("User khong ton tai");
@@ -108,7 +108,7 @@ public class ReturnOrderServiceImpl implements IReturnOderService {
                 //Save to consigmentProduct
                 ConsignmentProduct consignmentProduct = new ConsignmentProduct();
                 consignmentProduct.setProduct(
-                        IProductRepository.findProductById(consignmentProductDTOs.get(i).getProductId()));
+                        productRepository.findProductById(consignmentProductDTOs.get(i).getProductId()));
                 consignmentProduct.setConsignment(consignmentRepository.getById(consignmentId));
                 consignmentProduct.setQuantity(consignmentProductDTOs.get(i).getQuantity());
                 consignmentProduct.setUnitPrice(consignmentProductDTOs.get(i).getUnitPrice());
@@ -144,16 +144,14 @@ public class ReturnOrderServiceImpl implements IReturnOderService {
         }
     }
     @Override
-    public ServiceResult<Map<String, Object>> getListReturnOrders(Integer pageIndex, Integer pageSize) {
+    public ServiceResult<Map<String, Object>> getListReturnOrders(Integer pageIndex, Integer pageSize, LocalDateTime dateFrom,
+                                                                  LocalDateTime dateTo, String orderCode) {
         ServiceResult<Map<String, Object>> mapServiceResult = new ServiceResult<>();
         Map<String, Object> output = new HashMap<>();
         Pageable pageable = PageRequest.of(pageIndex, pageSize, Sort.by("id").descending());
         try {
-            List<Map<String, Object>> orderList = orderRepository.getListReturnOrders(pageable);
-            BigInteger totalRecord = BigInteger.valueOf(0);
-            if (!orderList.isEmpty()) {
-                totalRecord = (BigInteger) orderList.get(0).get("totalRecord");
-            }
+            List<Map<String, Object>> orderList = orderRepository.getListReturnOrders(dateFrom, dateTo, orderCode, pageable);
+            BigInteger totalRecord = orderRepository.getTotalReturnRecord(dateFrom, dateTo, orderCode);
             output.put("orderReturnList", orderList);
             output.put("pageIndex", pageIndex);
             output.put("pageSize", pageSize);
