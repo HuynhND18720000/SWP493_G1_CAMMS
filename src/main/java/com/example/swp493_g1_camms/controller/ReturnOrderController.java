@@ -5,6 +5,7 @@ import com.example.swp493_g1_camms.payload.request.ReturnOrderDTO;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
 import com.example.swp493_g1_camms.services.impl.ExportOrderImpl;
 import com.example.swp493_g1_camms.services.impl.ReturnOrderImpl;
+import com.example.swp493_g1_camms.services.interfaceService.IValidCheckService;
 import com.example.swp493_g1_camms.utils.CurrentUserIsActive;
 import com.example.swp493_g1_camms.utils.StatusUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 @Controller
@@ -27,6 +30,9 @@ public class ReturnOrderController {
 
     @Autowired
     ExportOrderImpl exportOrder;
+
+    @Autowired
+    IValidCheckService validCheckService;
 
     @PostMapping(path = "/createReturnOrder")
     public ResponseEntity<?> createReturnOrder(@RequestBody ReturnOrderDTO returnOrderDTO){
@@ -52,12 +58,24 @@ public class ReturnOrderController {
 
     @GetMapping("/list")
     public ResponseEntity<ServiceResult<Map<String, Object>>> listImport(@RequestParam(required = false) Integer pageIndex,
-                                                                         @RequestParam(required = false) Integer pageSize) throws ParseException {
+                                                                         @RequestParam(required = false) Integer pageSize,
+                                                                         @RequestParam(required = false) String dateFrom,
+                                                                         @RequestParam(required = false) String dateTo,
+                                                                         @RequestParam(required = false) String orderCode
+                                                                         ) throws ParseException {
         pageIndex = pageIndex == null ? defaultPage : pageIndex;
         pageSize = pageSize == null ? defaultSize : pageSize;
         try {
             pageIndex = pageIndex - 1;
-            ServiceResult<Map<String, Object>> mapServiceResult = returnOderImpl.getListReturnOrders(pageIndex, pageSize);
+            LocalDateTime dateFrom1 = null;
+            LocalDateTime dateTo1 = null;
+            dateFrom1 = validCheckService.validDate(dateFrom1, dateFrom);
+            dateTo1 = validCheckService.validDate(dateTo1, dateTo);
+            if(orderCode == null || orderCode.equalsIgnoreCase("") ){
+                orderCode = "";
+            }
+            ServiceResult<Map<String, Object>> mapServiceResult = returnOderImpl.getListReturnOrders(pageIndex,
+                                                                               pageSize, dateFrom1, dateTo1, orderCode);
             return ResponseEntity.ok(mapServiceResult);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

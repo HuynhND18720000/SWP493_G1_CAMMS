@@ -126,16 +126,14 @@ public class ReturnOrderImpl implements IReturnOderService {
     }
 
     @Override
-    public ServiceResult<Map<String, Object>> getListReturnOrders(Integer pageIndex, Integer pageSize) {
+    public ServiceResult<Map<String, Object>> getListReturnOrders(Integer pageIndex, Integer pageSize, LocalDateTime dateFrom,
+                                                                  LocalDateTime dateTo, String orderCode) {
         ServiceResult<Map<String, Object>> mapServiceResult = new ServiceResult<>();
         Map<String, Object> output = new HashMap<>();
         Pageable pageable = PageRequest.of(pageIndex, pageSize, Sort.by("id").descending());
         try {
-            List<Map<String, Object>> orderList = orderRepository.getListReturnOrders(pageable);
-            BigInteger totalRecord = BigInteger.valueOf(0);
-            if (!orderList.isEmpty()) {
-                totalRecord = (BigInteger) orderList.get(0).get("totalRecord");
-            }
+            List<Map<String, Object>> orderList = orderRepository.getListReturnOrders(dateFrom, dateTo, orderCode, pageable);
+            BigInteger totalRecord = orderRepository.getTotalReturnRecord(dateFrom, dateTo, orderCode);
             output.put("orderReturnList", orderList);
             output.put("pageIndex", pageIndex);
             output.put("pageSize", pageSize);

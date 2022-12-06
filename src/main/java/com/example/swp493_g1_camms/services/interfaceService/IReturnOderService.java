@@ -4,10 +4,12 @@ import com.example.swp493_g1_camms.entities.ServiceResult;
 import com.example.swp493_g1_camms.payload.request.ReturnOrderDTO;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 public interface IReturnOderService {
     ResponseEntity<?> createReturnOrder(ReturnOrderDTO returnOrderDTO);
 
-    ServiceResult<Map<String, Object>> getListReturnOrders(Integer pageIndex, Integer pageSize);
+    ServiceResult<Map<String, Object>> getListReturnOrders(Integer pageIndex, Integer pageSize, LocalDateTime dateFrom,
+                                                           LocalDateTime dateTo, String orderCode);
 }
