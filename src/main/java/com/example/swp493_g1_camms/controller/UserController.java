@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @GetMapping("/userprofile/currentPassword")
-    public  ResponseEntity<?> getCurrentUserByUserId(@RequestBody Long user_id){
+    public  ResponseEntity<?> getCurrentUserByUserId(@RequestParam(required = false) Long user_id){
         boolean isActive = CurrentUserIsActive.currentUserIsActive();
         if(!isActive){
             return ResponseEntity

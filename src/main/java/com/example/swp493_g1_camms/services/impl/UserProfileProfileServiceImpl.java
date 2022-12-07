@@ -253,6 +253,7 @@ public class UserProfileProfileServiceImpl implements IUserProfileService {
         ResponseVo responseVo = new ResponseVo();
         try{
             Optional<User> currentUser = IUserRepository.getUserById(user_id);
+            System.out.println("user la:"+currentUser.get().getUsername());
             if(!currentUser.isPresent()){
                 messageResponse.setMessage("user khong ton tai");
                 return ResponseEntity
