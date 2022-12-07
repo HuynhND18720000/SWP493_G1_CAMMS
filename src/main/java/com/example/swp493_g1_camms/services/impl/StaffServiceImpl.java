@@ -51,6 +51,7 @@ public class StaffServiceImpl implements IStaffService {
         map.put("staff", ListStaffResponse.createSuccessData(staffPage.getContent()));
         map.put("searchData", dataSearch);
         map.put("currentPage", pageIndex);
+        map.put("totalRecord", staffPage.getTotalElements());
         map.put("pageSize", pageSize);
         map.put("totalPage", staffPage.getTotalPages());
         responseVo.setData(map);
