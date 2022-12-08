@@ -8,5 +8,4 @@ public interface IUserProfileService {
 
     ResponseEntity<?> changePassword(ChangePasswordRequest changePasswordRequest);
 
-    ResponseEntity<?> getPasswordOfCurrentUser(Long user_id);
 }

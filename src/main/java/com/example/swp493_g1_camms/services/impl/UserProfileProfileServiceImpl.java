@@ -11,18 +11,12 @@ import com.example.swp493_g1_camms.repository.IUserRepository;
 import com.example.swp493_g1_camms.security.services.AuthenticationFacade;
 import com.example.swp493_g1_camms.services.interfaceService.IUserProfileService;
 import com.example.swp493_g1_camms.utils.Constant;
-import com.example.swp493_g1_camms.utils.CurrentUserIsActive;
-import com.example.swp493_g1_camms.utils.DecryptPassword;
-import com.example.swp493_g1_camms.utils.StatusUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-import java.security.Key;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -34,7 +28,7 @@ public class UserProfileProfileServiceImpl implements IUserProfileService {
     @Autowired
     AuthenticationFacade authenticationFacade;
     @Autowired
-    IUserRepository IUserRepository;
+    IUserRepository userRepository;
     @Autowired
     IResetPassHistoryRepository resetPassHistoryRepository;
     @Autowired
@@ -47,7 +41,7 @@ public class UserProfileProfileServiceImpl implements IUserProfileService {
         try{
             String usernameOfCurrentUser = authenticationFacade.currentUserNameSimple();
             System.out.println("user hien tai la "+usernameOfCurrentUser);
-            Optional<User> user = IUserRepository.findByUsername(usernameOfCurrentUser);
+            Optional<User> user = userRepository.findByUsername(usernameOfCurrentUser);
 
             if (!user.isPresent()){
                 messageResponse.setStatus(500);
@@ -94,8 +88,19 @@ public class UserProfileProfileServiceImpl implements IUserProfileService {
                 output.put("message", "Nhap mk ko chinh xac.");
                 return new ResponseEntity<>(output, HttpStatus.OK);
             } else {
+                Long user_id = changePasswordRequest.getUser_id();
+                Optional<User> userByUserId = userRepository.getUserById(user_id);
+                String user_pass =  userByUserId.get().getPassword();
+                boolean isCurrentPassword = passwordEncoder.matches(current_password,
+                       user_pass);
+                if(!isCurrentPassword){
+                    output.put("status", Constant.FAIL);
+                    output.put("message", "Sai mat khau. Vui long kiem tra lai mat khau cua ban");
+                    return new ResponseEntity<>(output, HttpStatus.OK);
+                }
+
                 boolean checkPasswordDuplicated = passwordEncoder.matches(confirm_password,
-                        current_password);
+                        user_pass);
                 if (checkPasswordDuplicated) {
                     output.put("status", Constant.FAIL);
                     output.put("message", "Bạn đã sử dụng mật khẩu này gần đây. Hay chọn một mật khẩu khác.");
@@ -104,7 +109,7 @@ public class UserProfileProfileServiceImpl implements IUserProfileService {
                 //get current user active
                 String usernameOfCurrentUser = authenticationFacade.currentUserNameSimple();
                 System.out.println("user hien tai la " + usernameOfCurrentUser);
-                Optional<User> user = IUserRepository.findByUsername(usernameOfCurrentUser);
+                Optional<User> user = userRepository.findByUsername(usernameOfCurrentUser);
 
                 //lay ra danh sach lich su nhung lan ma nguoi dung thay doi mk cua minh
                 List<ResetPassHistory> resetPassHistoryList =
@@ -142,7 +147,7 @@ public class UserProfileProfileServiceImpl implements IUserProfileService {
                     resetPassHistoryRepository.save(resetPassHistory);
                     //thay doi mk o bang user
                     user.get().setPassword(bcrypt_password);
-                    IUserRepository.save(user.get());
+                    userRepository.save(user.get());
 
                     output.put("status", Constant.SUCCESS);
                     output.put("message", "Cập nhật mật khẩu thành công.");
@@ -193,7 +198,7 @@ public class UserProfileProfileServiceImpl implements IUserProfileService {
                                 resetPassHistoryRepository.save(resetPassHistory);
 
                                 user.get().setPassword(bcrypt_password);
-                                IUserRepository.save(user.get());
+                                userRepository.save(user.get());
                                 output.put("status", Constant.SUCCESS);
                                 output.put("message", "Cập nhật mật khẩu thành công.");
                                 return new ResponseEntity<>(output, HttpStatus.OK);
@@ -234,7 +239,7 @@ public class UserProfileProfileServiceImpl implements IUserProfileService {
                         resetPassHistoryRepository.save(resetPassHistory);
 
                         user.get().setPassword(bcrypt_password);
-                        IUserRepository.save(user.get());
+                        userRepository.save(user.get());
                         output.put("status", Constant.SUCCESS);
                         output.put("message", "Cập nhật mật khẩu thành công.");
                         return new ResponseEntity<>(output, HttpStatus.OK);
@@ -249,35 +254,6 @@ public class UserProfileProfileServiceImpl implements IUserProfileService {
                     .body(messageResponse);
         }
         return null;
-    }
-
-    @Override
-    public ResponseEntity<?> getPasswordOfCurrentUser(Long user_id) {
-        MessageResponse messageResponse = new MessageResponse();
-        ResponseVo responseVo = new ResponseVo();
-        try{
-            Optional<User> currentUser = IUserRepository.getUserById(user_id);
-            System.out.println("user la:"+currentUser.get().getUsername());
-            if(!currentUser.isPresent()){
-                messageResponse.setMessage("user khong ton tai");
-                return ResponseEntity
-                        .badRequest()
-                        .body(messageResponse);
-            }
-            DecryptPassword decryptPassword = new DecryptPassword();
-            User u = new User();
-            u.setPassword(decryptPassword.decryptPassword(currentUser.get().getPassword()));
-            u.setId(currentUser.get().getId());
-            responseVo.setData(u);
-            responseVo.setMessage("lay dc thong tin mk cua nguoi dung thanh cong");
-            return  new ResponseEntity<>(responseVo,HttpStatus.OK);
-        }catch (Exception e){
-            System.out.println("loi khong lay dc");
-            messageResponse.setMessage(e+"");
-            return ResponseEntity
-                    .badRequest()
-                    .body(messageResponse);
-        }
     }
 
 

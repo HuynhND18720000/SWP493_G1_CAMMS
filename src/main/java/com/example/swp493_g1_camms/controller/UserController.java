@@ -38,14 +38,5 @@ public class UserController {
         return userProfileService.changePassword(changePasswordRequest);
     }
 
-    @GetMapping("/userprofile/currentPassword")
-    public  ResponseEntity<?> getCurrentUserByUserId(@RequestParam(required = false) Long user_id){
-        boolean isActive = CurrentUserIsActive.currentUserIsActive();
-        if(!isActive){
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
-        }
-        return  userProfileService.getPasswordOfCurrentUser(user_id);
-    }
+
 }
