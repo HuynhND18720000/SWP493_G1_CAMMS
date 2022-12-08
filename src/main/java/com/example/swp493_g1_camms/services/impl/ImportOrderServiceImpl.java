@@ -30,7 +30,7 @@ import org.springframework.data.domain.Sort;
 public class ImportOrderServiceImpl implements IImportOrderService {
 
     @Autowired
-    IProductRepository IProductRepository;
+    IProductRepository productRepository;
     @Autowired
     ConvertToEntities convertToEntities;
     @Autowired
@@ -38,7 +38,7 @@ public class ImportOrderServiceImpl implements IImportOrderService {
     @Autowired
     ConvertDateUtils convertDateUtils;
     @Autowired
-    IUserRepository IUserRepository;
+    IUserRepository userRepository;
     @Autowired
     IManufacturerRepository manufacturerRepository;
     @Autowired
@@ -54,12 +54,11 @@ public class ImportOrderServiceImpl implements IImportOrderService {
     @Autowired
     IOrderDetailRepository orderDetailRepository;
     @Autowired
-    IImportOrderRepository iImportOrderRepository;
+    IImportOrderRepository importOrderRepository;
     ListProductResponse listProductResponse;
     @Autowired
-    IConsignmentProductRepository iConsignmentProductRepository;
-    @Autowired
-    IOrderRepository iOrderRepository;
+    IConsignmentProductRepository consignmentProductRepository;
+
     @Override
     public ResponseEntity<?> createOrder(ImportOrderRequest importOrderRequest) {
         List<ProductRequest> productList = new ArrayList<>();
@@ -76,7 +75,7 @@ public class ImportOrderServiceImpl implements IImportOrderService {
             order.setCreatedDate(convertDateUtils.convertDateFormat());
             order.setIsReturn(false);
             order.setDeletedAt(false);
-            Optional<User> user = IUserRepository.getUserById(importOrderRequest.getUser_Id());
+            Optional<User> user = userRepository.getUserById(importOrderRequest.getUser_Id());
             User u = user.get();
             if (u==null){
                 responseVo.setMessage("User khong ton tai");
@@ -165,7 +164,7 @@ public class ImportOrderServiceImpl implements IImportOrderService {
         try{
             listProductResponse = new ListProductResponse();
             ResponseVo responseVo = new ResponseVo();
-            List<Product> listProduct = IProductRepository.getAllProductByManufacturerId(id);
+            List<Product> listProduct = productRepository.getAllProductByManufacturerId(id);
 
             Map<String, Object> map = new HashMap<>();
             if (listProduct.size() == 0) {
@@ -195,8 +194,8 @@ public class ImportOrderServiceImpl implements IImportOrderService {
         Pageable pageable = PageRequest.of(pageIndex, pageSize, Sort.by("id").descending());
 
         try {
-            List<Map<String, Object>> orderList = iImportOrderRepository.getListImportOrders(status, dateFrom, dateTo, userId, orderCode, pageable);
-            BigInteger totalRecord = iOrderRepository.getTotalImportRecord(status, dateFrom, dateTo, userId, orderCode);
+            List<Map<String, Object>> orderList = importOrderRepository.getListImportOrders(status, dateFrom, dateTo, userId, orderCode, pageable);
+            BigInteger totalRecord = orderRepository.getTotalImportRecord(status, dateFrom, dateTo, userId, orderCode);
             output.put("orderList", orderList);
             output.put("pageIndex", pageIndex);
             output.put("pageSize", pageSize);
@@ -220,7 +219,7 @@ public class ImportOrderServiceImpl implements IImportOrderService {
         Pageable pagable = PageRequest.of(pageIndex, pageSize,
                 Sort.by("id").ascending());
         try {
-            List<Map<String, Object>> listImportProducts = iImportOrderRepository.getImportOrderDetail(orderId, pagable);
+            List<Map<String, Object>> listImportProducts = importOrderRepository.getImportOrderDetail(orderId, pagable);
             BigInteger totalRecord = BigInteger.valueOf(0);
             if (!listImportProducts.isEmpty()) {
                 totalRecord = (BigInteger) listImportProducts.get(0).get("totalRecord");
@@ -257,22 +256,36 @@ public class ImportOrderServiceImpl implements IImportOrderService {
         Status status = new Status();
         status.setId(Constant.COMPLETED);
         try {
-            Order order = iImportOrderRepository.getOrderById(orderId);
+            Order order = importOrderRepository.getOrderById(orderId);
             order.setConfirmBy(confirmBy);
             order.setStatus(status);
-            iImportOrderRepository.save(order);
+            importOrderRepository.save(order);
             List<ConsignmentProduct> consignmentProducts =
-                    iConsignmentProductRepository.getConsignmentProductByOrderId(orderId);
+                    consignmentProductRepository.getConsignmentProductByOrderId(orderId);
             for(int i =0 ; i < consignmentProducts.size(); i++){
                 ConsignmentProductKey consignmentProductKey = consignmentProducts.get(i).getId();
-                Product product = IProductRepository.findProductById(consignmentProductKey.getProductid());
+                Product product = productRepository.findProductById(consignmentProductKey.getProductid());
                 product.setQuantity(product.getQuantity() + consignmentProducts.get(i).getQuantity());
 
                 if(product.getId()==consignmentProductKey.getProductid()){
-                    product.setUnitprice((product.getUnitprice()+consignmentProducts.get(i).getUnitPrice())/2);
+                    double averagePrice = 0;
+                    Long count = 0L;
+                    List<ConsignmentProduct> consignmentProducts1 =
+                            consignmentProductRepository.findAllConsignmentProductForAveragePrice(product.getId());
+                    for(int j = 0; j < consignmentProducts1.size(); j++){
+                        averagePrice = averagePrice + consignmentProducts1.get(j).getUnitPrice();
+                        count ++;
+                    }
+                    averagePrice = averagePrice/count;
+                    ConsignmentProduct consignmentProduct =
+                            consignmentProductRepository.getConsignmentProductById(consignmentProductKey.getConsignmentid(),
+                                    consignmentProductKey.getProductid());
+                    consignmentProduct.setAverage_price(averagePrice);
+                    consignmentProductRepository.save(consignmentProduct);
+                    product.setUnitprice(averagePrice);
                 }
 
-                IProductRepository.save(product);
+                productRepository.save(product);
             }
             ResponseVo responseVo = new ResponseVo();
             responseVo.setMessage("Xác nhận nhập hàng thành công !!");
@@ -303,10 +316,10 @@ public class ImportOrderServiceImpl implements IImportOrderService {
         Status status = new Status();
         status.setId(Constant.CANCEL);
         try {
-            Order order = iImportOrderRepository.getOrderById(orderId);
+            Order order = importOrderRepository.getOrderById(orderId);
             order.setConfirmBy(confirmBy);
             order.setStatus(status);
-            iImportOrderRepository.save(order);
+            importOrderRepository.save(order);
             ResponseVo responseVo = new ResponseVo();
             responseVo.setMessage("Hủy xác nhận nhập hàng thành công !!");
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
@@ -324,21 +337,21 @@ public class ImportOrderServiceImpl implements IImportOrderService {
     public ResponseEntity<?> editOrder(Long orderId, List<ConsignmentProductDTO> consignmentProductDTOList) {
         for (ConsignmentProductDTO cPDTO1: consignmentProductDTOList) {
             ConsignmentProduct consignmentProduct =
-                    iConsignmentProductRepository.getConsignmentProductById(cPDTO1.getConsignmentId(), cPDTO1.getProductId());
+                    consignmentProductRepository.getConsignmentProductById(cPDTO1.getConsignmentId(), cPDTO1.getProductId());
             String str = cPDTO1.getExpirationDate();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime dateTime = LocalDateTime.parse(str, formatter);
             consignmentProduct.setExpirationDate(dateTime);
             consignmentProduct.setQuantity(cPDTO1.getQuantity());
             consignmentProduct.setUnitPrice(cPDTO1.getUnitPrice());
-            iConsignmentProductRepository.save(consignmentProduct);
+            consignmentProductRepository.save(consignmentProduct);
         }
         Order order = new Order();
-        order = iOrderRepository.getById(orderId);
+        order = orderRepository.getById(orderId);
         Date in = new Date();
         LocalDateTime ldt = LocalDateTime.ofInstant(in.toInstant(), ZoneId.systemDefault());
         order.setUpdateDate(ldt);
-        iOrderRepository.save(order);
+        orderRepository.save(order);
         ResponseVo responseVo = new ResponseVo();
         responseVo.setMessage("Sửa thông tin nhập hàng thành công !!");
         return new ResponseEntity<>(responseVo, HttpStatus.OK);

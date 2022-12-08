@@ -161,7 +161,7 @@ public class UserServiceImpl implements IUserService {
                         output.put("message", "OTP chính xác");
                     }
                 }else{
-                    output.put("status", Constant.SUCCESS);
+                    output.put("status", Constant.FAIL);
                     output.put("message", "OTP sai");
                 }
             }else{

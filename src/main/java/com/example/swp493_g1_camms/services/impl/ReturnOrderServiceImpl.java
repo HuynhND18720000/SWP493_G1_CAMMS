@@ -90,6 +90,10 @@ public class ReturnOrderServiceImpl implements IReturnOderService {
 
             //Add to consignment product
             for(int i = 0 ; i < consignmentProductDTOs.size(); i++){
+                Product product = productRepository.getById(consignmentProductDTOs.get(i).getProductId());
+                product.setQuantity(product.getQuantity() + consignmentProductDTOs.get(i).getQuantity());
+                productRepository.save(product);
+
                 Consignment consignment = new Consignment();
                 consignment.setImportDate(ldt);
                 consignment.setDeletedAt(false);

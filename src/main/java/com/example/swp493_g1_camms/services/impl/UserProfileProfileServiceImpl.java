@@ -12,6 +12,7 @@ import com.example.swp493_g1_camms.security.services.AuthenticationFacade;
 import com.example.swp493_g1_camms.services.interfaceService.IUserProfileService;
 import com.example.swp493_g1_camms.utils.Constant;
 import com.example.swp493_g1_camms.utils.CurrentUserIsActive;
+import com.example.swp493_g1_camms.utils.DecryptPassword;
 import com.example.swp493_g1_camms.utils.StatusUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+import java.security.Key;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -260,8 +264,9 @@ public class UserProfileProfileServiceImpl implements IUserProfileService {
                         .badRequest()
                         .body(messageResponse);
             }
+            DecryptPassword decryptPassword = new DecryptPassword();
             User u = new User();
-            u.setPassword(currentUser.get().getPassword());
+            u.setPassword(decryptPassword.decryptPassword(currentUser.get().getPassword()));
             u.setId(currentUser.get().getId());
             responseVo.setData(u);
             responseVo.setMessage("lay dc thong tin mk cua nguoi dung thanh cong");
@@ -274,5 +279,6 @@ public class UserProfileProfileServiceImpl implements IUserProfileService {
                     .body(messageResponse);
         }
     }
+
 
 }
