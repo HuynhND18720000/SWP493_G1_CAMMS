@@ -75,4 +75,8 @@ public interface IOrderRepository extends JpaRepository<Order, Long> {
             "            ELSE order1.created_date IS NOT NULL END\n"+
             "            AND UPPER(order1.order_code) Like UPPER('%' ?3 '%') \n")
     BigInteger getTotalReturnRecord(LocalDateTime dateFrom, LocalDateTime dateTo, String orderCode);
+
+    @Query(nativeQuery = true, value = "SELECT * FROM camms.order WHERE deleted_at = false AND order_code like ?1 " +
+            "AND order_type_id = 3")
+    List<Order> getOrderReturnByOrderCode(String orderCode);
 }

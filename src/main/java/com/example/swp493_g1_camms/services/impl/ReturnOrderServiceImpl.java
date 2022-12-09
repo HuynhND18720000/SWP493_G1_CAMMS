@@ -87,6 +87,7 @@ public class ReturnOrderServiceImpl implements IReturnOderService {
             //Get return order id;
             Long orderId1 = order1.getId();
             System.out.println("dsa"+orderId);
+//            System.out.println("dsa"+orderId1);
 
             //Add to consignment product
             for(int i = 0 ; i < consignmentProductDTOs.size(); i++){

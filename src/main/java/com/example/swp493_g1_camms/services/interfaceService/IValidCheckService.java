@@ -5,4 +5,6 @@ import java.time.LocalDateTime;
 public interface IValidCheckService {
     public LocalDateTime validDate(LocalDateTime date1, String dateFrom);
     public boolean isEmailManufacturerExist(String email);
+
+    public boolean isReturnOrderCodeExist(String orderCode);
 }

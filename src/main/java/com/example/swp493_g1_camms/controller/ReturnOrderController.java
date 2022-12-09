@@ -49,6 +49,11 @@ public class ReturnOrderController {
                     .badRequest()
                     .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
         }
+        if(validCheckService.isReturnOrderCodeExist(orderCode)){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Mã đơn trả hàng đã tồn tại", StatusUtils.NOT_Allow));
+        }
         return returnOderImpl.createReturnOrder(orderId, orderCode, confirmBy, description, consignmentProductDTOs);
     }
 
