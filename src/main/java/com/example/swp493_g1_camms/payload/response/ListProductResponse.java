@@ -30,7 +30,7 @@ public class ListProductResponse {
     private Integer quantity;
 
     private String unitMeasure;
-
+    private LocalDateTime import_date;
     private Long categoryId;
     private Long manufactorId;
     private String categoryName;
@@ -46,6 +46,7 @@ public class ListProductResponse {
             listProductResponse.description = p.getDescription();
             listProductResponse.image=p.getImage();
             listProductResponse.unitprice=p.getUnitprice();
+
             listProductResponse.out_date = p.getOutDate();
             listProductResponse.quantity=p.getQuantity();
             listProductResponse.unitMeasure=p.getUnitMeasure();

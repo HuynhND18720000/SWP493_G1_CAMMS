@@ -49,4 +49,7 @@ public class ConsignmentProduct{
 
     @Column(name="average_price")
     private Double average_price;
+
+    @Column(name = "import_date")
+    private LocalDateTime import_date;
 }

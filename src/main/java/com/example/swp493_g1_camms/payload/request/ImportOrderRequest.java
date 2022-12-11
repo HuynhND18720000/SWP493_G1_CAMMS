@@ -16,4 +16,5 @@ public class ImportOrderRequest {
     private Long warehouseId;
     private Long user_Id;
     private ConsignmentRequest consignmentRequest;
+
 }

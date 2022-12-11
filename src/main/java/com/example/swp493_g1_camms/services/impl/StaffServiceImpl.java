@@ -53,6 +53,7 @@ public class StaffServiceImpl implements IStaffService {
         map.put("currentPage", pageIndex);
         map.put("pageSize", pageSize);
         map.put("totalPage", staffPage.getTotalPages());
+        map.put("totalRecord", staffPage.getTotalElements());
         responseVo.setData(map);
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }

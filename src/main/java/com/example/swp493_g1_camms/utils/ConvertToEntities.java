@@ -58,6 +58,7 @@ public class ConvertToEntities {
         product.setDescription(productRequest.getDescription());
         product.setUnitprice(productRequest.getUnit_price());
         String expiration_date = productRequest.getExpiration_date();
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime dateTime = LocalDateTime.parse(expiration_date, formatter);
         product.setOutDate(dateTime);

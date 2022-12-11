@@ -26,4 +26,6 @@ public class ProductRequest {
     private Long manufacturer_id;
     private LocalDateTime out_date;
     private String expiration_date;
+    private String import_date;
+
 }

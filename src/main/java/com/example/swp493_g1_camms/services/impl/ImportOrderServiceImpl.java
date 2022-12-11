@@ -94,7 +94,7 @@ public class ImportOrderServiceImpl implements IImportOrderService {
             Consignment consignment = new Consignment();
             consignment.setWarehouse(warehouse);
             //LocalDateTime currentDate = convertDateUtils.convertDateFormat();
-
+            
             Date in = new Date();
             LocalDateTime ldt = LocalDateTime.ofInstant(in.toInstant(), ZoneId.systemDefault());
 
@@ -112,25 +112,34 @@ public class ImportOrderServiceImpl implements IImportOrderService {
             ConsignmentRequest consignmentRequest = importOrderRequest.getConsignmentRequest();
 
             productList = consignmentRequest.getProductRequestList();
+            //danh sach time nhap hang cua tung san pham
+            List<LocalDateTime> list_import_date_of_product = new ArrayList<>();
+
             for (ProductRequest p: productList
                  ) {
                 Product p1 = convertToEntities.convertProductToAddConsignmentProduct(p);
                 list.add(p1);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDateTime dateTime = LocalDateTime.parse(p.getImport_date(), formatter);
+                list_import_date_of_product.add(dateTime);
                 System.out.println("list khi lay tu client la: "+p1);
             }
-
-
+            int count = 0;
             for (Product pro: list
-                 ) {
-                ConsignmentProduct consignmentProduct = new ConsignmentProduct();
-                consignmentProduct.setConsignment(consignment_id);
-                consignmentProduct.setProduct(pro);
-                consignmentProduct.setQuantity(pro.getQuantity());
-                consignmentProduct.setUnitPrice(pro.getUnitprice());
-                consignmentProduct.setDeletedAt(false);
-                consignmentProduct.setQuantity_sale(pro.getQuantity());
-                consignmentProduct.setExpirationDate(pro.getOutDate());
-                relationConsignmentProductRepository.save(consignmentProduct);
+                ) {
+                    ConsignmentProduct consignmentProduct = new ConsignmentProduct();
+                    consignmentProduct.setConsignment(consignment_id);
+                    consignmentProduct.setProduct(pro);
+                    consignmentProduct.setQuantity(pro.getQuantity());
+                    consignmentProduct.setUnitPrice(pro.getUnitprice());
+                    consignmentProduct.setDeletedAt(false);
+                    consignmentProduct.setQuantity_sale(pro.getQuantity());
+                    consignmentProduct.setExpirationDate(pro.getOutDate());
+                    consignmentProduct.setImport_date(
+                            list_import_date_of_product.
+                                    get(count));
+                    count++;
+                    relationConsignmentProductRepository.save(consignmentProduct);
             }
 
             //them vao order detail

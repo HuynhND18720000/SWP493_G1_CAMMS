@@ -37,7 +37,7 @@ public class ListStaffResponse {
             listStaffResponse.fullName = staff.getFullName();
             listStaffResponse.email = staff.getEmail();
             listStaffResponse.phone = staff.getPhone();
-            listStaffResponse.image = staff.getEmail();
+            listStaffResponse.image = staff.getImage();
             listStaffResponse.dob = staff.getDob();
             listStaffResponse.role = staff.getRole();
             listStaffResponses.add(listStaffResponse);

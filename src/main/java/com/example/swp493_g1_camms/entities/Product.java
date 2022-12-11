@@ -47,6 +47,9 @@ public class Product {
     @Column(name = "deleted_at")
     private Boolean deletedAt;
 
+    @Column(name = "last_average_price")
+    private Double last_average_price;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
