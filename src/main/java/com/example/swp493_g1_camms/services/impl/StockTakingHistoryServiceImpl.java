@@ -132,10 +132,30 @@ public class StockTakingHistoryServiceImpl implements IStockTakingHistoryService
                 Consignment c = new Consignment();
                 c.setId(stdr.getId());
                 stockTakingHistoryDetail.setConsignment(c);
+                System.out.println("consignment la:"+c.getId());
 
                 Product p1 = new Product();
                 p1.setId(stdr.getProductId());
                 stockTakingHistoryDetail.setProduct(p1);
+                System.out.println("product la:"+p1.getId());
+
+                //update so luong product trong consignment_product
+                ConsignmentProduct consignmentProduct = consignmentProductRepository.
+                        getConsignmentProductById(c.getId(), p1.getId());
+                System.out.println("consignment product la:"+consignmentProduct.getConsignment().getId());
+                consignmentProduct.setQuantity_sale(stdr.getQuantity());
+                consignmentProductRepository.save(consignmentProduct);
+
+                //update so luong product tai bang product
+                Product product = productRepository.findProductById(p1.getId());
+                int quantity_of_product_before = product.getQuantity();
+                if (real_quantity < 0){
+                    quantity_of_product_before = product.getQuantity() - ((-1)*real_quantity);
+                }else if(real_quantity > 0){
+                    quantity_of_product_before = product.getQuantity() + real_quantity;
+                }
+                product.setQuantity(quantity_of_product_before);
+                productRepository.save(product);
 
                 StockTakingHistoryDescription stockTakingHistoryDescription = new StockTakingHistoryDescription();
                 Product p2 = new Product();

@@ -44,7 +44,7 @@ public class StockTakingHistoryController {
                 startDate, endDate, orderBy);
     }
 
-    @PostMapping("/createStockTakingHistory")
+    @PutMapping("/createStockTakingHistory")
     public ResponseEntity<?> createStockTakingHistory(@RequestBody StockTakingRequest stockTakingRequest){
         boolean isActive = CurrentUserIsActive.currentUserIsActive();
         if(!isActive){
