@@ -3,6 +3,7 @@ package com.example.swp493_g1_camms.services.impl;
 import com.example.swp493_g1_camms.entities.ResetPassHistory;
 import com.example.swp493_g1_camms.entities.User;
 import com.example.swp493_g1_camms.payload.request.ChangePasswordRequest;
+import com.example.swp493_g1_camms.payload.request.UserProfileRequest;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
 import com.example.swp493_g1_camms.payload.response.ResponseVo;
 import com.example.swp493_g1_camms.payload.response.UserProfileResponse;
@@ -19,8 +20,10 @@ import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -254,6 +257,34 @@ public class UserProfileProfileServiceImpl implements IUserProfileService {
                     .body(messageResponse);
         }
         return null;
+    }
+
+    @Override
+    public ResponseEntity<?> updateProfile(UserProfileRequest userProfileRequest) {
+        ResponseVo responseVo = new ResponseVo();
+        Map<String, Object> output = new HashMap<>();
+        MessageResponse messageResponse = new MessageResponse();
+        try{
+            Optional<User> user = userRepository.getUserById(userProfileRequest.getUser_id());
+            user.get().setEmail(userProfileRequest.getEmail());
+            user.get().setFullName(userProfileRequest.getFull_name());
+            user.get().setPhone(userProfileRequest.getPhone());
+            user.get().setImage(userProfileRequest.getImage());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDate dateTime = LocalDate.parse(userProfileRequest.getDob(), formatter);
+            user.get().setDob(dateTime);
+            userRepository.save(user.get());
+            messageResponse.setMessage("update thanh cong");
+            return ResponseEntity
+                    .badRequest()
+                    .body(messageResponse);
+        }catch(Exception e){
+            System.out.println("loi khong gui dc");
+            messageResponse.setMessage(e+"");
+            return ResponseEntity
+                    .badRequest()
+                    .body(messageResponse);
+        }
     }
 
 

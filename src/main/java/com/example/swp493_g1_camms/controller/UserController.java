@@ -1,6 +1,7 @@
 package com.example.swp493_g1_camms.controller;
 
 import com.example.swp493_g1_camms.payload.request.ChangePasswordRequest;
+import com.example.swp493_g1_camms.payload.request.UserProfileRequest;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
 import com.example.swp493_g1_camms.services.impl.UserProfileProfileServiceImpl;
 import com.example.swp493_g1_camms.utils.CurrentUserIsActive;
@@ -38,5 +39,14 @@ public class UserController {
         return userProfileService.changePassword(changePasswordRequest);
     }
 
-
+    @PutMapping("/userprofile/updateProfile")
+    public ResponseEntity<?> updateProfile(@RequestBody UserProfileRequest userProfileRequest){
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
+        return userProfileService.updateProfile(userProfileRequest);
+    }
 }

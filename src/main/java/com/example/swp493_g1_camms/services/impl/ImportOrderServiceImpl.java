@@ -277,21 +277,22 @@ public class ImportOrderServiceImpl implements IImportOrderService {
                 product.setQuantity(product.getQuantity() + consignmentProducts.get(i).getQuantity());
 
                 if(product.getId()==consignmentProductKey.getProductid()){
-                    double averagePrice = 0;
-                    Long count = 0L;
+                    double totalPrice = 0;
+                    Long totalQuantity = 0L;
                     List<ConsignmentProduct> consignmentProducts1 =
                             consignmentProductRepository.findAllConsignmentProductForAveragePrice(product.getId());
                     for(int j = 0; j < consignmentProducts1.size(); j++){
-                        averagePrice = averagePrice + consignmentProducts1.get(j).getUnitPrice();
-                        count ++;
+                        totalPrice = totalPrice +
+                                consignmentProducts1.get(j).getUnitPrice()*consignmentProducts1.get(j).getQuantity_sale();
+                        totalQuantity = totalQuantity + consignmentProducts1.get(j).getQuantity_sale();
                     }
-                    averagePrice = averagePrice/count;
+                    double avaragePrice = totalPrice / totalQuantity;
                     ConsignmentProduct consignmentProduct =
                             consignmentProductRepository.getConsignmentProductById(consignmentProductKey.getConsignmentid(),
                                     consignmentProductKey.getProductid());
-                    consignmentProduct.setAverage_price(averagePrice);
+                    consignmentProduct.setAverage_price(avaragePrice);
                     consignmentProductRepository.save(consignmentProduct);
-                    product.setUnitprice(averagePrice);
+                    product.setLastAveragePrice(avaragePrice);
                 }
 
                 productRepository.save(product);
