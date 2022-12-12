@@ -31,7 +31,8 @@ public interface IConsignmentProductRepository extends JpaRepository<Consignment
     List<ConsignmentProduct> findAllConsignmentByListId(List<Long> listConsignmentId, Long stockTakingHistoryId);
 
     @Query(nativeQuery = true, value = "select cp1.product_id, cp1.unit_price, order1.id, cp1.consignment_id," +
-            "cp1.average_price, cp1.deleted_at, cp1.quantity, cp1.expiration_date, cp1.mark_con_id, cp1.quantity_sale\n" +
+            "cp1.average_price, cp1.deleted_at, cp1.quantity, cp1.expiration_date, cp1.mark_con_id, cp1.quantity_sale," +
+            "cp1.import_date\n" +
             "from camms.consignment_product cp1, order_detail od1, consignment consignment1, camms.order order1\n" +
             "where cp1.product_id = ?1\n" +
             "AND cp1.consignment_id = consignment1.id \n" +

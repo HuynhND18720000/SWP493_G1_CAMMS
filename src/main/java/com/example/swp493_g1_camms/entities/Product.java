@@ -35,6 +35,9 @@ public class Product {
     @Column(name = "unitprice")
     private Double unitprice;
 
+    @Column(name = "last_average_price")
+    private Double lastAveragePrice;
+
     @Column(name = "out_date")
     private LocalDateTime outDate;
 
@@ -47,8 +50,8 @@ public class Product {
     @Column(name = "deleted_at")
     private Boolean deletedAt;
 
-    @Column(name = "last_average_price")
-    private Double last_average_price;
+//    @Column(name = "last_average_price")
+//    private Double last_average_price;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
