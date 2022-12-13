@@ -22,7 +22,7 @@ import java.util.*;
 @Service
 public class ProductServiceImpl implements IProductService {
     @Autowired
-    IProductRepository IProductRepository;
+    IProductRepository productRepository;
     @Autowired
     ConvertToEntities convertToEntities;
     @Autowired
@@ -44,7 +44,7 @@ public class ProductServiceImpl implements IProductService {
             Page<Product> productListPage = null;
             ResponseVo responseVo = new ResponseVo();
             Map<String, Object> map = new HashMap<>();
-            productListPage = IProductRepository.findAllProductsBydeletedAt(false, pageable);
+            productListPage = productRepository.findAllProductsBydeletedAt(false, pageable);
 
             if(productListPage.isEmpty()){
                 map.put("product",productListPage.getContent());
@@ -75,10 +75,10 @@ public class ProductServiceImpl implements IProductService {
         Page<Product> productPage = null;
         if(!ObjectUtils.isEmpty(productName)){
             productSearch = productName;
-            productPage =  IProductRepository.findBySearch(productSearch.trim(),
+            productPage =  productRepository.findBySearch(productSearch.trim(),
                     categoryId, manufactorId, pageable);
         }else{
-            productPage = IProductRepository.findAllBySearch(categoryId, manufactorId,pageable);
+            productPage = productRepository.findAllBySearch(categoryId, manufactorId,pageable);
         }
 
         Map<String, Object> mapSearch = new HashMap<>();
@@ -121,14 +121,14 @@ public class ProductServiceImpl implements IProductService {
         if(!ObjectUtils.isEmpty(productId)){
 
             Pageable pageable = PageRequest.of(pageIndex - 1, pageSize);
-            Product product = IProductRepository.findProductById(productId);
+            Product product = productRepository.findProductById(productId);
             Map<String, Object> map = new HashMap<>();
             ProductResponse productResponse = new ProductResponse();
             if(!ObjectUtils.isEmpty(product)){
                 productResponse.setQuantity(
-                        IProductRepository.countQuantity(product.getId()));
+                        productRepository.countQuantity(product.getId()));
                 productResponse.setUnitprice(
-                        IProductRepository.totalPrice(product.getId()));
+                        productRepository.totalPrice(product.getId()));
 //                Page<ConsignmentProduct> consignmentPage = iRelationConsignmentProductRepository.
 //                        getAllConsignmentByProductId(product.getId(),
 //                        pageable);
@@ -159,12 +159,12 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public ResponseEntity<?> addProduct(ProductRequest productRequest) {
         ResponseVo responseVo = new ResponseVo();
-        Product productExist = IProductRepository.findProductByName(productRequest.getName().trim());
+        Product productExist = productRepository.findProductByName(productRequest.getName().trim());
         if (productExist != null) {
             responseVo.setMessage("Tên sản phẩm đã bị trùng !!");
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
         }
-        Product productExist2 = IProductRepository.findProductByProductCode(productRequest.getProductCode().trim());
+        Product productExist2 = productRepository.findProductByProductCode(productRequest.getProductCode().trim());
         if (productExist2 != null) {
             responseVo.setMessage("Mã sản phẩm đã bị trùng !!");
             return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
@@ -182,7 +182,7 @@ public class ProductServiceImpl implements IProductService {
         product.setManufacturer(manufacturer);
         product.setQuantity(0);
         product.setDeletedAt(false);
-        IProductRepository.save(product);
+        productRepository.save(product);
         responseVo.setMessage("Tạo thành công !!");
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
@@ -191,7 +191,7 @@ public class ProductServiceImpl implements IProductService {
     public ResponseEntity<?> updateProduct(ProductRequest productRequest) {
         ResponseVo responseVo = new ResponseVo();
 
-        Product productBefore = IProductRepository.findProductById(productRequest.getId());
+        Product productBefore = productRepository.findProductById(productRequest.getId());
 
         Category category = categoryRepository.findCategoryById(productRequest.getCategory_id());
         if (productRequest.getSubCategory_id() != null) {
@@ -209,22 +209,23 @@ public class ProductServiceImpl implements IProductService {
         productBefore.setDeletedAt(false);
         productBefore.setImage(productRequest.getImage());
         productBefore.setUnitprice(productRequest.getUnit_price());
-        productBefore.setOutDate(productRequest.getOut_date());
-
+//        productBefore.setOutDate(productRequest.getOut_date());
+        //update
+        productBefore.setLastAveragePrice(productRequest.getLastAveragePrice());
         productBefore.setUnitMeasure(productRequest.getUnit_measure());
 
-        IProductRepository.save(productBefore);
+        productRepository.save(productBefore);
         responseVo.setMessage("Cập nhập thành công !!");
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<?> deleteProductById(Long productId) {
-        Product p = IProductRepository.findProductById(productId);
+        Product p = productRepository.findProductById(productId);
         ResponseVo responseVo = new ResponseVo();
         if(p!=null){
             p.setDeletedAt(true);
-            IProductRepository.save(p);
+            productRepository.save(p);
             responseVo.setMessage("Cập nhập thành công !!");
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
         }

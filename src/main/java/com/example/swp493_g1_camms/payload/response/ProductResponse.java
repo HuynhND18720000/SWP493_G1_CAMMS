@@ -27,6 +27,7 @@ public class ProductResponse {
 
     private LocalDateTime out_date;
 
+    private Double lastAveragePrice;
     private Integer quantity;
 
     private String unitMeasure;
@@ -67,6 +68,7 @@ public class ProductResponse {
         productResponse1.setCategoryName(product.getCategory().getName());
         productResponse1.setSubcategoryName(product.getSubCategory().getName());
         productResponse1.setManufactorName(product.getManufacturer().getName());
+        productResponse1.setLastAveragePrice(product.getLastAveragePrice());
         return productResponse1;
     }
 

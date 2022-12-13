@@ -27,5 +27,5 @@ public class ProductRequest {
     private LocalDateTime out_date;
     private String expiration_date;
     private String import_date;
-
+    private Double lastAveragePrice;
 }
