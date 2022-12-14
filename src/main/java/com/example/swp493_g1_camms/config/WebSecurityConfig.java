@@ -103,6 +103,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers("/api/home/totalProductInWarehouse").permitAll()
                 .and().authorizeRequests().antMatchers("/api/home/totalImportOrders").permitAll()
                 .and().authorizeRequests().antMatchers("/api/home/totalExportOrders").permitAll()
+                .and().authorizeRequests().antMatchers("/api/home/top5ProductSales").permitAll()
+                .and().authorizeRequests().antMatchers("/api/home/productInStock").permitAll()
+
                 .anyRequest().authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }

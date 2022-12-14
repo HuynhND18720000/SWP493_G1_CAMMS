@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface IConsignmentProductRepository extends JpaRepository<ConsignmentProduct, Long> {
     @Query(nativeQuery = true,
@@ -42,4 +43,19 @@ public interface IConsignmentProductRepository extends JpaRepository<Consignment
             "AND order1.order_type_id = 1")
     List<ConsignmentProduct> findAllConsignmentProductForAveragePrice(Long productId);
 
+    @Query(value = "select p.product_code as productCode, sum(cp.quantity)- sum(cp.quantity_sale) as totalQuantity from camms.order o\n" +
+            "join order_detail od on od.order_id = o.id\n" +
+            "join consignment c on c.id = od.consignment_id\n" +
+            "join consignment_product cp on cp.consignment_id = c.id\n" +
+            "join product p on p.id = cp.product_id\n" +
+            "where o.order_type_id = 2 and o.status_id = 2 and o.deleted_at = false \n" +
+            "and c.deleted_at = false and p.deleted_at = false and cp.deleted_at = false\n" +
+            "group by p.product_code\n" +
+            "order by sum(cp.quantity)- sum(cp.quantity_sale) desc \n" +
+            "limit 5", nativeQuery = true)
+    List<Map<String, Object>> getTop5ProductSale();
+
+    @Query(value = "select p.product_code as productCode, p.quantity as quantity from product p" +
+            " where p.deleted_at = false", nativeQuery = true)
+    List<Map<String, Object>> getTotalProduct();
 }

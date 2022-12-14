@@ -6,5 +6,6 @@ public interface IDashboardService {
     ResponseEntity<?> getTotalProductInWarehouse();
     ResponseEntity<?> getTotalImportOrder();
     ResponseEntity<?> getTotalExportOrder();
-
+    ResponseEntity<?> getTotalProduct();
+    ResponseEntity<?> getTop5ProductSale();
 }

@@ -275,9 +275,7 @@ public class UserProfileProfileServiceImpl implements IUserProfileService {
             user.get().setDob(dateTime);
             userRepository.save(user.get());
             messageResponse.setMessage("update thanh cong");
-            return ResponseEntity
-                    .badRequest()
-                    .body(messageResponse);
+            return new ResponseEntity<>(messageResponse, HttpStatus.OK);
         }catch(Exception e){
             System.out.println("loi khong gui dc");
             messageResponse.setMessage(e+"");

@@ -143,4 +143,5 @@ public interface IExportOrderRepository extends JpaRepository<Order, Long> {
             "AND order1.user_id = user1.id\n" +
             "AND product1.id = consignment_product1.product_id")
     List<Map<String, Object>> getReturnOrderDetail(Long orderId);
+
 }

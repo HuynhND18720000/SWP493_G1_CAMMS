@@ -181,6 +181,7 @@ public class ProductServiceImpl implements IProductService {
         product.setCategory(category);
         product.setManufacturer(manufacturer);
         product.setQuantity(0);
+        product.setLastAveragePrice(0.0);
         product.setDeletedAt(false);
         productRepository.save(product);
         responseVo.setMessage("Tạo thành công !!");

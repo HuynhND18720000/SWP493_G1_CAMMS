@@ -50,4 +50,25 @@ public class HomeController {
         }
         return dashboardService.getTotalExportOrder();
     }
+    @GetMapping("/top5ProductSales")
+    public ResponseEntity<?> getTop5ProductSales(){
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
+        return dashboardService.getTop5ProductSale();
+    }
+
+    @GetMapping("/productInStock")
+    public ResponseEntity<?> getProductInStock(){
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
+        return dashboardService.getTotalProduct();
+    }
 }
