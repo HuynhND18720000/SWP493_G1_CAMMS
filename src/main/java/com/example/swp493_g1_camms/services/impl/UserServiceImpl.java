@@ -232,7 +232,7 @@ public class UserServiceImpl implements IUserService {
                                     output.put("status", Constant.FAIL);
                                     output.put("message", "Bạn đã sử dụng mật khẩu này gần đây. " +
                                             "Vui lòng chọn một mật khẩu khác.");
-                                    return new ResponseEntity<>(output, HttpStatus.OK);
+                                    return new ResponseEntity<>(output, HttpStatus.INTERNAL_SERVER_ERROR);
                                 } else {
                                     //ma hoa password lay tu phia user
                                     String bcrypt_password = passwordEncoder.encode(new_password);
@@ -290,13 +290,13 @@ public class UserServiceImpl implements IUserService {
                         }else{
                             output.put("status",Constant.FAIL);
                             output.put("message","Cap nhat that bai. Ma OTP da dc su dung");
-                            return new ResponseEntity<>(output, HttpStatus.OK);
+                            return new ResponseEntity<>(output, HttpStatus.INTERNAL_SERVER_ERROR);
                         }
                     }
                     if(usedOTP==true){
                         output.put("status",Constant.FAIL);
                         output.put("message","Cap nhat that bai. Ma OTP da dc su dung");
-                        return new ResponseEntity<>(output, HttpStatus.OK);
+                        return new ResponseEntity<>(output, HttpStatus.INTERNAL_SERVER_ERROR);
                     }
                 }else{
                     //ma hoa password lay tu phia user
@@ -322,7 +322,7 @@ public class UserServiceImpl implements IUserService {
                     }else{
                         output.put("status",Constant.FAIL);
                         output.put("message","Cap nhat that bai. Ma OTP da dc su dung");
-                        return new ResponseEntity<>(output, HttpStatus.OK);
+                        return new ResponseEntity<>(output, HttpStatus.INTERNAL_SERVER_ERROR);
                     }
 
 
@@ -331,7 +331,7 @@ public class UserServiceImpl implements IUserService {
             }
 
         }catch(Exception e){
-            System.out.println("loi khong gui dc");
+            System.out.println("loi khong tao dc");
             messageResponse.setMessage(e+"");
             return ResponseEntity
                     .badRequest()
