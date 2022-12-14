@@ -68,4 +68,8 @@ public interface IImportOrderRepository extends JpaRepository<Order, Long> {
 
     @Query("SELECT o FROM Order o WHERE o.id = ?1")
     public Order getOrderById(Long orderId);
+
+    @Query(nativeQuery = true, value = "select * from CAMMS.Order where order_type_id = 1 and" +
+            " status_id = 2 and deleted_at = false")
+    List<Order> getTotalImportOrders();
 }

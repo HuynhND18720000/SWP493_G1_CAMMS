@@ -46,7 +46,6 @@ public class ListProductResponse {
             listProductResponse.description = p.getDescription();
             listProductResponse.image=p.getImage();
             listProductResponse.unitprice=p.getUnitprice();
-
             listProductResponse.out_date = p.getOutDate();
             listProductResponse.quantity=p.getQuantity();
             listProductResponse.unitMeasure=p.getUnitMeasure();

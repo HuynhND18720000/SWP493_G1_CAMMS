@@ -72,4 +72,7 @@ public interface IProductRepository extends JpaRepository<Product, Long> {
             "join product as p on p.id = cp.product_id\n" +
             "where o.status_id = 2 and o.deleted_at = false and o.order_type_id = 1", nativeQuery = true)
     List<Product> getListProductInWarehouse();
+
+    @Query(nativeQuery = true, value = "select * from Product where deleted_at = false")
+    List<Product> getAllProduct();
 }
