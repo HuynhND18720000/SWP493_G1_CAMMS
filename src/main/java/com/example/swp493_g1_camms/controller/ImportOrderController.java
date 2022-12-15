@@ -80,15 +80,13 @@ public class ImportOrderController {
     }
 
     @GetMapping("/getOrderDetail")
-    public ResponseEntity<ServiceResult<Map<String, Object>>> getOrderDetail(@RequestParam(required = false) Integer pageIndex,
-                                                                             @RequestParam(required = false) Integer pageSize,
+    public ResponseEntity<ServiceResult<Map<String, Object>>> getOrderDetail(
                                                                              @RequestParam(required = false) Long orderId)
             throws ParseException {
-        pageIndex = pageIndex == null ? defaultPage : pageIndex;
-        pageSize = pageSize == null ? defaultSize : pageSize;
+
         try {
-            pageIndex = pageIndex - 1;
-            ServiceResult<Map<String, Object>> mapServiceResult = importOrder.getImportOderDetail(pageIndex, pageSize,orderId);
+
+            ServiceResult<Map<String, Object>> mapServiceResult = importOrder.getImportOderDetail(orderId);
             return ResponseEntity.ok(mapServiceResult);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

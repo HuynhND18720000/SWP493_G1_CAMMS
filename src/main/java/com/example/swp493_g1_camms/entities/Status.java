@@ -33,4 +33,10 @@ public class Status {
 
     @OneToMany(mappedBy = "status", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<ReturnToManufacturer> returnToManufacturers;
+
+    public Status(Long id, String description, String name) {
+        this.id = id;
+        this.description = description;
+        this.name = name;
+    }
 }

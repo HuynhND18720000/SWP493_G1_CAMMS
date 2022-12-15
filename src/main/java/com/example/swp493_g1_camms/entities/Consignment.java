@@ -58,4 +58,13 @@ public class Consignment {
                 ", warehouse id=" + warehouse.getId() +
                 '}';
     }
+
+    public Consignment(Long id, LocalDateTime importDate, Long consignment_code,
+                       Boolean deletedAt, Warehouse warehouse) {
+        this.id = id;
+        this.importDate = importDate;
+        this.consignment_code = consignment_code;
+        this.deletedAt = deletedAt;
+        this.warehouse = warehouse;
+    }
 }

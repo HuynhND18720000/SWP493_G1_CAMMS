@@ -222,21 +222,15 @@ public class ImportOrderServiceImpl implements IImportOrderService {
     }
 
     @Override
-    public ServiceResult<Map<String, Object>> getImportOderDetail(Integer pageIndex, Integer pageSize, Long orderId) {
+    public ServiceResult<Map<String, Object>> getImportOderDetail(Long orderId) {
         ServiceResult<Map<String, Object>> mapServiceResult = new ServiceResult<>();
         Map<String, Object> output = new HashMap<>();
-        Pageable pagable = PageRequest.of(pageIndex, pageSize,
-                Sort.by("id").ascending());
+
         try {
-            List<Map<String, Object>> listImportProducts = importOrderRepository.getImportOrderDetail(orderId, pagable);
-            BigInteger totalRecord = BigInteger.valueOf(0);
-            if (!listImportProducts.isEmpty()) {
-                totalRecord = (BigInteger) listImportProducts.get(0).get("totalRecord");
-            }
+            List<Map<String, Object>> listImportProducts = importOrderRepository.getImportOrderDetail(orderId);
+
             output.put("listImportProduct", listImportProducts);
-            output.put("pageIndex", pageIndex);
-            output.put("pageSize", pageSize);
-            output.put("totalRecord", totalRecord);
+
             mapServiceResult.setData(output);
             mapServiceResult.setMessage("success");
             mapServiceResult.setStatus(HttpStatus.OK);

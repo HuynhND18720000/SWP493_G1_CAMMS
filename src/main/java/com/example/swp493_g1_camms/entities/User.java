@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -78,4 +79,18 @@ public class User {
     }
 
 
+    public User(Long userId, String username, String password,
+                String fullName, boolean isActive, String email, String phone,
+                String image,
+                LocalDate createdDate) {
+        this.id = userId;
+        this.username = username;
+        this.password = password;
+        this.fullName = fullName;
+        this.isActive = isActive;
+        this.email = email;
+        this.phone = phone;
+        this.image = image;
+        this.dob = createdDate;
+    }
 }

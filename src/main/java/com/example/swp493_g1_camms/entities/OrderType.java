@@ -30,4 +30,10 @@ public class OrderType {
     @OneToMany(mappedBy = "orderType", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Order> orders;
 
+    public OrderType(Long id, String description, String name, Boolean deletedAt) {
+        this.id = id;
+        this.description = description;
+        this.name = name;
+        this.deletedAt = deletedAt;
+    }
 }

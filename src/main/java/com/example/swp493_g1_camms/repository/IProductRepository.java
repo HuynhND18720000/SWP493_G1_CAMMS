@@ -70,7 +70,8 @@ public interface IProductRepository extends JpaRepository<Product, Long> {
             "join consignment as c on c.id = od.consignment_id\n" +
             "join consignment_product as cp on cp.consignment_id = c.id\n" +
             "join product as p on p.id = cp.product_id\n" +
-            "where o.status_id = 2 and o.deleted_at = false and o.order_type_id = 1", nativeQuery = true)
+            "where o.status_id = 2 and o.deleted_at = false and o.order_type_id = 1 and cp.quantity_sale > 0",
+            nativeQuery = true)
     List<Product> getListProductInWarehouse();
 
     @Query(nativeQuery = true, value = "select * from Product where deleted_at = false")

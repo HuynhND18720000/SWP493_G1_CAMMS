@@ -39,4 +39,10 @@ public class Warehouse {
     @OneToMany(mappedBy = "warehouse", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<ReturnToManufacturer> returnToManufacturers;
 
+    public Warehouse(Long id, String name, Boolean deletedAt, String address) {
+        this.id = id;
+        this.name = name;
+        this.deletedAt = deletedAt;
+        this.address = address;
+    }
 }

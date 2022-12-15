@@ -53,4 +53,13 @@ public class Manufacturer {
         this.phone = phone;
         this.email = email;
     }
+
+    public Manufacturer(Long id, String name, String address, String email, Boolean deletedAt, String phone) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.email = email;
+        this.deletedAt = deletedAt;
+        this.phone = phone;
+    }
 }
