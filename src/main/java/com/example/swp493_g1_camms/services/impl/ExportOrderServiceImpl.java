@@ -205,6 +205,8 @@ public class ExportOrderServiceImpl implements IExportOrderService {
             exportOrderResponse.setProductName(lp.get("productName").toString());
             exportOrderResponse.setProductCode(lp.get("productCode").toString());
             exportOrderResponse.setQuantity(0);
+
+            exportOrderResponse.setImportPrice((Double)lp.get("importPrice"));
             exportOrderResponse.setUnitPrice((Double) lp.get("unitPrice"));
             exportOrderResponse.setUnitMeasure(lp.get("unitMeasure").toString());
             exportOrderResponseList.add(exportOrderResponse);
@@ -221,6 +223,7 @@ public class ExportOrderServiceImpl implements IExportOrderService {
             consignmentProductResponse.setExpirationDate(lp.get("expirationDate").toString());
             consignmentProductResponse.setQuantityInstock(Integer.valueOf(lp.get("quantityInstock").toString()) );
             consignmentProductResponse.setQuantity(0);
+
             consignmentProductResponseList.add(consignmentProductResponse);
             exportOrderResponse.setConsignmentList(consignmentProductResponseList);
         }

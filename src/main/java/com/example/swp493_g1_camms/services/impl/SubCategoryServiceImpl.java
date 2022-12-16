@@ -65,6 +65,7 @@ public class SubCategoryServiceImpl implements ISubCategoryService {
         SubCategory subCategory = convertToEntities.convertSubCategory(subCategoryDTO);
         Category category = categoryRepository.findCategoryById(subCategoryDTO.getCategoryId());
         subCategory.setCategory(category);
+        subCategory.setDeletedAt(false);
         subCategoryRepository.save(subCategory);
         responseVo.setMessage("Thêm danh mục con thành công !!");
         return new ResponseEntity<>(responseVo, HttpStatus.OK);
@@ -88,6 +89,7 @@ public class SubCategoryServiceImpl implements ISubCategoryService {
         SubCategory subCategory = convertToEntities.convertSubCategory(subCategoryDTO);
         Category category = categoryRepository.findCategoryById(subCategoryDTO.getCategoryId());
         subCategory.setCategory(category);
+        subCategory.setDeletedAt(false);
         subCategoryRepository.save(subCategory);
         responseVo.setMessage("Cập nhập danh mục con thành công !!");
         return new ResponseEntity<>(responseVo, HttpStatus.OK);

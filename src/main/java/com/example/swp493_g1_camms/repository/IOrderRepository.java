@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface IOrderRepository extends JpaRepository<Order, Long> {
-    @Query(value = "SELECT o FROM Order as o where o.deletedAt = false order by o.id desc")
+    @Query(nativeQuery = true,
+            value = "SELECT * FROM camms.Order as o where o.deleted_at = false order by o.id desc")
     List<Order> getLastOrderCode();
     @Query(value = "SELECT o FROM Order as o where o.orderCode = ?1")
     Order getOrderByOrderCode(String order_code);

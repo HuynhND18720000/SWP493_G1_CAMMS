@@ -17,7 +17,7 @@ public interface IStaffRepository extends JpaRepository<Staff, Long> {
     @Query("SELECT s FROM Staff s " + "Where s.id = ?1" )
     Staff getDetailStaff(Long id);
 
-    @Query(value = "SELECT * FROM staff WHERE MATCH(fullName) "
+    @Query(value = "SELECT * FROM staff WHERE MATCH(full_name) "
             + "AGAINST (?1) AND deleted_at = false", nativeQuery = true )
     Page<Staff> findBySearch(String fullName, Pageable pageable);
 

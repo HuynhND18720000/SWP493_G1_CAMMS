@@ -20,6 +20,6 @@ public class ExportOrderResponse {
     private double unitPrice;
 
     private int quantity;
-
+    private Double importPrice;
     List<ListConsignmentProductResponse> consignmentList;
 }

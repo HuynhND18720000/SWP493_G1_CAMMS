@@ -19,7 +19,7 @@ public interface IExportOrderRepository extends JpaRepository<Order, Long> {
     //kiem tra lai phan nay no van chua ca xuat ra
     //ve xem lai
     @Query(value = "SELECT p.id AS productId, c.id AS consignment_id, wh.id AS wareHouseId,\n" +
-            "         wh.name AS warehouseName, p.product_code AS productCode,\n" +
+            "         wh.name AS warehouseName, p.product_code AS productCode,p.last_average_price AS importPrice,\n" +
             "\t\tp.name AS productName,p.unit_measure AS unitMeasure,\n" +
             "\t\tp.unitprice AS unitPrice,c.import_date AS importDate,\n" +
             "        cp.expiration_date AS expirationDate,\n" +
