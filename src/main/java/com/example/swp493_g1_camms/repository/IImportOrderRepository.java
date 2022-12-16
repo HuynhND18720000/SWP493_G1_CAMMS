@@ -49,7 +49,7 @@ public interface IImportOrderRepository extends JpaRepository<Order, Long> {
             "product1.product_code, product1.unit_measure, warehouse1.id as warehouse_id, user1.full_name as creator, \n" +
             "warehouse1.name as warehouse_name, order_detail1.order_id, consignment1.id as consignment_id, \n" +
             "user2.full_name as confirm_by, user2.id as confirm_by_id, user1.id as creator_id , " +
-            "manufacturer1.name, manufacturer1.id\n" +
+            "manufacturer1.name, manufacturer1.id, order1.status_id \n" +
             "FROM CAMMS.order order1\n" +
             "LEFT JOIN CAMMS.user user2 ON order1.confirm_by = user2.id,\n" +
             "order_detail order_detail1, consignment consignment1, product product1,\n" +

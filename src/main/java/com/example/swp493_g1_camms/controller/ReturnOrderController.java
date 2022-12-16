@@ -32,7 +32,6 @@ public class ReturnOrderController {
     @Autowired
     IExportOrderService exportOrder;
 
-
     Validation validation;
 
     @PostMapping(path = "/createReturnOrder")
@@ -63,7 +62,7 @@ public class ReturnOrderController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<ServiceResult<Map<String, Object>>> listImport(@RequestParam(required = false) Integer pageIndex,
+    public ResponseEntity<ServiceResult<Map<String, Object>>> listReturn(@RequestParam(required = false) Integer pageIndex,
                                                                          @RequestParam(required = false) Integer pageSize,
                                                                          @RequestParam(required = false) String dateFrom,
                                                                          @RequestParam(required = false) String dateTo,
