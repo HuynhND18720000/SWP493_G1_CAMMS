@@ -18,6 +18,7 @@ public class ManufacturerController {
     @Autowired
     private IManufacturerService manufacturerService;
 
+    @Autowired
     Validation validation;
 
     @PostMapping("/addManufacturer")

@@ -28,6 +28,7 @@ public class ImportOrderController {
     @Autowired
     IImportOrderService importOrder;
 
+    @Autowired
     Validation validation;
 
     @PostMapping(path = "/createOrder")

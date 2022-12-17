@@ -334,13 +334,17 @@ public class ExportOrderServiceImpl implements IExportOrderService {
         status.setId(Constant.COMPLETED);
         try {
             Order order = exportOrderRepository.getOrderById(orderId);
-            order.setConfirmBy(confirmBy);
-            order.setStatus(status);
-            exportOrderRepository.save(order);
+            if(order.getStatus().getId() == 1L) {
+                order.setConfirmBy(confirmBy);
+                order.setStatus(status);
+                exportOrderRepository.save(order);
 
-            ResponseVo responseVo = new ResponseVo();
-            responseVo.setMessage("Xác nhận xuất hàng thành công !!");
-            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+                ResponseVo responseVo = new ResponseVo();
+                responseVo.setMessage("Xác nhận xuất hàng thành công !!");
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            }else{
+                throw new Exception();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             messageResponse.setMessage("Xác nhận đơn hàng thất bại !");
@@ -368,12 +372,16 @@ public class ExportOrderServiceImpl implements IExportOrderService {
         status.setId(Constant.CANCEL);
         try {
             Order order = exportOrderRepository.getOrderById(orderId);
-            order.setConfirmBy(confirmBy);
-            order.setStatus(status);
-            exportOrderRepository.save(order);
-            ResponseVo responseVo = new ResponseVo();
-            responseVo.setMessage("Hủy xác nhận xuất hàng thành công !!");
-            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            if(order.getStatus().getId() == 1L) {
+                order.setConfirmBy(confirmBy);
+                order.setStatus(status);
+                exportOrderRepository.save(order);
+                ResponseVo responseVo = new ResponseVo();
+                responseVo.setMessage("Hủy xác nhận xuất hàng thành công !!");
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            }else{
+                throw new Exception();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             messageResponse.setMessage("Xác nhận đơn hàng thất bại !");

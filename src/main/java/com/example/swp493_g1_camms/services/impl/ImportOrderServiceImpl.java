@@ -260,40 +260,44 @@ public class ImportOrderServiceImpl implements IImportOrderService {
         status.setId(Constant.COMPLETED);
         try {
             Order order = importOrderRepository.getOrderById(orderId);
-            order.setConfirmBy(confirmBy);
-            order.setStatus(status);
-            importOrderRepository.save(order);
-            List<ConsignmentProduct> consignmentProducts =
-                    consignmentProductRepository.getConsignmentProductByOrderId(orderId);
-            for(int i =0 ; i < consignmentProducts.size(); i++){
-                ConsignmentProductKey consignmentProductKey = consignmentProducts.get(i).getId();
-                Product product = productRepository.findProductById(consignmentProductKey.getProductid());
-                product.setQuantity(product.getQuantity() + consignmentProducts.get(i).getQuantity());
+            if(order.getStatus().getId() == 1L) {
+                order.setConfirmBy(confirmBy);
+                order.setStatus(status);
+                importOrderRepository.save(order);
+                List<ConsignmentProduct> consignmentProducts =
+                        consignmentProductRepository.getConsignmentProductByOrderId(orderId);
+                for (int i = 0; i < consignmentProducts.size(); i++) {
+                    ConsignmentProductKey consignmentProductKey = consignmentProducts.get(i).getId();
+                    Product product = productRepository.findProductById(consignmentProductKey.getProductid());
+                    product.setQuantity(product.getQuantity() + consignmentProducts.get(i).getQuantity());
 
-                if(product.getId()==consignmentProductKey.getProductid()){
-                    double totalPrice = 0;
-                    Long totalQuantity = 0L;
-                    List<ConsignmentProduct> consignmentProducts1 =
-                            consignmentProductRepository.findAllConsignmentProductForAveragePrice(product.getId());
-                    for(int j = 0; j < consignmentProducts1.size(); j++){
-                        totalPrice = totalPrice +
-                                consignmentProducts1.get(j).getUnitPrice()*consignmentProducts1.get(j).getQuantity_sale();
-                        totalQuantity = totalQuantity + consignmentProducts1.get(j).getQuantity_sale();
+                    if (product.getId() == consignmentProductKey.getProductid()) {
+                        double totalPrice = 0;
+                        Long totalQuantity = 0L;
+                        List<ConsignmentProduct> consignmentProducts1 =
+                                consignmentProductRepository.findAllConsignmentProductForAveragePrice(product.getId());
+                        for (int j = 0; j < consignmentProducts1.size(); j++) {
+                            totalPrice = totalPrice +
+                                    consignmentProducts1.get(j).getUnitPrice() * consignmentProducts1.get(j).getQuantity_sale();
+                            totalQuantity = totalQuantity + consignmentProducts1.get(j).getQuantity_sale();
+                        }
+                        double avaragePrice = totalPrice / totalQuantity;
+                        ConsignmentProduct consignmentProduct =
+                                consignmentProductRepository.getConsignmentProductById(consignmentProductKey.getConsignmentid(),
+                                        consignmentProductKey.getProductid());
+                        consignmentProduct.setAverage_price(avaragePrice);
+                        consignmentProductRepository.save(consignmentProduct);
+                        product.setLastAveragePrice(avaragePrice);
                     }
-                    double avaragePrice = totalPrice / totalQuantity;
-                    ConsignmentProduct consignmentProduct =
-                            consignmentProductRepository.getConsignmentProductById(consignmentProductKey.getConsignmentid(),
-                                    consignmentProductKey.getProductid());
-                    consignmentProduct.setAverage_price(avaragePrice);
-                    consignmentProductRepository.save(consignmentProduct);
-                    product.setLastAveragePrice(avaragePrice);
-                }
 
-                productRepository.save(product);
+                    productRepository.save(product);
+                }
+                ResponseVo responseVo = new ResponseVo();
+                responseVo.setMessage("Xác nhận nhập hàng thành công !!");
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            }else{
+                throw new Exception();
             }
-            ResponseVo responseVo = new ResponseVo();
-            responseVo.setMessage("Xác nhận nhập hàng thành công !!");
-            return new ResponseEntity<>(responseVo, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             messageResponse.setMessage("Xác nhận đơn hàng thất bại !");
@@ -321,12 +325,16 @@ public class ImportOrderServiceImpl implements IImportOrderService {
         status.setId(Constant.CANCEL);
         try {
             Order order = importOrderRepository.getOrderById(orderId);
-            order.setConfirmBy(confirmBy);
-            order.setStatus(status);
-            importOrderRepository.save(order);
-            ResponseVo responseVo = new ResponseVo();
-            responseVo.setMessage("Hủy xác nhận nhập hàng thành công !!");
-            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            if(order.getStatus().getId() == 1L) {
+                order.setConfirmBy(confirmBy);
+                order.setStatus(status);
+                importOrderRepository.save(order);
+                ResponseVo responseVo = new ResponseVo();
+                responseVo.setMessage("Hủy xác nhận nhập hàng thành công !!");
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            }else{
+                throw new Exception();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             messageResponse.setMessage("Xác nhận đơn hàng thất bại !");

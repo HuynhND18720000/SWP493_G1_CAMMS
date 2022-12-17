@@ -28,7 +28,8 @@ public class ExportOrderController {
     @Autowired
     IExportOrderService exportOrder;
 
-    Validation validDation;
+    @Autowired
+    Validation validation;
 
     @GetMapping(path = "/listProduct")
     public ResponseEntity<?> loadListProductIntoDropList(){
@@ -96,8 +97,8 @@ public class ExportOrderController {
             pageIndex = pageIndex - 1;
             LocalDateTime dateFrom1 = null;
             LocalDateTime dateTo1 = null;
-            dateFrom1 = validDation.validDate(dateFrom1, dateFrom);
-            dateTo1 = validDation.validDate(dateTo1, dateTo);
+            dateFrom1 = validation.validDate(dateFrom1, dateFrom);
+            dateTo1 = validation.validDate(dateTo1, dateTo);
             if(orderCode == null || orderCode.equalsIgnoreCase("") ){
                 orderCode = "";
             }
