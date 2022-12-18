@@ -2,6 +2,9 @@ package com.example.swp493_g1_camms.controller;
 
 import com.example.swp493_g1_camms.payload.request.ManufacturerDTO;
 import com.example.swp493_g1_camms.payload.request.WarehouseDTO;
+import com.example.swp493_g1_camms.payload.response.MessageResponse;
+import com.example.swp493_g1_camms.utils.StatusUtils;
+import com.example.swp493_g1_camms.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +19,8 @@ public class WarehouseController {
     private final int defaultSize = 5;
     @Autowired
     private IWarehouseService IWarehouseService;
+    @Autowired
+    Validation validation;
 
     @GetMapping
     public ResponseEntity<?> getAllWarehouse(@RequestParam(required = false) Integer pageIndex,
@@ -37,6 +42,12 @@ public class WarehouseController {
 
     @PostMapping("/addWarehouse")
     public ResponseEntity<?> addWarehouse(@RequestBody WarehouseDTO warehouseDTO) {
+        boolean checkWarehouseNameExist = validation.isWarehouseNameExist(warehouseDTO.getName());
+        if(checkWarehouseNameExist == true){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("WarehouseName exist!", StatusUtils.NOT_Allow));
+        }
         return IWarehouseService.addWarehouse(warehouseDTO);
     }
 }

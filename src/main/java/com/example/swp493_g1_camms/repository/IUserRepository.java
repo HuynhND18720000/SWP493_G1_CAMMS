@@ -25,5 +25,6 @@ public interface IUserRepository extends JpaRepository<User, Long> {
     @Query("\n" +
             "select u from User u where u.password = ?1")
     User getUserByPassword(String password);
-
+    @Query("select u from User u where u.id = ?1")
+    User findUserById(Long confirmBy);
 }

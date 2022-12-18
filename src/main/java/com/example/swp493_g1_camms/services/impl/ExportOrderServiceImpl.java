@@ -331,13 +331,17 @@ public class ExportOrderServiceImpl implements IExportOrderService {
         status.setId(Constant.COMPLETED);
         try {
             Order order = exportOrderRepository.getOrderById(orderId);
-            order.setConfirmBy(confirmBy);
-            order.setStatus(status);
-            exportOrderRepository.save(order);
-
-            ResponseVo responseVo = new ResponseVo();
-            responseVo.setMessage("Xác nhận xuất hàng thành công !!");
-            return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            if(order.getStatus().getId() == 1L){
+                order.setConfirmBy(confirmBy);
+                order.setStatus(status);
+                exportOrderRepository.save(order);
+                ResponseVo responseVo = new ResponseVo();
+                responseVo.setMessage("Xác nhận xuất hàng thành công !!");
+                return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            }
+            else {
+                throw new Exception();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             messageResponse.setMessage("Xác nhận đơn hàng thất bại !");
@@ -365,12 +369,17 @@ public class ExportOrderServiceImpl implements IExportOrderService {
         status.setId(Constant.CANCEL);
         try {
             Order order = exportOrderRepository.getOrderById(orderId);
+            if(order.getStatus().getId() == 1L){
             order.setConfirmBy(confirmBy);
             order.setStatus(status);
             exportOrderRepository.save(order);
             ResponseVo responseVo = new ResponseVo();
             responseVo.setMessage("Hủy xác nhận xuất hàng thành công !!");
             return new ResponseEntity<>(responseVo, HttpStatus.OK);
+            }
+            else{
+                throw new Exception();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             messageResponse.setMessage("Xác nhận đơn hàng thất bại !");
@@ -425,20 +434,10 @@ public class ExportOrderServiceImpl implements IExportOrderService {
 
     @Override
     public ResponseEntity<?> exportedExportOrder(Long orderId) {
-        OrderExported orderExported = new OrderExported();
-        Order order = orderRepository.getById(orderId);
-        order.setIsReturn(true);
-        orderExported.setOrder(order);
-        orderExported.setStatusExported(true);
-        orderExportedStatusRepository.save(orderExported);
-        orderRepository.save(order);
         List<ConsignmentProduct> consignmentProducts =
                 consignmentProductRepository.getConsignmentProductByOrderId(orderId);
         for(int i =0 ; i < consignmentProducts.size(); i++){
             ConsignmentProductKey consignmentProductId = consignmentProducts.get(i).getId();
-            Product product = productRepository.findProductById(consignmentProductId.getProductid());
-            product.setQuantity(product.getQuantity() - consignmentProducts.get(i).getQuantity());
-            productRepository.save(product);
             ConsignmentProduct consignmentProduct = new ConsignmentProduct();
             consignmentProduct =
                     consignmentProductRepository.getConsignmentProductById(consignmentProductId.getConsignmentid(),
@@ -447,11 +446,28 @@ public class ExportOrderServiceImpl implements IExportOrderService {
             consignmentProduct2 =
                     consignmentProductRepository.getConsignmentProductById(consignmentProduct.getMark_get_product_from_consignment(),
                             consignmentProductId.getProductid());
-            if(consignmentProduct2 != null){
-                consignmentProduct2.setQuantity_sale(consignmentProduct2.getQuantity_sale()-consignmentProducts.get(i).getQuantity());
-                consignmentProductRepository.save(consignmentProduct2);
-            }
+            if(consignmentProduct2.getQuantity_sale() >= consignmentProduct.getQuantity()){
 
+                OrderExported orderExported = new OrderExported();
+                Order order = orderRepository.getById(orderId);
+                order.setIsReturn(true);
+                orderExported.setOrder(order);
+                orderExported.setStatusExported(true);
+                orderExportedStatusRepository.save(orderExported);
+                orderRepository.save(order);
+
+                if(consignmentProduct2 != null){
+                    consignmentProduct2.setQuantity_sale(consignmentProduct2.getQuantity_sale()-consignmentProducts.get(i).getQuantity());
+                    consignmentProductRepository.save(consignmentProduct2);
+                }
+                Product product = productRepository.findProductById(consignmentProductId.getProductid());
+                product.setQuantity(product.getQuantity() - consignmentProducts.get(i).getQuantity());
+                productRepository.save(product);
+            }else{
+                ResponseVo responseVo = new ResponseVo();
+                responseVo.setMessage("Số lượng hàng trong lô không đủ !!");
+                return new ResponseEntity<>(responseVo, HttpStatus.BAD_REQUEST);
+            }
         }
         ResponseVo responseVo = new ResponseVo();
         responseVo.setMessage("Xác nhận giao hàng thành công !!");

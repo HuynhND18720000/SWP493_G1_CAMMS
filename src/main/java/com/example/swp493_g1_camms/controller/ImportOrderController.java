@@ -4,11 +4,10 @@ import com.example.swp493_g1_camms.entities.ServiceResult;
 import com.example.swp493_g1_camms.payload.request.ConsignmentProductDTO;
 import com.example.swp493_g1_camms.payload.request.ImportOrderRequest;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
-import com.example.swp493_g1_camms.services.impl.ImportOrderServiceImpl;
 import com.example.swp493_g1_camms.services.interfaceService.IImportOrderService;
-import com.example.swp493_g1_camms.services.interfaceService.IValidCheckService;
 import com.example.swp493_g1_camms.utils.CurrentUserIsActive;
 import com.example.swp493_g1_camms.utils.StatusUtils;
+import com.example.swp493_g1_camms.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +28,7 @@ public class ImportOrderController {
     @Autowired
     IImportOrderService importOrder;
     @Autowired
-    IValidCheckService validCheckService;
+    Validation validation;
 
     @PostMapping(path = "/createOrder")
     public ResponseEntity<?> createOrder(@RequestBody ImportOrderRequest importOrderRequest){
@@ -65,8 +64,8 @@ public class ImportOrderController {
             pageIndex = pageIndex - 1;
             LocalDateTime dateFrom1 = null;
             LocalDateTime dateTo1 = null;
-            dateFrom1 = validCheckService.validDate(dateFrom1, dateFrom);
-            dateTo1 = validCheckService.validDate(dateTo1, dateTo);
+            dateFrom1 = validation.validDate(dateFrom1, dateFrom);
+            dateTo1 = validation.validDate(dateTo1, dateTo);
             if(orderCode == null || orderCode.equalsIgnoreCase("") ){
                 orderCode = "";
             }
@@ -80,15 +79,10 @@ public class ImportOrderController {
     }
 
     @GetMapping("/getOrderDetail")
-    public ResponseEntity<ServiceResult<Map<String, Object>>> getOrderDetail(@RequestParam(required = false) Integer pageIndex,
-                                                                             @RequestParam(required = false) Integer pageSize,
-                                                                             @RequestParam(required = false) Long orderId)
+    public ResponseEntity<ServiceResult<Map<String, Object>>> getOrderDetail(@RequestParam(required = false) Long orderId)
             throws ParseException {
-        pageIndex = pageIndex == null ? defaultPage : pageIndex;
-        pageSize = pageSize == null ? defaultSize : pageSize;
         try {
-            pageIndex = pageIndex - 1;
-            ServiceResult<Map<String, Object>> mapServiceResult = importOrder.getImportOderDetail(pageIndex, pageSize,orderId);
+            ServiceResult<Map<String, Object>> mapServiceResult = importOrder.getImportOderDetail(orderId);
             return ResponseEntity.ok(mapServiceResult);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -98,7 +92,11 @@ public class ImportOrderController {
     @PutMapping("/confirm")
     public ResponseEntity<?> confirmOrder(@RequestParam(required = false) Long orderId,
                                           @RequestParam(required = false)Long confirmBy) {
-        return importOrder.confirmOrder(orderId, confirmBy);
+        try {
+            return importOrder.confirmOrder(orderId, confirmBy);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping("/cancel")

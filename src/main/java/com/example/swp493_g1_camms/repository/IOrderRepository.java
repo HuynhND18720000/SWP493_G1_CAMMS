@@ -75,4 +75,6 @@ public interface IOrderRepository extends JpaRepository<Order, Long> {
             "            ELSE order1.created_date IS NOT NULL END\n"+
             "            AND UPPER(order1.order_code) Like UPPER('%' ?3 '%') \n")
     BigInteger getTotalReturnRecord(LocalDateTime dateFrom, LocalDateTime dateTo, String orderCode);
+    @Query(value = "SELECT o FROM Order as o where o.id = ?1")
+    Order findOrderByOrderId(Long orderId);
 }

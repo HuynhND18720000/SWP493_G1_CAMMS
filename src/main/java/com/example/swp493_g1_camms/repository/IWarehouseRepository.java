@@ -15,4 +15,6 @@ public interface IWarehouseRepository extends JpaRepository<Warehouse, Long> {
     public Warehouse findWarehouseById(Long id);
 
     Page<Warehouse> findAllWarehouseByDeletedAt(boolean deletedAt, Pageable pageable);
+    @Query("SELECT w FROM Warehouse w WHERE w.name = ?1")
+    Warehouse findWarehouseByName(String warehouseName);
 }

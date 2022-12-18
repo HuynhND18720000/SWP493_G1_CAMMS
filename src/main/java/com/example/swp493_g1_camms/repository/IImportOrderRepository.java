@@ -63,7 +63,7 @@ public interface IImportOrderRepository extends JpaRepository<Order, Long> {
             "AND order1.user_id = user1.id\n" +
             "AND order1.manufacturer_id = manufacturer1.id\n" +
             "AND product1.id = consignment_product1.product_id")
-    List<Map<String, Object>> getImportOrderDetail(Long orderId, Pageable pagable);
+    List<Map<String, Object>> getImportOrderDetail(Long orderId);
 
 
     @Query("SELECT o FROM Order o WHERE o.id = ?1")
