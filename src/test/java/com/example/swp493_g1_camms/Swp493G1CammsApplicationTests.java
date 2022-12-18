@@ -207,6 +207,7 @@ class Swp493G1CammsApplicationTests {
         assertEquals(400, status);
     }
 
-    //create export order
+    //create stock taking
+
     
 }

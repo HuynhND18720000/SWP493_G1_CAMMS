@@ -27,7 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
-public class UserProfileProfileServiceImpl implements IUserProfileService {
+public class UserProfileServiceImpl implements IUserProfileService {
     @Autowired
     AuthenticationFacade authenticationFacade;
     @Autowired
