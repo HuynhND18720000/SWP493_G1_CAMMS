@@ -3,6 +3,7 @@ package com.example.swp493_g1_camms.controller;
 import com.example.swp493_g1_camms.payload.request.ManufacturerDTO;
 import com.example.swp493_g1_camms.payload.request.WarehouseDTO;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
+import com.example.swp493_g1_camms.utils.CurrentUserIsActive;
 import com.example.swp493_g1_camms.utils.StatusUtils;
 import com.example.swp493_g1_camms.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,12 @@ public class WarehouseController {
     @GetMapping
     public ResponseEntity<?> getAllWarehouse(@RequestParam(required = false) Integer pageIndex,
                                              @RequestParam(required = false) Integer pageSize){
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
         pageIndex = pageIndex == null ? defaultPage : pageIndex;
         pageSize = pageSize == null ? defaultSize : pageSize;
         return IWarehouseService.findAllWarehouse(pageIndex, pageSize);
@@ -32,16 +39,34 @@ public class WarehouseController {
 
     @GetMapping("/getAWarehouse")
     public ResponseEntity<?> getAWarehouse(@RequestParam(required = false) Long id){
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
         return IWarehouseService.findWarehouseById(id);
     }
 
     @PutMapping("/editWarehouse")
     public ResponseEntity<?> editWarehouse(@RequestBody WarehouseDTO warehouseDTO){
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
         return IWarehouseService.editWarehouse(warehouseDTO);
     }
 
     @PostMapping("/addWarehouse")
     public ResponseEntity<?> addWarehouse(@RequestBody WarehouseDTO warehouseDTO) {
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
         boolean checkWarehouseNameExist = validation.isWarehouseNameExist(warehouseDTO.getName());
         if(checkWarehouseNameExist == true){
             return ResponseEntity

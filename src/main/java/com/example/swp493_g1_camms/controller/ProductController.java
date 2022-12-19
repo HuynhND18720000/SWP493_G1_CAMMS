@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
-@RequestMapping("/api")
+@RequestMapping("/api/products")
 public class ProductController {
     private final int defaultPage = 1;
     private final int defaultSize = 5;
     @Autowired
     IProductService productService;
     //cách 1: get all products
-    @GetMapping("/products")
+    @GetMapping
     public ResponseEntity<?> getAllProducts(@RequestParam(required = false) Integer pageIndex,
                                             @RequestParam(required = false) Integer pageSize){
         boolean currentUserIsActive = CurrentUserIsActive.currentUserIsActive();
@@ -53,7 +53,7 @@ public class ProductController {
         return productService.findAllProduct(pageIndex,pageSize,productName,productCode,categoryId,
                 manufactorId);
     }
-    @GetMapping("/products/{productId}")
+    @GetMapping("/{productId}")
     public ResponseEntity<?> productDetail(
             @PathVariable Long productId,
             @RequestParam(required = false) Integer pageIndex,

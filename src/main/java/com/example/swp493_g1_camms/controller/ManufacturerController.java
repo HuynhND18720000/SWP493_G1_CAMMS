@@ -2,6 +2,7 @@ package com.example.swp493_g1_camms.controller;
 
 import com.example.swp493_g1_camms.payload.request.ManufacturerDTO;
 import com.example.swp493_g1_camms.payload.response.MessageResponse;
+import com.example.swp493_g1_camms.utils.CurrentUserIsActive;
 import com.example.swp493_g1_camms.utils.StatusUtils;
 import com.example.swp493_g1_camms.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,12 @@ public class ManufacturerController {
 
     @PostMapping("/addManufacturer")
     public ResponseEntity<?> addManufacturer(@RequestBody ManufacturerDTO manufacturerDTO) {
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
         boolean checkEmailExist = validation.isEmailManufacturerExist(manufacturerDTO.getEmail());
         if(checkEmailExist == true){
             return ResponseEntity
@@ -36,6 +43,12 @@ public class ManufacturerController {
 
     @GetMapping("/getAManufacturer")
     public ResponseEntity<?> getAManufacturer(Long id) {
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
         return manufacturerService.findManufacturerById(id);
     }
 
@@ -43,6 +56,12 @@ public class ManufacturerController {
     @GetMapping
     public ResponseEntity<?> getListManufacturer(@RequestParam(required = false) Integer pageIndex,
                                                  @RequestParam(required = false) Integer pageSize) {
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
         pageIndex = pageIndex == null ? defaultPage : pageIndex;
         pageSize = pageSize == null ? defaultSize : pageSize;
         return manufacturerService.findAllManufacturer(pageIndex, pageSize);
@@ -52,6 +71,12 @@ public class ManufacturerController {
     public ResponseEntity<?> SearchManufacturerByName(@RequestParam(required = false) Integer pageIndex,
                                                       @RequestParam(required = false) Integer pageSize,
                                                       @RequestParam(required = false) String name) {
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
         pageIndex = pageIndex == null ? defaultPage : pageIndex;
         pageSize = pageSize == null ? defaultSize : pageSize;
         return manufacturerService.SearchManufacturer(pageIndex, pageSize, name);
@@ -59,10 +84,22 @@ public class ManufacturerController {
 
     @PutMapping("/editManufacturer")
     public ResponseEntity<?> editManufacturer(@RequestBody ManufacturerDTO manufacturerDTO) {
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
         return manufacturerService.editManufacturer(manufacturerDTO);
     }
     @GetMapping("/getManufacturerNotPagging")
     public ResponseEntity<?> getAllManufacturerNotPagging() {
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
         return manufacturerService.getAllManufacturerNotPagging();
     }
 }

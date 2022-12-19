@@ -96,18 +96,36 @@ public class ImportOrderController {
     @PutMapping("/confirm")
     public ResponseEntity<?> confirmOrder(@RequestParam(required = false) Long orderId,
                                           @RequestParam(required = false)Long confirmBy) {
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
         return importOrder.confirmOrder(orderId, confirmBy);
     }
 
     @PutMapping("/cancel")
     public ResponseEntity<?> cancelOrder(@RequestParam(required = false) Long orderId,
                                          @RequestParam(required = false)Long confirmBy) {
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
         return importOrder.cancelOrder(orderId, confirmBy);
     }
 
     @PutMapping("/editOrder")
     public ResponseEntity<?> editOrder(@RequestParam(required = false) Long orderId,
                                        @RequestBody List<ConsignmentProductDTO> consignmentProductDTOList) {
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
         return importOrder.editOrder(orderId, consignmentProductDTOList);
     }
 }

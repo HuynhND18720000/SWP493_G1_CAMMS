@@ -91,6 +91,7 @@ public class ExportOrderController {
                                                                          @RequestParam(required = false) Long userId,
                                                                          @RequestParam(required = false) String orderCode
     ) throws ParseException {
+
         pageIndex = pageIndex == null ? defaultPage : pageIndex;
         pageSize = pageSize == null ? defaultSize : pageSize;
         try {
@@ -125,18 +126,36 @@ public class ExportOrderController {
     @PutMapping("/confirm")
     public ResponseEntity<?> confirmOrder(@RequestParam(required = false) Long orderId,
                                           @RequestParam(required = false)Long confirmBy) {
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
         return exportOrder.confirmExportOrder(orderId, confirmBy);
     }
 
     @PutMapping("/cancel")
     public ResponseEntity<?> cancelOrder(@RequestParam(required = false) Long orderId,
                                          @RequestParam(required = false)Long confirmBy) {
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
         return exportOrder.cancelExportOrder(orderId, confirmBy);
     }
 
     @PutMapping("/editOrder")
     public ResponseEntity<?> editOrder(@RequestParam(required = false) Long orderId,
                                        @RequestBody List<ConsignmentProductDTO> consignmentProductDTOList) {
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
         return exportOrder.editExportOrder(orderId, consignmentProductDTOList);
     }
 
@@ -144,6 +163,12 @@ public class ExportOrderController {
     @PostMapping("/exported")
     public ResponseEntity<?> exportedExportOrder(@RequestParam(required = false) Long orderId
     ) {
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
         return exportOrder.exportedExportOrder(orderId);
     }
 
@@ -162,6 +187,12 @@ public class ExportOrderController {
     @PutMapping("/cancelExportedExportOrder")
     public ResponseEntity<?> cancelExportedExportOrder(@RequestParam(required = false) Long orderId,
                                                   @RequestBody List<OrderStatusExportedDTO> orderStatusExportedDTOS) {
+        boolean isActive = CurrentUserIsActive.currentUserIsActive();
+        if(!isActive){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hết phiên làm việc", StatusUtils.NOT_Allow));
+        }
         return exportOrder.cancelExportedExportOrder(orderId, orderStatusExportedDTOS);
     }
 
